@@ -1,0 +1,640 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Surrogate Class - Jason Leaster</title>
+  <meta name="author" content="Jason Leaster">
+
+  
+  <meta name="description" content="Here is a question. How could we design a type of class to enable it to include the classes which is different but have something in common ? The &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jasonleaster.github.io/blog/2015/05/18/surrogate-class/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason Leaster" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason Leaster</a></h1>
+  
+    <h2>Rebuilding The Tower Of Babel</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jasonleaster.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about-me">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Surrogate Class</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-05-18T14:13:38+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:13 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Here is a question.</p>
+
+<p>How could we design a type of class to enable it to include the classes which is different but have something in common ?</p>
+
+<p>The solution is sorrogate</p>
+
+<!-- more -->
+
+
+<p>A demo about “Vehicle”:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">    Programmer  :  EOF</span>
+</span><span class='line'><span class="cm">    Date        :  2015.05.18</span>
+</span><span class='line'><span class="cm">    File        :  5.1.c</span>
+</span><span class='line'><span class="cm">    E-mail      :  jasonleaster@gmail.com</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Vehicle</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="cm">/*</span>
+</span><span class='line'><span class="cm">           It will be OK, if you don&#39;t use virtual function.</span>
+</span><span class='line'><span class="cm">        double weight() const;</span>
+</span><span class='line'><span class="cm">        void start();</span>
+</span><span class='line'><span class="cm">        */</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">RoadVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">AutoVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">RoadVehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Aircraft</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Helicopter</span><span class="o">:</span> <span class="k">public</span> <span class="n">Aircraft</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Vehicle</span> <span class="n">parking_lot</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you gona to compile this source file, you will got errors and warnings like this:</p>
+
+<p>images</p>
+
+<p>The reason why we got error is that Vihecle is a base class, member function @weight and @start is pure virtual function. With the = 0 in the declaration, we declare that that pure virtual function could without definitaion. Only the class which is inherit from base class Vihecle.</p>
+
+<p>So, the object Vehicle is not existed and we can’t define an array of that type.</p>
+
+<p>If we change the virtual function into non-virtual function, we could pass the compile process.</p>
+
+<p>But it’s very dangerous.</p>
+
+<p>Eg, if we delete all pure virtual functions in Vehicle, what would happen?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="n">Vehicle</span> <span class="n">parking_lot</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Automobile</span> <span class="n">x</span> <span class="o">=</span> <span class="cm">/* ... */</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Parking_lot</span><span class="p">[</span><span class="n">num_vihicles</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The answer is that there would be a cast on @x. @x is class Automobile which inhiret from base class Vehicle. @x will be cast into class Vehicle and then assign to object Parking_lot[num_vihicles]. In the process of casing, @x will lost anything which is not in Vehicle.</p>
+
+<p>More explicit, the array Parking_lot is an array of class Vehicle but not Automobile.</p>
+
+<p>It’s time release our scheme to solve that problem.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="cm">/**********************************************</span>
+</span><span class='line'><span class="cm">Programmer  :   EOF</span>
+</span><span class='line'><span class="cm">Date        :   2015.05.18</span>
+</span><span class='line'><span class="cm">File        :   5.4.cpp</span>
+</span><span class='line'><span class="cm">E-mail      :   jasonleaster@gmail.com</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">***********************************************/</span>
+</span><span class='line'><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Vehicle</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="cm">/*</span>
+</span><span class='line'><span class="cm">           It will be OK, if you don&#39;t use virtual function.</span>
+</span><span class='line'><span class="cm">        double weight() const;</span>
+</span><span class='line'><span class="cm">        void start();</span>
+</span><span class='line'><span class="cm">        */</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="n">Vehicle</span><span class="o">*</span> <span class="n">copy</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="o">~</span><span class="n">Vehicle</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span> <span class="p">;</span>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">RoadVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">AutoVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">RoadVehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Aircraft</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Helicopter</span><span class="o">:</span> <span class="k">public</span> <span class="n">Aircraft</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">VehicleSurrogate</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="cm">/*</span>
+</span><span class='line'><span class="cm">           Constructor</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="n">VehicleSurrogate</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">VehicleSurrogate</span><span class="p">(</span><span class="k">const</span> <span class="n">Vehicle</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">VehicleSurrogate</span><span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="cm">/*</span>
+</span><span class='line'><span class="cm">           De-constructor</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="o">~</span><span class="n">VehicleSurrogate</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">VehicleSurrogate</span><span class="o">&amp;</span> <span class="k">operator</span> <span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="cm">/*</span>
+</span><span class='line'><span class="cm">           Operations from class Vehicle</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="nf">start</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">Vehicle</span><span class="o">*</span> <span class="n">vp</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">VehicleSurrogate</span><span class="p">()</span><span class="o">:</span> <span class="n">vp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">VehicleSurrogate</span><span class="p">(</span><span class="k">const</span> <span class="n">Vehicle</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span>
+</span><span class='line'>    <span class="n">vp</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">copy</span><span class="p">())</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span> <span class="o">~</span><span class="n">VehicleSurrogate</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">delete</span> <span class="n">vp</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">VehicleSurrogate</span> <span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span>
+</span><span class='line'>    <span class="n">vp</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">vp</span> <span class="o">?</span> <span class="n">v</span><span class="p">.</span><span class="n">vp</span><span class="o">-&gt;</span><span class="n">copy</span><span class="p">()</span> <span class="o">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">&amp;</span>
+</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">v</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">delete</span> <span class="n">vp</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">vp</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">vp</span> <span class="o">?</span> <span class="n">v</span><span class="p">.</span><span class="n">vp</span><span class="o">-&gt;</span><span class="n">copy</span><span class="p">()</span> <span class="o">:</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">double</span> <span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">weight</span><span class="p">()</span> <span class="k">const</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">vp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="s">&quot;empty VehicleSurrogate.weight()&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">vp</span><span class="o">-&gt;</span><span class="n">weight</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">vp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="s">&quot;empty VehicleSurrogate.start()&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">vp</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Automobile</span><span class="o">:</span> <span class="k">public</span> <span class="n">AutoVehicle</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>        <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="nf">start</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">Vehicle</span><span class="o">*</span> <span class="n">copy</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">double</span>
+</span><span class='line'><span class="n">Automobile</span><span class="o">::</span><span class="n">weight</span><span class="p">()</span> <span class="k">const</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="mf">0.0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span>
+</span><span class='line'><span class="n">Automobile</span><span class="o">::</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Hello this is automobile&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Vehicle</span><span class="o">*</span>
+</span><span class='line'><span class="n">Automobile</span><span class="o">::</span><span class="n">copy</span><span class="p">()</span> <span class="k">const</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="n">Automobile</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">   Here is our test unit.</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">   Attention! </span>
+</span><span class='line'><span class="cm">   Never use assignment between class objects out of function block.</span>
+</span><span class='line'><span class="cm">   If your assignment operation is not in function block, you must got </span>
+</span><span class='line'><span class="cm">   an error from compiler.</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">   But it&#39;s ok, if you would like to define the varibles outside of blocks.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">VehicleSurrogate</span> <span class="n">parking_lot</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Automobile</span> <span class="n">x</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="n">num_vehicles</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="cm">/*</span>
+</span><span class='line'><span class="cm">       These two assignment statement are doing the same thing.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="n">parking_lot</span><span class="p">[</span><span class="n">num_vehicles</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//parking_lot[num_vehicles++] = VehicleSurrogate(x);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You may noticed that the key point of our solution is to use the class to represent a concept.</p>
+
+<p>We defined a contructor without any parameters, so we define an array of this type of class.</p>
+
+<p>If you have understand what we have done, you may feel excited. Yes, we create a container which could be used to represent any type of classes which are have relationships of inhiretance.</p>
+
+<p><code>parking_lot[num_vehicles++] = x;</code> is equal to <code>parking_lot[num_vehicles++] = VehicleSurrogate(x);</code></p>
+
+<p>This statement create a copy of object @x and attach @VehicleSurrogate onto object @x. If we destory elements in @parking_lot, the corresponding copy will be deleted.</p>
+
+<p><em>Finally, you have know that why this techonology named <strong>Surrogate</strong>.</em></p>
+
+<p>The objects in this type of class could be used to represent others class objects which are have completly relationships of inhiretance.</p>
+
+<hr />
+
+<p>Margaret Heafield Hamilton who is a very famous computer scientist, systems engineer, and business owner. Picture blew there is that hamilton during the Apollo Program.</p>
+
+<p><img src="/images/img_for_2015_05_18/margaret.png" alt="images" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason Leaster</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-05-18T14:13:38+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:13 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-plus-plus/'>c++</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/05/15/why-should-we-use-c-plus-plus/" title="Previous Post: Why should we use C++">&laquo; Why should we use C++</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/05/18/handle-class/" title="Next Post: Handle Class">Handle Class &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/24/binary-search/">Binary Search</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/17/what-should-we-focus-on/">What Should We Focus on ?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus/">Memory Model of Objects in C++</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/05/25/learn-to-design-a-container/">Learn to Design a Container</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/05/24/an-exercise-of-c-plus-plus/">An Exercise of C++</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Jason Leaster -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

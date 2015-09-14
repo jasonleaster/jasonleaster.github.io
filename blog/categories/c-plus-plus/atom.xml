@@ -1,0 +1,2438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: C++ | Jason Leaster]]></title>
+  <link href="http://jasonleaster.github.io/blog/categories/c-plus-plus/atom.xml" rel="self"/>
+  <link href="http://jasonleaster.github.io/"/>
+  <updated>2015-09-14T21:46:52+08:00</updated>
+  <id>http://jasonleaster.github.io/</id>
+  <author>
+    <name><![CDATA[Jason Leaster]]></name>
+    <email><![CDATA[jasonleaster@163.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Memory Model of Objects in C++]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus/"/>
+    <updated>2015-06-13T19:48:42+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus</id>
+    <content type="html"><![CDATA[<p>In this blog, I assume that you have a basic background about C++ and know that there is a “monster” we call it as <code>virtual table</code> :)</p>
+
+<p>If there is virtual member function in your class’s definition, there will be a virtual table.</p>
+
+<p>Compiler will generate a pointer which’s name is <code>_vprt</code> and use this pointer to find the virtual table.</p>
+
+<!-- more -->
+
+
+<p>The function below there is very important for us to understand the C++ object model.</p>
+
+<pre><code class="C++">template&lt;class T&gt;
+unsigned long* get_element(T &amp;obj, int offset)
+{
+    return ((unsigned long*)*((unsigned long*)(&amp;obj))) + offset ;
+}
+</code></pre>
+
+<p>Function <code>get_element</code> take the reference of object which’s type is T(I used template technology) and <code>offset</code>.</p>
+
+<p>We get the address of this object by <code>&amp;obj</code> and then we cast it into pointer which point to unsigned long and then we dereference that pointer. Acctually, the pointer which we dereferenced in function <code>get_element</code> is the <code>_vprt</code>.</p>
+
+<p>After we get <code>_vprt</code>, we cast it into <code>unsigned long*</code> again and add <code>offset</code> to get others pointers in virtual table which contains all pointers that point to class virtual member functions.</p>
+
+<p>If we dereference the return value of this function, we will get the pointer which point to the begin of function. Fantastic :)</p>
+
+<h3>Single Object</h3>
+
+<p>First of all, let’s take a glance at this demo:</p>
+
+<pre><code class="C++">/*******************************************************************
+Programmer  :   EOF
+Date        :   2015.06.13
+File        :   meomory_model_for_single_object.cpp
+E-mail      :   jasonleaster@gmail.com
+
+ ******************************************************************/
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+typedef  void (*FUN) (void);
+
+class Base
+{
+    public:
+
+        int num;
+
+        Base():prv_data(100), num(100){ }
+
+        virtual void f(void){ cout &lt;&lt; " Base::f()" &lt;&lt; endl; }
+        virtual void g(void){ cout &lt;&lt; " Base::g()" &lt;&lt; endl; }
+        virtual void h(void){ cout &lt;&lt; " Base::h()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Base::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Base::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Base::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Base::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+        }
+
+    private:
+        /*
+            Private Data
+         */
+        int prv_data;
+};
+
+template&lt;class T&gt;
+unsigned long* get_element(T &amp;obj, int offset)
+{
+    return ((unsigned long*)*((unsigned long*)(&amp;obj))) + offset ;
+}
+
+int main()
+{
+    Base b;
+
+    b.show();
+
+    for(int i = 0; i &lt; 3; i++)
+    {
+        /*
+            The address which point virtual
+            function's implementation in virtual table
+        */
+        cout &lt;&lt; "Pointer in Virutal Table: " &lt;&lt; (unsigned long*)*get_element(b, i) &lt;&lt; endl;
+
+        /* Calling function by pointer in virtual table */
+        ((FUN)(*get_element(b, i))) ();
+    }
+
+    return 0;
+}
+</code></pre>
+
+<p>There are data member <code>num</code> and <code>prv_data</code> with different access label in <code>class base</code>. There also have virtual functions and normal member functions in this class. So … what’s the memory model of this class look like?</p>
+
+<p><img src="/images/img_for_2015_06_12/single_object_memory_model.png" alt="images" /></p>
+
+<p>The output of that demo:</p>
+
+<p><img src="/images/img_for_2015_06_12/output1.png" alt="images" /></p>
+
+<h3>Single Inheritance</h3>
+
+<p>The inheritance relationship between the base class and derived class :</p>
+
+<p><img src="/images/img_for_2015_06_12/single_inheritance_model.png" alt="images" /></p>
+
+<p>It’s single inheritance that base class must be only single type.</p>
+
+<pre><code class="C++">/*******************************************************************
+Programmer  :   EOF
+Date        :   2015.06.12
+File        :   virtual_function_model.cpp
+E-mail      :   jasonleaster@gmail.com
+
+ ******************************************************************/
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+typedef  void (*FUN) (void);
+
+class Base
+{
+    public:
+
+        int num;
+
+        Base():prv_data(100), num(100) { }
+
+        virtual void f(void){ cout &lt;&lt; " Base::f()" &lt;&lt; endl; }
+        virtual void g(void){ cout &lt;&lt; " Base::g()" &lt;&lt; endl; }
+        virtual void h(void){ cout &lt;&lt; " Base::h()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Base::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Base::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Base::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Base::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+        }
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Derived : public Base
+{
+    public:
+
+        int num;
+
+        Derived():num(200), prv_data(200) { }
+
+        virtual void x(void){ cout &lt;&lt; " Derived::x()" &lt;&lt; endl; }
+        virtual void y(void){ cout &lt;&lt; " Derived::y()" &lt;&lt; endl; }
+        virtual void f(void){ cout &lt;&lt; " Derived::f()" &lt;&lt; endl; }
+        virtual void g(void){ cout &lt;&lt; " Derived::g()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Derived::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Derived::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+
+            Base::show();
+        }
+
+    private:
+        int prv_data;
+};
+
+template&lt;class T&gt;
+unsigned long* get_element(T &amp;obj, int offset)
+{
+    return ((unsigned long*)*((unsigned long*)(&amp;obj))) + offset ;
+}
+
+int main()
+{
+    Base b;
+    Derived d;
+
+    b.show();
+
+    cout &lt;&lt; endl;
+
+    d.show();
+
+    cout &lt;&lt; endl;
+
+    for(int i = 0; i &lt; 3; i++)
+    {
+        /*
+            The address which point virtual
+            function's implementation in virtual table
+        */
+        cout &lt;&lt; "Pointer in Virutal Table: " &lt;&lt; (unsigned long*)*get_element(b, i) &lt;&lt; endl;
+
+        /* Calling function by pointer in virtual table */
+        ((FUN)(*get_element(b, i))) ();
+    }
+
+    cout &lt;&lt; endl;
+
+    for(int i = 0; i &lt; 5; i++)
+    {
+        cout &lt;&lt; "Pointer in Virutal Table: " &lt;&lt; (unsigned long*)*get_element(d, i) &lt;&lt; endl;
+        ((FUN)(*get_element(d, i))) ();
+    }
+
+    return 0;
+}
+</code></pre>
+
+<p>Memory Model:</p>
+
+<p><img src="/images/img_for_2015_06_12/single_inheritance_model.png" alt="images" /></p>
+
+<p>Output:</p>
+
+<p><img src="/images/img_for_2015_06_12/output2.png" alt="images" /></p>
+
+<p>We find that:</p>
+
+<ul>
+<li><p>The virtual table pointer _vprt is at the beginning of the object.</p></li>
+<li><p>Data member store into object and have nothing with the access label but according to the sequence of declaration.</p></li>
+<li><p>In single inheritance model, the virtual function wichi is re-implement will be update in all virtual table.</p></li>
+</ul>
+
+
+<h3>Multiply Inheritance</h3>
+
+<p>Now, you find that there is only one virtual table in our object under single inheritance situation. But … How about things going on with multiply inheritance(MI) ?</p>
+
+<p><img src="/images/img_for_2015_06_12/multiple_inheritance_model.png" alt="images" /></p>
+
+<p>Let’s go and test it.</p>
+
+<pre><code class="C++">/*******************************************************************
+Programmer  :   EOF
+Date        :   2015.06.13
+File        :   virtual_function_for_multiple_inheritance.cpp
+E-mail      :   jasonleaster@gmail.com
+
+ ******************************************************************/
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+typedef  void (*FUN) (void);
+
+class Base_1
+{
+    public:
+
+        int num;
+
+        Base_1():prv_data(100), num(100) { }
+
+        virtual void f(void){ cout &lt;&lt; " Base_1::f() \t"; }
+        virtual void g(void){ cout &lt;&lt; " Base_1::g() \t"; }
+        virtual void h(void){ cout &lt;&lt; " Base_1::h() \t"; }
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Base_2
+{
+    public:
+
+        int num;
+
+        Base_2():prv_data(200), num(200) { }
+
+        virtual void f(void){ cout &lt;&lt; " Base_2::f() \t"; }
+        virtual void x(void){ cout &lt;&lt; " Base_2::x() \t"; }
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Base_3
+{
+    public:
+
+        int num;
+
+        Base_3():prv_data(300), num(300) { }
+
+        virtual void g(void){ cout &lt;&lt; " Base_3::g() \t"; }
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Derived : public Base_3, public Base_2, public Base_1
+{
+    public:
+
+        int num;
+
+        Derived():num(42), prv_data(42) { }
+
+        virtual void y(void){ cout &lt;&lt; " Derived::y() \t" ; }
+
+        /*
+           Here we re-implement the virtual function @f().
+           Compiler will rewrite the virtual table
+         */
+        virtual void f(void){ cout &lt;&lt; " Derived::f() \t"; }
+
+
+    private:
+        int prv_data;
+};
+
+template&lt;class T&gt;
+unsigned long* get_element(T &amp;obj, int offset = 0, int vprt_offset = 0)
+{
+    return ((unsigned long*)*((unsigned long*)(&amp;obj) + vprt_offset)) + offset ;
+}
+
+template&lt;class T&gt;
+void call_vir_func(T &amp;obj, int offset = 0, int vprt_offset = 0)
+{
+    ((FUN)(*get_element(obj, offset, vprt_offset))) ();
+    cout &lt;&lt; "Address of function: " ;
+    cout &lt;&lt; (int*)*get_element(obj, offset, vprt_offset) &lt;&lt; endl;
+}
+
+int main()
+{
+    Derived d;
+
+    cout &lt;&lt; "Virtual Table of @Base_3 and @Derived:" &lt;&lt; endl;
+    call_vir_func(d, 0, 0);
+    call_vir_func(d, 1, 0);
+    call_vir_func(d, 2, 0);
+
+    cout &lt;&lt; "Virtual Table of @Base_2:" &lt;&lt; endl;
+
+    call_vir_func(d, 0, sizeof(Base_3)/8);
+    call_vir_func(d, 1, sizeof(Base_3)/8);
+
+    cout &lt;&lt; "Virtual Table of @Base_1:" &lt;&lt; endl;
+    call_vir_func(d, 0, sizeof(Base_3)/8 + sizeof(Base_2)/8);
+    call_vir_func(d, 1, sizeof(Base_3)/8 + sizeof(Base_2)/8);
+    call_vir_func(d, 2, sizeof(Base_3)/8 + sizeof(Base_2)/8);
+
+    return 0;
+}
+</code></pre>
+
+<p>Memory Model:</p>
+
+<p><img src="/images/img_for_2015_06_12/multiple_inheritance.png" alt="images" /></p>
+
+<p>Output:</p>
+
+<p><img src="/images/img_for_2015_06_12/output3.png" alt="images" /></p>
+
+<p>We can declare some conclusions that:</p>
+
+<ul>
+<li><p>Each base class have their own’s virtual table. Assume that The number of base class is N in multiple inheritance. The number of the virtual table is N-1.The virtual table of derived function will be combine into the first base class in the declaration queue of base class.</p></li>
+<li><p>The base virtual table will be update if the derived class rewrite implementation of virtual function in base class.</p></li>
+</ul>
+
+
+<h3>Repeat Inheritance</h3>
+
+<p><img src="/images/img_for_2015_06_12/repeat_inheritance_model.png" alt="images" /></p>
+
+<pre><code class="C++">/*******************************************************************
+Programmer  :   EOF
+Date        :   2015.06.14
+File        :   virtual_function_for_repreat_inheritance.cpp
+E-mail      :   jasonleaster@gmail.com
+
+ ******************************************************************/
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+typedef  void (*FUN) (void);
+
+class Base
+{
+    public:
+
+        int num;
+
+        Base():prv_data(100), num(100) { }
+
+        virtual void f(void){ cout &lt;&lt; " Base::f()" &lt;&lt; endl; }
+        virtual void g(void){ cout &lt;&lt; " Base::g()" &lt;&lt; endl; }
+        virtual void h(void){ cout &lt;&lt; " Base::h()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Base::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Base::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Base::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Base::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+        }
+
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Derived_1: public Base
+{
+    public:
+
+        int num;
+
+        Derived_1():prv_data(200), num(200) { }
+
+        virtual void f(void){ cout &lt;&lt; " Derived_1::f()" &lt;&lt; endl; }
+        virtual void x(void){ cout &lt;&lt; " Derived_1::x()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Derived_1::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Derived_1::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived_1::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived_1::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+
+            Base::show();
+        }
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Derived_2: public Base
+{
+    public:
+
+        int num;
+
+        Derived_2():prv_data(300), num(300) { }
+
+        virtual void g(void){ cout &lt;&lt; " Derived_2::g()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Derived_2::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Derived_2::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived_2::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived_2::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+
+            Base::show();
+        }
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Derived : public Derived_2, public Derived_1
+{
+    public:
+
+        int num;
+
+        Derived():num(42), prv_data(42) { }
+
+        virtual void y(void){ cout &lt;&lt; " Derived::y()" &lt;&lt; endl; }
+
+        /*
+           Here we re-implement the virtual function @f().
+           Compiler will rewrite the virtual table
+         */
+        virtual void f(void){ cout &lt;&lt; " Derived::f()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Derived::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Derived::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+
+            Derived_1::show();
+            Derived_2::show();
+        }
+
+
+    private:
+        int prv_data;
+};
+
+template&lt;class T&gt;
+unsigned long* get_element(T &amp;obj, int offset = 0, int vprt_offset = 0)
+{
+    return ((unsigned long*)*((unsigned long*)(&amp;obj) + vprt_offset)) + offset ;
+}
+
+template&lt;class T&gt;
+void call_vir_func(T &amp;obj, int offset = 0, int vprt_offset = 0)
+{
+    ((FUN)(*get_element(obj, offset, vprt_offset))) ();
+    cout &lt;&lt; "\t Address of function: " ;
+    cout &lt;&lt; (int*)*get_element(obj, offset, vprt_offset) &lt;&lt; endl;
+}
+
+int main()
+{
+    Derived d;
+
+    cout &lt;&lt; "Virtual Table of @Derived, @Derived_2 and @Base:" &lt;&lt; endl;
+    call_vir_func(d, 0, 0);
+    call_vir_func(d, 1, 0);
+    call_vir_func(d, 2, 0);
+    call_vir_func(d, 3, 0);
+
+
+    cout &lt;&lt; "Virtual Table of @Derived_1 and @Base:" &lt;&lt; endl;
+    call_vir_func(d, 0, sizeof(Derived_2)/8);
+    call_vir_func(d, 1, sizeof(Derived_2)/8);
+    call_vir_func(d, 2, sizeof(Derived_2)/8);
+    call_vir_func(d, 3, sizeof(Derived_2)/8);
+
+    d.show();
+    return 0;
+}
+</code></pre>
+
+<p>Memory Model:</p>
+
+<p><img src="/images/img_for_2015_06_12/repeat_inheritance.png" alt="images" /></p>
+
+<p>You find that The base object was inherited again and again Output:</p>
+
+<p><img src="/images/img_for_2015_06_12/output4.png" alt="images" /></p>
+
+<p>It’s may not what we want that the base class is inherited repeatedly. So C++ use the <code>virtual base</code> technology to solve this problem :)</p>
+
+<h3>Diamond Inheritance</h3>
+
+<p><img src="/images/img_for_2015_06_12/diamond_inheritance_model.png" alt="images" /></p>
+
+<pre><code class="C++">/*******************************************************************
+Programmer  :   EOF
+Date        :   2015.06.14
+File        :   virtual_function_for_diamond_inheritance.cpp
+E-mail      :   jasonleaster@gmail.com
+
+ ******************************************************************/
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+typedef  void (*FUN) (void);
+
+class Base
+{
+    public:
+
+        int num;
+
+        Base():prv_data(100), num(100) { }
+
+        virtual void f(void){ cout &lt;&lt; " Base::f()" &lt;&lt; endl; }
+        virtual void g(void){ cout &lt;&lt; " Base::g()" &lt;&lt; endl; }
+        virtual void h(void){ cout &lt;&lt; " Base::h()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Base::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Base::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Base::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Base::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+        }
+
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Derived_1: virtual public Base
+{
+    public:
+
+        int num;
+
+        Derived_1():prv_data(200), num(200) { }
+
+        virtual void f(void){ cout &lt;&lt; " Derived_1::f()" &lt;&lt; endl; }
+        virtual void x(void){ cout &lt;&lt; " Derived_1::x()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Derived_1::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Derived_1::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived_1::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived_1::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+
+            Base::show();
+        }
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Derived_2: virtual public Base
+{
+    public:
+
+        int num;
+
+        Derived_2():prv_data(300), num(300) { }
+
+        virtual void g(void){ cout &lt;&lt; " Derived_2::g()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Derived_2::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Derived_2::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived_2::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived_2::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+
+            Base::show();
+        }
+
+    private:
+        /*
+           Private  Data
+         */
+        int prv_data;
+
+};
+
+class Derived : public Derived_2, public Derived_1
+{
+    public:
+
+        int num;
+
+        Derived():num(42), prv_data(42) { }
+
+        virtual void y(void){ cout &lt;&lt; " Derived::y()" &lt;&lt; endl; }
+
+        /*
+           Here we re-implement the virtual function @f().
+           Compiler will rewrite the virtual table
+         */
+        virtual void f(void){ cout &lt;&lt; " Derived::f()" &lt;&lt; endl; }
+
+        void show()
+        {
+            cout &lt;&lt; "Derived::num "        &lt;&lt; num &lt;&lt; endl;
+            cout &lt;&lt; "Derived::prv_data "   &lt;&lt; prv_data &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived::num "       &lt;&lt; &amp;num &lt;&lt; endl;
+            cout &lt;&lt; "&amp;Derived::prv_data "  &lt;&lt; &amp;prv_data &lt;&lt; endl;
+
+            Derived_1::show();
+            Derived_2::show();
+        }
+
+
+    private:
+        int prv_data;
+};
+
+template&lt;class T&gt;
+unsigned long* get_element(T &amp;obj, int offset = 0, int vprt_offset = 0)
+{
+    return ((unsigned long*)*((unsigned long*)(&amp;obj) + vprt_offset)) + offset ;
+}
+
+template&lt;class T&gt;
+void call_vir_func(T &amp;obj, int offset = 0, int vprt_offset = 0)
+{
+    ((FUN)(*get_element(obj, offset, vprt_offset))) ();
+    cout &lt;&lt; "\t Address of function: " ;
+    cout &lt;&lt; (int*)*get_element(obj, offset, vprt_offset) &lt;&lt; endl;
+}
+
+int main()
+{
+    Derived d;
+//    d.show();
+
+    cout &lt;&lt; "Virtual Table of @Derived::Derived_2" &lt;&lt; endl;
+    call_vir_func(d, 0, 0);
+    call_vir_func(d, 1, 0);
+    call_vir_func(d, 2, 0);
+
+    cout &lt;&lt; "Virtual Table of @Derived::Derived_1" &lt;&lt; endl;
+    call_vir_func(d, 0, (sizeof(Derived_2) - sizeof(Base))/8);
+    call_vir_func(d, 1, (sizeof(Derived_2) - sizeof(Base))/8);
+/*
+    cout &lt;&lt; (int*)&amp;d &lt;&lt; endl;
+    cout &lt;&lt; (int*)&amp;d.Derived_2::num &lt;&lt; endl;
+    cout &lt;&lt; (int*)&amp;d.Derived_1::num &lt;&lt; endl;
+    cout &lt;&lt; (int*)&amp;d.num &lt;&lt; endl;
+    cout &lt;&lt; (int*)&amp;d.Base::num &lt;&lt; endl;
+*/
+    cout &lt;&lt; "Virtual Table of @Derived::Derived_2::Base" &lt;&lt; endl;
+
+    call_vir_func(d, 0, (sizeof(Derived) - sizeof(Base))/8);
+    call_vir_func(d, 1, (sizeof(Derived) - sizeof(Base))/8);
+    call_vir_func(d, 2, (sizeof(Derived) - sizeof(Base))/8);
+
+    return 0;
+}
+</code></pre>
+
+<p>It’s a hard time to draw this picture. But thank god… I make it.</p>
+
+<p>Memory Model:</p>
+
+<p><img src="/images/img_for_2015_06_12/diamond_inheritance.png" alt="images" /></p>
+
+<p>Output:</p>
+
+<p><img src="/images/img_for_2015_06_12/output5.png" alt="images" /></p>
+
+<p>ATTENTION: <strong>Every class in C++ only have ONE virtual table, different objects of the same class will share the same virtual table of that class!</strong></p>
+
+<hr />
+
+<p>Photo by Jason Leaster images</p>
+
+<p><img src="/images/img_for_2015_06_12/end.png" alt="images" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Learn to Design a Container]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/05/25/learn-to-design-a-container/"/>
+    <updated>2015-05-25T19:14:38+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/05/25/learn-to-design-a-container</id>
+    <content type="html"><![CDATA[<p>Container is a collection which help us to store data of different types of data structure.</p>
+
+<p>There are only two types of container in C++/C :</p>
+
+<ul>
+<li>array</li>
+<li>structure</li>
+</ul>
+
+
+<p>C++ could provide more container but it didn’t.</p>
+
+<p><strong>Give a man a fish and you feed him for a day; teach a man to fish and you feed him for a lifetime; knowledge is the best charity;</strong></p>
+
+<p>:)</p>
+
+<!-- more -->
+
+
+<p>Here we are gona to design a container which is like array but not the same.</p>
+
+<p><img src="/images/img_for_2015_05_24/arch.png" alt="images" /></p>
+
+<p>You could find the implementation of this container on my github.</p>
+
+<p><a href="https://github.com/jasonleaster/Rumination_On_C_plus_plus/blob/master/chapter_13/con_array.h">Our Container Implementation</a></p>
+
+<p>You could test out container by this program.</p>
+
+<pre><code class="C++">#include "con_array.h"
+
+int main()
+{
+    Array&lt;int&gt; *ap = new Array&lt;int&gt; (10);
+    Pointer&lt;int&gt; p(*ap, 5);
+    //delete ap;
+
+    for (int i = 0; i &lt; 10; i++)
+    {
+        (*ap)[i] = i;
+    }
+
+    *p = 42;
+
+    cout &lt;&lt; "The size of Array " &lt;&lt; ap-&gt;size() &lt;&lt;endl;
+    cout &lt;&lt; (*ap) &lt;&lt; endl;
+
+    ap-&gt;resize(20);
+    cout &lt;&lt; "After resize(), the size of Array " &lt;&lt; ap-&gt;size() &lt;&lt;endl;
+    cout &lt;&lt; (*ap) &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+
+<p>You could also see the output beblow there:</p>
+
+<p><img src="/images/img_for_2015_05_24/output1.png" alt="images" /></p>
+
+<hr />
+
+<p>Photo by Jason Leaster in ChangDe, China</p>
+
+<p><img src="/images/img_for_2015_05_24/cherry_blossom.png" alt="images" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[An Exercise of C++]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/05/24/an-exercise-of-c-plus-plus/"/>
+    <updated>2015-05-24T13:57:36+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/05/24/an-exercise-of-c-plus-plus</id>
+    <content type="html"><![CDATA[<p>In &lt;&lt; The C++ Programming Language >> , there is a exercise for learner who is studying C++. It’s that student should write a program in C++ to manipulate “character picture”, something like this.</p>
+
+<p><img src="/images/img_for_2015_05_24/output.png" alt="images" /></p>
+
+<!-- more -->
+
+
+<p>To abstract that picture, we use this <code>class Picture</code> in the header file.</p>
+
+<pre><code class="C++">/*******************************************************
+Programmer  :   EOF
+Date        :   2015.05.22
+File        :   picture.h
+E-mail      :   jasonleaster@gmail.com
+
+Description:
+    Here is a demo in &lt;&lt; Ruminations on C++ &gt;&gt;.
+
+*******************************************************/
+
+#include &lt;iostream&gt;
+#include &lt;string.h&gt;
+
+using namespace std;
+
+class Picture
+{
+    /*
+       All implementation of member function and friend functions
+       could be found in "picture.cpp"
+     */
+    friend ostream&amp; operator&lt;&lt;(ostream&amp;, const Picture&amp;);
+    friend Picture frame(const Picture&amp;);
+    friend Picture operator &amp; (const Picture&amp;, const Picture&amp;);
+    friend Picture operator | (const Picture&amp;, const Picture&amp;);
+
+    public:
+        Picture(): height(0), width(0), data(0) { }
+        Picture(const char* const*, int);
+        Picture(const Picture&amp;);
+        ~Picture() { delete [] data; }
+
+        Picture&amp; operator = (const Picture&amp;);
+
+    private:
+        int height;
+        int width;
+
+        char* data;
+        void copyblock(int, int, const Picture&amp;);
+
+        /*
+           This function is so cool! Don't you think so? :)
+         */
+        char&amp; position(int row, int col)
+        {
+            return data[row * width + col];
+        }
+
+        char position(int row, int col) const
+        {
+            return data[row * width + col];
+        }
+
+        void clear(int, int, int, int);
+        void init(int, int);
+        static int max(int, int);
+};
+</code></pre>
+
+<p>Here we should support three different operation to our user.</p>
+
+<ul>
+<li>Adding frame for picture.</li>
+<li>Connecting picture vertically</li>
+<li>Connecting picture horizontal</li>
+</ul>
+
+
+<p>Aha~ We support that operation by provide there interfaces.</p>
+
+<pre><code class="C++">Picture frame(const Picture&amp; p);
+Picture operator &amp; (const Picture&amp; p, const Picture&amp; q);
+Picture operator | (const Picture&amp; p, const Picture&amp; q);
+</code></pre>
+
+<p>We could test our implementation by this test program :)</p>
+
+<pre><code class="C++">#include "picture.h"
+
+using namespace std;
+
+char* init[] = {"Paris", "in the", "Spring"};
+
+int main()
+{
+    Picture p(init, 3);
+    cout &lt;&lt; p &lt;&lt; endl;
+
+    p = frame(p);
+    cout &lt;&lt; p &lt;&lt; endl;
+
+    p = p &amp; p;
+    cout &lt;&lt; p &lt;&lt; endl;
+
+
+    p = p | p;
+    cout &lt;&lt; p &lt;&lt; endl;
+
+    Picture q(init,2);
+
+    cout &lt;&lt; q &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+
+<p>Here is my implementation: file: picture.cpp</p>
+
+<pre><code class="C++">/***************************************************
+    Programmer  :   EOF
+    File        :   picture.cpp
+    Date        :   2015.05.24
+    E-mail      :   jasonleaster@gmail.com
+
+ ***************************************************/
+#include "picture.h"
+
+/*
+   public functions of class @Picture
+ */
+Picture::Picture(const char* const* array, int n)
+{
+    int w = 0;
+    int i = 0;
+
+    for ( i = 0; i &lt; n; i++)
+    {
+        w = Picture::max(w, strlen(array[i]));
+    }
+
+    init(n, w);
+
+    for (i = 0; i &lt; n; i++)
+    {
+        const char* src = array[i];
+        int len = strlen(src);
+        int j = 0;
+
+        while(j &lt; len)
+        {
+            position(i, j) = src[j];
+            j++;
+        }
+
+        while(j &lt; width)
+        {
+            position(i, j) = ' ';
+            j++;
+        }
+    }
+}
+
+Picture::Picture(const Picture&amp; p):
+    height(p.height), width(p.width),
+    data(new char[p.height * p.width])
+{
+    copyblock(0, 0, p);
+}
+
+Picture&amp; Picture::operator=(const Picture&amp; p)
+{
+    if(this != &amp;p)
+    {
+        delete [] data;
+        init(p.height, p.width);
+        copyblock(0, 0, p);
+    }
+
+    return *this;
+}
+
+/*
+    Private functions
+ */
+void Picture::copyblock(int row, int col, const Picture&amp; p)
+{
+    for (int i = 0; i &lt; p.height; i++)
+    {
+        for(int j = 0; j &lt; p.width; j++)
+        {
+            position(i + row, j + col) = p.position(i, j);
+        }
+    }
+}
+
+void Picture::clear(int r1, int c1, int r2, int c2)
+{
+    for(int r = r1; r &lt; r2; r++)
+    {
+        for(int c = c1; c &lt; c2; c++)
+        {
+            position(r, c) = ' ';
+        }
+    }
+}
+
+void Picture::init(int h, int w)
+{
+    height = h;
+    width  = w;
+    data   = new char[height * width];
+}
+
+int Picture::max(int m, int n)
+{
+    return m &gt; n ? m : n;
+}
+/*
+   Friend functions.
+ */
+ostream&amp; operator&lt;&lt;(ostream&amp; o, const Picture&amp; p)
+{
+    for (int i = 0; i &lt; p.height; i++)
+    {
+        for (int j = 0; j &lt; p.width; j++)
+        {
+            o &lt;&lt; p.position(i, j);
+        }
+
+        o &lt;&lt; endl;
+    }
+
+    return o;
+}
+
+/*
+    This function @frame() will help us to add frame 
+   into the old picture which was referenced by @p.
+ */
+Picture frame(const Picture&amp; p)
+{
+    Picture r;
+
+    r.init(p.height + 2, p.width + 2);
+
+    for(int i = 1; i &lt; r.height - 1; i++)
+    {
+        r.position(i, 0) = '|';
+        r.position(i, r.width - 1) = '|';
+    }
+
+    for( int j = 1; j &lt; r.width; j++)
+    {
+        r.position(0, j) = '-';
+        r.position(r.height - 1, j) = '-';
+    }
+
+    r.position(0, 0) = '+';
+    r.position(0, r.width - 1) = '+';
+    r.position(r.height - 1, 0) = '+';
+    r.position(r.height - 1, r.width - 1) = '+';
+
+    r.copyblock(1, 1, p);
+    return r;
+}
+
+/*
+   We redefine the @&amp; operator to connect two picture 
+   @p and @q vertically.
+
+   The height of the new picture will be @p.height + @q.height.
+   The width of the new one will be max value between 
+   @p.width and @q.width
+
+   We also should clear the new empty region for alignment,
+   if the size of the inputed two pictures are different.
+
+ */
+Picture operator &amp; (const Picture&amp; p, const Picture&amp; q)
+{
+    Picture r;
+
+    r.init(p.height + q.height, Picture::max(p.width, q.width));
+    r.clear(0, p.width,  p.height, r.width);
+    r.clear(p.height, q.width, r.height, r.width);
+
+    r.copyblock(0, 0, p);
+    r.copyblock(p.height, 0, q);
+
+    return r;
+}
+
+/*
+   Operator @| is like @&amp; but different.
+   This operation connect two pictures @p and @q horizonal.
+ */
+Picture operator | (const Picture&amp; p, const Picture&amp; q)
+{
+    Picture r;
+
+    r.init(Picture::max(p.height, q.height),
+            p.width + q.width);
+
+    r.clear(p.height, 0, r.height, p.width);
+    r.clear(q.height, p.width, r.height, r.width);
+
+    r.copyblock(0, 0, p);
+    r.copyblock(0, p.width, q);
+
+    return r;
+}
+</code></pre>
+
+<p>You know that that solution is not hard and is easy for us to understand. But there is a weakpoint that we lose the basic intern information of the old picture which we used to connect and create a new picture.</p>
+
+<p><strong>we can’t seperate the real frame and pure picture after we finished our @frame operation.</strong></p>
+
+<p>The same problem exist in others operation. We lose information which may be very useful for us in future.</p>
+
+<p>So… Refactoring is needed.</p>
+
+<h3>The second solution</h3>
+
+<p>The header file which contains the class that is used for abstrcation.</p>
+
+<pre><code class="C++">/***********************************************
+    Programmer  :   EOF
+    Date        :   2015.05.22
+    File        :   picture.h
+    E-mail      :   jasonleaster@gmail.com
+
+ ***********************************************/
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;string.h&gt;
+
+using namespace std;
+
+class Picture;
+
+class P_Node;// base class
+class String_Pic;
+class Frame_Pic;
+class VCat_Pic;
+class HCat_Pic;
+
+
+class Picture
+{
+    friend ostream&amp; operator&lt;&lt;(ostream&amp;, const Picture&amp;);
+    friend Picture frame(const Picture&amp;);
+    friend Picture operator&amp; (const Picture&amp;, const Picture&amp;);
+    friend Picture operator| (const Picture&amp;, const Picture&amp;);
+
+    public:
+        Picture():p(0) {} ;
+        Picture(const char* const*, int);
+        Picture(const Picture&amp;);
+        ~Picture();
+
+        Picture&amp; operator=(const Picture&amp;);
+
+        friend class String_Pic;
+        friend class Frame_Pic;
+        friend class HCat_Pic;
+        friend class VCat_Pic;
+
+    private:
+        P_Node *p;
+
+        Picture(P_Node* p_node) : p(p_node) { };
+
+        int height() const;
+        int width() const;
+        void display(ostream&amp;, int, int) const;
+};
+
+class P_Node
+{
+    friend class Picture;
+
+    protected:
+        P_Node(): use(1) { };
+
+        virtual int height() const = 0;
+        virtual int width() const = 0;
+        virtual void display(ostream&amp;, int, int) const = 0;
+        virtual ~P_Node() { };
+
+        int max(int x, int y) const;
+
+    private:
+        int use;
+};
+
+class String_Pic: public P_Node
+{
+    friend class Picture;
+
+    public:
+        String_Pic(const char* const*, int);
+        ~String_Pic();
+
+        int height() const;
+        int width() const;
+        void display(ostream&amp;, int, int) const;
+
+    private:
+        char**data;
+        int size;
+};
+
+class Frame_Pic: public P_Node
+{
+    friend Picture frame(const Picture&amp;);
+    public:
+        Frame_Pic(const Picture&amp;);
+
+        int height() const;
+        int width() const;
+        void display(ostream&amp;, int, int) const;
+
+    private:
+        Picture p;
+};
+
+class VCat_Pic: public P_Node
+{
+    friend Picture operator&amp; (const Picture&amp;, const Picture&amp;);
+
+    public:
+        VCat_Pic(const Picture&amp;, const Picture&amp;);
+
+        int height() const;
+        int width() const;
+        void display(ostream&amp;, int, int) const;
+
+    private:
+        Picture top, bottom;
+};
+
+class HCat_Pic: public P_Node
+{
+    friend Picture operator | (const Picture&amp;, const Picture&amp;);
+    public:
+        HCat_Pic(const Picture&amp;, const Picture&amp;);
+
+        int height() const;
+        int width() const;
+        void display(ostream&amp;, int, int) const;
+
+    private:
+        Picture left, right;
+};
+</code></pre>
+
+<p>Member functions are all implemented in this file “picture.cpp”.</p>
+
+<pre><code class="C++">/********************************************************
+    Programmer  :   EOF
+    File        :   picture.cpp
+    Date        :   2015.05.24
+    E-mail      :   jasonleaster@gmail.com
+
+ *******************************************************/
+
+#include "picture.h"
+
+/*
+   Member function of @class-P_Node
+ */
+int P_Node::max(int x, int y) const
+{
+    return x &gt; y ? x : y;
+}
+
+/*
+   Member function of @class-Picture
+ */
+Picture::Picture(const char* const *str, int n):
+        p(new String_Pic(str, n))
+{
+}
+
+Picture::Picture(const Picture&amp; orig):p(orig.p)
+{
+    orig.p-&gt;use++;
+}
+
+Picture::~Picture()
+{
+    if(--p-&gt;use == 0)
+    {
+        delete p;
+    }
+}
+
+Picture&amp;
+Picture::operator=(const Picture&amp; orig)
+{
+    orig.p-&gt;use++;
+    if(--p-&gt;use == 0)
+    {
+        delete p;
+    }
+
+    p = orig.p;
+
+    return *this;
+}
+
+int Picture::height() const
+{
+    return p-&gt;height();
+}
+
+int Picture::width() const
+{
+    return p-&gt;width();
+}
+
+void Picture::display(ostream&amp; o, int x, int y) const
+{
+    p-&gt;display(o, x, y);
+}
+
+ostream&amp;
+operator &lt;&lt; (ostream&amp; os, const Picture&amp; p)
+{
+    int ht = p.height();
+    int wd = p.width();
+
+    for(int i = 0; i &lt; ht; i++)
+    {
+        p.display(os, i, wd);
+        os &lt;&lt; endl;
+    }
+
+    return os;
+}
+
+
+/*
+   Member function of @class-String_Pic
+ */
+String_Pic::String_Pic(const char* const *p, int n):
+    data(new char* [n]), size(n)
+{
+    for(int i = 0; i &lt; n; i++)
+    {
+        data[i] = new char[strlen(p[i] + 1)];
+        strcpy(data[i], p[i]);
+    }
+}
+
+String_Pic::~String_Pic()
+{
+    for(int i = 0; i &lt; size; i++)
+    {
+        delete [] data[i];
+    }
+    delete [] data;
+}
+
+int String_Pic::height() const
+{
+    return size;
+}
+
+int String_Pic::width() const
+{
+    int n = 0;
+
+    for(int i = 0; i &lt; size; i++)
+    {
+        n = max(n, strlen(data[i]));
+    }
+    return n;
+}
+
+static void pad(ostream&amp; os, int x, int y)
+{
+    for (int i = x; i &lt; y; i++)
+    {
+        os &lt;&lt; " ";
+    }
+}
+
+void String_Pic::display(ostream&amp; os, int row, int width) const
+{
+    int start = 0;
+
+    if(row &gt;= 0 &amp;&amp; row &lt; height())
+    {
+        os &lt;&lt; data[row];
+        start = strlen(data[row]);
+    }
+
+    pad(os, start, width);
+}
+
+
+/*
+   Member function of @class-Frame_Pic
+ */
+Frame_Pic::Frame_Pic(const Picture&amp; pic):
+    p(pic)
+{ }
+
+int Frame_Pic::height() const
+{
+    return p.height() + 2;
+}
+
+int Frame_Pic::width() const
+{
+    return p.width() + 2;
+}
+
+void Frame_Pic::display(ostream&amp; os, int row, int wd) const
+{
+    if(row &lt; 0 || row &gt;= height())
+    {
+        //run-across ??
+        pad(os, 0, wd);
+    }
+    else
+    {
+        if(row == 0 || row == height() -1)
+        {
+            os &lt;&lt; "+";
+            int i = p.width();
+            while(--i &gt;= 0)
+            {
+                os &lt;&lt; "-";
+            }
+
+            os &lt;&lt; "+";
+        }
+        else
+        {
+            os &lt;&lt; "|";
+            p.display(os, row - 1, p.width());
+            os &lt;&lt; "|";
+        }
+        pad(os, width(), wd);
+    }
+}
+
+Picture frame(const Picture&amp; pic)
+{
+    return new Frame_Pic(pic);
+}
+
+/*
+   Member functions of @class-VCat_Pic
+ */
+VCat_Pic::VCat_Pic(const Picture&amp; t, const Picture&amp; b):
+        top(t), bottom(b)
+{ }
+
+int VCat_Pic::height() const
+{
+    return top.height() + bottom.height();
+}
+
+int VCat_Pic::width() const
+{
+    return max(top.width(), bottom.width());
+}
+
+void VCat_Pic::display(ostream&amp; os, int row, int wd) const
+{
+    if(row &gt;= 0 &amp;&amp; row &lt; top.height())
+    {
+        top.display(os, row, wd);
+    }
+    else if(row &lt; top.height() + bottom.height())
+    {
+        bottom.display(os, row-top.height(), wd);
+    }
+    else
+    {
+        pad(os, 0, wd);
+    }
+}
+
+Picture operator &amp; (const Picture&amp; t, const Picture&amp; b)
+{
+    return new VCat_Pic(t, b);
+}
+
+/*
+   Member functions of @class-HCat_Pic
+ */
+
+HCat_Pic::HCat_Pic(const Picture&amp; l, const Picture&amp; r): left(l), right(r) {}
+
+int HCat_Pic::height() const
+{
+    int n = max(left.height(), right.height());
+    return n;
+}
+
+int HCat_Pic::width() const
+{
+    return left.width() + right.width();
+}
+
+void HCat_Pic::display(ostream&amp; os, int row, int wd) const
+{
+    left.display(os, row, left.width());
+    right.display(os, row, right.width());
+    pad(os, width(), wd);
+}
+
+Picture operator | (const Picture&amp; l, const Picture&amp; r)
+{
+    return new HCat_Pic(l, r);
+}
+</code></pre>
+
+<p>You could use this test program to test our solution :)</p>
+
+<pre><code class="C++">#include "picture.h"
+
+using namespace std;
+
+char* init[] = {"Paris", "in the", "Spring"};
+
+int main()
+{
+    Picture p(init, 3);
+    cout &lt;&lt; p &lt;&lt; endl;
+
+    cout &lt;&lt; frame(p) &lt;&lt; endl;
+
+    cout &lt;&lt; (frame(p) | frame(p)) &lt;&lt; endl;
+
+    cout &lt;&lt; (frame(p) &amp; frame(p)) &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+
+<hr />
+
+<p>Photo by YanZixin in Changde, China</p>
+
+<p><img src="/images/img_for_2015_05_24/tree.png" alt="images" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[An Example for OOP in C++]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/05/19/an-example-for-oop-in-c-plus-plus/"/>
+    <updated>2015-05-19T23:13:08+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/05/19/an-example-for-oop-in-c-plus-plus</id>
+    <content type="html"><![CDATA[<p>Generally, OOP( Object Oriented Progarmming) have three important elements:</p>
+
+<ul>
+<li>Abstraction of data</li>
+<li>Inheritance</li>
+<li>Dynamic Binding</li>
+</ul>
+
+
+<p>Now, there is a demo for how to build an arithmetic expression-tree.</p>
+
+<p><img src="/images/img_for_2015_05_19/exp_tree.png" alt="images" /></p>
+
+<!-- more -->
+
+
+<p>We want to build a node-tree like the tree in that picture to print a correct arithmetic expression.</p>
+
+<p>Here you could see the relationship between the classes we used in our demo.</p>
+
+<p><img src="/images/img_for_2015_05_19/class_relationship.png" alt="images" /></p>
+
+<p>You know that the three classes <code>Int_node</code>, <code>Unary_node</code> and <code>Binary_node</code> are all inherit from the base class <code>Expr_node</code>.</p>
+
+<p>Let’s look at the simple unary arithmetic expression <code>(-5)</code>. In this expression, there is only one operand <code>-</code> and one integer <code>5</code>. In expression <code>( 3 + 4)</code>, there are two integer and one operand.</p>
+
+<p>We could find that there are only three different expression in representation of arithmetic expression. They are:</p>
+
+<ul>
+<li>Integer Expression</li>
+<li>Unary Expression</li>
+<li>Binary Expression</li>
+</ul>
+
+
+<p>So, we find the common attributes on the three different types of expression and use a base-class <code>Expr_node</code> to represent this attribute.</p>
+
+<p>If you have background in class handle, you may notice that <code>class Expr</code> is the handle for <code>Expr_node</code>.</p>
+
+<p>We don’t need real objects of <code>class Expr_node</code>. What we need is the classes which inherit from that base-class. The meaning of the base-class is to provide the public interface.</p>
+
+<pre><code class="C++">/*
+    Programmer  :   EOF
+    Date        :   2015.05.19
+    File        :   exp_node.cpp
+    E-mail      :   jasonleaster@gmail.com
+
+ */
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+
+/*
+   This @Expr_node is the base-class.
+ */
+class Expr_node
+{
+    friend ostream&amp; operator &lt;&lt; (ostream&amp;, const Expr_node&amp;);
+    friend class Expr;
+
+    int use;// @use is a counter to avoid copying objects.
+
+    //protected:
+    public:
+        Expr_node(): use(1) { }
+        virtual void print(ostream&amp;) const = 0;
+        virtual ~Expr_node() { }
+};
+
+
+class Expr
+{
+    friend ostream&amp; operator&lt;&lt;(ostream&amp;, const Expr&amp;);
+    Expr_node* p;
+
+    public:
+        Expr():p(NULL){}
+        Expr(int);
+        Expr(const string&amp;, Expr);
+        Expr(const string&amp;, Expr, Expr);
+        Expr(const Expr&amp; t) { p = t.p; ++p-&gt;use; };
+
+        Expr&amp; operator=(const Expr&amp;);
+
+        ~Expr() { if(--p-&gt;use == 0) delete p;}
+};
+
+ostream&amp;
+operator&lt;&lt;(ostream&amp; o, const Expr_node&amp; e)
+{
+    e.print(o);
+    return o;
+}
+
+Expr&amp;
+Expr::operator=(const Expr&amp; rhs)
+{
+    rhs.p-&gt;use++;
+    if(--p-&gt;use == 0)
+    {
+        delete p;
+    }
+
+    p = rhs.p;
+    return *this;
+}
+
+ostream&amp;
+operator&lt;&lt;(ostream&amp; o, const Expr&amp; t)
+{
+    t.p-&gt;print(o);
+    return o;
+}
+
+class Int_node: public Expr_node
+{
+    friend class Expr;
+
+    int n;
+
+    Int_node(int k): n(k) { }
+    void print(ostream&amp; o) const { o &lt;&lt; n;}
+};
+
+class Unary_node: public Expr_node
+{
+    friend class Expr;
+    string op;
+    Expr opnd;
+    Unary_node(const string&amp; a, Expr b):
+        op(a), opnd(b) { }
+
+    void print(ostream&amp; o) const
+    {
+        o &lt;&lt; "(" &lt;&lt; op &lt;&lt; opnd &lt;&lt; ")";
+    }
+};
+
+class Binary_node: public Expr_node
+{
+    friend class Expr;
+    string op;
+
+    Expr left;
+    Expr right;
+
+    Binary_node(const string&amp; a, Expr b, Expr c):
+        op(a), left(b), right(c) { }
+
+    void print(ostream&amp; o) const
+    {
+        o &lt;&lt; "(" &lt;&lt; left &lt;&lt; op &lt;&lt; right &lt;&lt; ")";
+    }
+};
+
+Expr::Expr(int n)
+{
+    p = new Int_node(n);
+}
+
+Expr::Expr(const string&amp; op, Expr t)
+{
+    p = new Unary_node(op, t);
+}
+
+Expr::Expr(const string&amp; op, Expr left, Expr right)
+{
+    p = new Binary_node(op, left, right);
+}
+
+
+int main()
+{
+    Expr t = Expr("*", Expr("-", 5), Expr("+", 3, 4));
+    cout &lt;&lt; t &lt;&lt; endl;
+    t = Expr("*", t, t);
+    cout &lt;&lt; t &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+
+<p>You could run this program and will get the output like this one.</p>
+
+<p><img src="/images/img_for_2015_05_19/output1.png" alt="images" /></p>
+
+<h3>More Opeartion</h3>
+
+<p>We could evaluate the expression and add more types of node.</p>
+
+<p>Here is the implementation. That’s cool!</p>
+
+<pre><code class="C++">/*
+    Programmer  :   EOF
+    Date        :   2015.05.19
+    File        :   8.5.cpp
+    E-mail      :   jasonleaster@gmail.com
+
+ */
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+
+/*
+   This @Expr_node is the base-class.
+ */
+class Expr_node
+{
+    friend ostream&amp; operator &lt;&lt; (ostream&amp;, const Expr_node&amp;);
+    friend class Expr;
+
+    int use;// @use is a counter to avoid copying objects.
+
+    protected:
+        Expr_node(): use(1) { }
+        virtual void print(ostream&amp;) const = 0;
+        virtual ~Expr_node() { }
+        virtual int eval() const = 0;
+};
+
+
+class Expr
+{
+    friend ostream&amp; operator&lt;&lt;(ostream&amp;, const Expr&amp;);
+    Expr_node* p;
+
+    public:
+        Expr():p(NULL){}
+        Expr(int);
+        Expr(const string&amp;, Expr);
+        Expr(const string&amp;, Expr, Expr);
+        Expr(const string&amp;, Expr, Expr, Expr);
+        Expr(const Expr&amp; t) { p = t.p; ++p-&gt;use; };
+
+        Expr&amp; operator=(const Expr&amp;);
+
+        ~Expr() { if(--p-&gt;use == 0) delete p;}
+
+        int eval() const {return p-&gt;eval();}
+};
+
+ostream&amp;
+operator&lt;&lt;(ostream&amp; o, const Expr_node&amp; e)
+{
+    e.print(o);
+    return o;
+}
+
+Expr&amp;
+Expr::operator=(const Expr&amp; rhs)
+{
+    rhs.p-&gt;use++;
+    if(--p-&gt;use == 0)
+    {
+        delete p;
+    }
+
+    p = rhs.p;
+    return *this;
+}
+
+ostream&amp;
+operator&lt;&lt;(ostream&amp; o, const Expr&amp; t)
+{
+    o &lt;&lt; (*t.p);
+    return o;
+}
+
+class Int_node: public Expr_node
+{
+    friend class Expr;
+
+    int n;
+
+    Int_node(int k): n(k) { }
+    void print(ostream&amp; o) const { o &lt;&lt; n;}
+    int eval() const { return n;}
+};
+
+class Unary_node: public Expr_node
+{
+    friend class Expr;
+    string op;
+    Expr opnd;
+    Unary_node(const string&amp; a, Expr b):
+        op(a), opnd(b) { }
+
+    void print(ostream&amp; o) const
+    {
+        o &lt;&lt; "(" &lt;&lt; op &lt;&lt; opnd &lt;&lt; ")";
+    }
+
+    int eval() const
+    {
+        if(op == "-")
+        {
+            return -opnd.eval();
+        }
+
+        throw "error, bad op" + op + "int UnaryNode";
+    }
+};
+
+class Binary_node: public Expr_node
+{
+    friend class Expr;
+    string op;
+
+    Expr left;
+    Expr right;
+
+    Binary_node(const string&amp; a, Expr b, Expr c):
+        op(a), left(b), right(c) { }
+
+    void print(ostream&amp; o) const
+    {
+        o &lt;&lt; "(" &lt;&lt; left &lt;&lt; op &lt;&lt; right &lt;&lt; ")";
+    }
+
+    int eval() const
+    {
+        int op1 = left.eval();
+        int op2 = right.eval();
+
+        if(op == "-") return op1 - op2;
+        if(op == "+") return op1 + op2;
+        if(op == "*") return op1 * op2;
+        if(op == "/") return op1 / op2;
+
+        if(op == "/" &amp;&amp; op2 != 0) return op1/ op2;
+
+        throw "error, bad op" + op + "int BinaryNode";
+    }
+};
+
+class Ternary_node:public Expr_node
+{
+    friend class Expr;
+
+    string op;
+    Expr left;
+    Expr middle;
+    Expr right;
+
+    Ternary_node(const string&amp; a, Expr b, Expr c, Expr d):
+        op(a), left(b), middle(c), right(d) { }
+    void print(ostream&amp; o) const;
+    int eval() const;
+};
+
+void Ternary_node::print(ostream&amp; o) const
+{
+    o &lt;&lt; "(" &lt;&lt; left &lt;&lt; " ? " &lt;&lt; middle &lt;&lt; ":" &lt;&lt; right &lt;&lt; ")";
+}
+
+int Ternary_node::eval() const
+{
+    if(left.eval())
+    {
+        return middle.eval();
+    }
+    else
+    {
+        return right.eval();
+    }
+}
+
+Expr::Expr(int n)
+{
+    p = new Int_node(n);
+}
+
+Expr::Expr(const string&amp; op, Expr t)
+{
+    p = new Unary_node(op, t);
+}
+
+Expr::Expr(const string&amp; op, Expr left, Expr right)
+{
+    p = new Binary_node(op, left, right);
+}
+
+Expr::Expr(const string&amp; op, Expr left, Expr middle, Expr right)
+{
+    p = new Ternary_node(op, left, middle, right);
+}
+
+int main()
+{
+    Expr t = Expr("*", Expr("-", 5), Expr("+", 3, 4));
+    cout &lt;&lt; t &lt;&lt; " = " &lt;&lt; t.eval() &lt;&lt; endl;
+    t = Expr("*", t, t);
+    cout &lt;&lt; t &lt;&lt; " = " &lt;&lt; t.eval() &lt;&lt; endl;
+
+    t = Expr("?",Expr(1),Expr(2),Expr(3));
+    cout &lt;&lt; t &lt;&lt; " = " &lt;&lt; t.eval() &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+
+<p><img src="/images/img_for_2015_05_19/output2.png" alt="images" /></p>
+
+<hr />
+
+<p>Photo by Zhouyin in ShangHai, China</p>
+
+<p><img src="/images/img_for_2015_05_19/me.png" alt="images" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Handle Class]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/05/18/handle-class/"/>
+    <updated>2015-05-18T19:13:34+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/05/18/handle-class</id>
+    <content type="html"><![CDATA[<p>For some types of class, if we could avoid the copy operation, it will be great advantage.</p>
+
+<p>Sometimes, copy cost a lot.</p>
+
+<p>It’s not a good way to use pointer to avoid copy operation. It’s unsafe.</p>
+
+<p>What if we want the attribute of polymiorphism and reduce the cost of copy ?</p>
+
+<p>The answer is Handle which is a special class.</p>
+
+<!-- more -->
+
+
+<p>We use count to avoid copying. The count can not be a part of handle. If we do that, each handle have to know others handles’ location(it’s easy for us to get address of members who are in the same class). Only we do that, we could update the count correctly. We also could not let the count be a part of objects. Becasue we have to rewrite the type of class which have already existed.</p>
+
+<p>So, we define a new type of class to store the count and object.</p>
+
+<p><img src="/images/img_for_2015_05_19/arch.png" alt="images" /></p>
+
+<pre><code class="C++">/**********************************************
+    Programmer  :   EOF
+    Date        :   2015.05.19
+    File        :   6.6.cpp
+    E-mail      :   jasonleaster@gmail.com
+
+**********************************************/
+#include &lt;iostream&gt;
+
+using namespace std;
+
+class Point
+{
+    public:
+        Point(): xval(0), yval(0) { }
+        Point(int x, int y): xval(x), yval(y) { }
+        int x() const { return xval; }
+        int y() const { return yval; }
+        Point&amp; x(int xv) { xval = xv; return *this; }
+        Point&amp; y(int yv) { yval = yv; return *this; }
+
+    private:
+        int xval, yval;
+};
+
+/*
+   This class is used for store the @Point class and count @u
+ */
+class UPoint
+{
+    friend class Handle;
+    Point p;
+    int counter;
+
+    UPoint(): counter(1) { }
+    UPoint(int x, int y): p(x, y), counter(1)  { }
+    UPoint(const Point&amp; p0): p(p0), counter(1) { }
+};
+
+class Handle
+{
+    public:
+        Handle();
+        Handle(int, int);
+        Handle(const Point&amp;);
+        Handle(const Handle&amp;);
+
+        Handle&amp; operator=(const Handle&amp;);
+
+        ~Handle();
+
+        int x() const;
+        Handle&amp; x(int);
+
+        int y() const;
+        Handle&amp; y(int);
+
+    private:
+        /*
+            All we have done in @Handle is to maintain this data member :)
+         */
+        UPoint *up;
+};
+
+Handle::~Handle()
+{
+    if (--up-&gt;counter == 0)
+    {
+        delete up;
+    }
+}
+
+/*
+   Constructor function of @Handle
+ */
+Handle::Handle(): up(new UPoint) { }
+Handle::Handle(int x, int y): up(new UPoint(x, y)) { }
+Handle::Handle(const Point&amp; p): up(new UPoint(p)) { }
+Handle::Handle(const Handle&amp; h): up(h.up) { ++up-&gt;counter; }
+
+Handle&amp;
+Handle::operator = (const Handle&amp; h)
+{
+    ++(h.up-&gt;counter);
+    if(--(up-&gt;counter) == 0)
+    {
+        delete up;
+    }
+
+    up = h.up;
+    return *this;
+}
+
+int Handle::x() const { return up-&gt;p.x(); }
+int Handle::y() const { return up-&gt;p.y(); }
+
+Handle&amp; Handle::x(int x0)
+{
+    up-&gt;p.x(x0);
+    return *this;
+}
+
+Handle&amp; Handle::y(int y0)
+{
+    up-&gt;p.y(y0);
+    return *this;
+}
+
+int main()
+{
+    Handle h(3, 4);
+    Handle h2 = h;
+
+    h2.x(5);
+
+    int n = h.x();
+
+    cout &lt;&lt; "n = " &lt;&lt; n &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+
+<p>In this scheme, we meet a weak point of the mechanisim that we have to attach the handler onto the class (in our demo, it’s @UPoint).</p>
+
+<p>It’s not convenient for us to use that scheme for different types of class which are inhiret from base class.</p>
+
+<p>We sperate data and reference count by changing our handle into this:</p>
+
+<pre><code class="C++">class Handle
+{
+    public:
+        // member unchanged
+
+    private:
+        Point* p_Point;
+        UseCount u;
+};
+</code></pre>
+
+<p>Here is the other and better implementation for handle.</p>
+
+<p>In this implementation, we use a very cool teachnology – Copy On Write(COW). You may have see this teachnology in Operating System which use it to implement a very important function – <code>fork</code> .</p>
+
+<pre><code class="C++">/**********************************************
+    Programmer  :   EOF
+    Date        :   2015.05.19
+    File        :   7.3.cpp
+    E-mail      :   jasonleaster@gmail.com
+
+**********************************************/
+#include &lt;iostream&gt;
+
+#define COW
+
+using namespace std;
+
+class Point
+{
+    public:
+        Point(): xval(0), yval(0) { }
+        Point(int x, int y): xval(x), yval(y) { }
+        int x() const { return xval; }
+        int y() const { return yval; }
+        Point&amp; x(int xv) { xval = xv; return *this; }
+        Point&amp; y(int yv) { yval = yv; return *this; }
+
+    private:
+        int xval, yval;
+};
+
+
+
+class UseCount
+{
+    public:
+        UseCount();
+        UseCount(const UseCount&amp;);
+        ~UseCount();
+        //another things
+
+        bool only();
+        bool reattach(const UseCount&amp; );
+        bool makeonly();
+
+    private:
+        int* p_counter;
+};
+
+UseCount::UseCount(): p_counter(new int(1)) { }
+
+UseCount::UseCount(const UseCount&amp; u): p_counter(u.p_counter)
+{
+    ++(*p_counter);
+}
+
+UseCount::~UseCount()
+{
+    if (--(*p_counter) == 0)
+    {
+        delete p_counter;
+    }
+}
+
+bool UseCount::only() { return *p_counter == 1; }
+
+bool UseCount::reattach(const UseCount&amp; u)
+{
+    ++(*u.p_counter);
+    if(--*p_counter == 0)
+    {
+        delete p_counter;
+        p_counter = u.p_counter;
+        return true;
+    }
+
+    p_counter = u.p_counter;
+    return false;
+}
+
+bool UseCount::makeonly()
+{
+    if(*p_counter == 1)
+    {
+        return false;
+    }
+
+    --(*p_counter);
+    p_counter = new int(1);
+
+    return true;
+}
+
+
+
+class Handle
+{
+    public:
+        Handle();
+        Handle(int, int);
+        Handle(const Point&amp;);
+        Handle(const Handle&amp;);
+
+        Handle&amp; operator=(const Handle&amp;);
+
+        ~Handle();
+
+        int x() const;
+        Handle&amp; x(int);
+
+        int y() const;
+        Handle&amp; y(int);
+
+        void show_pointer(void)
+        {
+            cout &lt;&lt; p_Point &lt;&lt; endl;
+        }
+
+    private:
+        // what we added
+        Point *p_Point;
+        UseCount u;
+};
+
+Handle::~Handle()
+{
+    if (u.only())
+    {
+        delete p_Point;
+    }
+}
+
+/*
+   Constructor function of @Handle
+ */
+Handle::Handle(): p_Point(new Point) { }
+Handle::Handle(int x, int y): p_Point(new Point(x, y)) { }
+Handle::Handle(const Point&amp; p0): p_Point(new Point(p0)) { }
+Handle::Handle(const Handle&amp; h): u(h.u), p_Point(h.p_Point) { }
+
+Handle&amp;
+Handle::operator = (const Handle&amp; h)
+{
+    if(u.reattach(h.u))
+    {
+        delete p_Point;
+    }
+
+    p_Point = h.p_Point;
+    return *this;
+}
+
+#ifndef COW
+
+int Handle::x() const { return p_Point-&gt;x(); }
+int Handle::y() const { return p_Point-&gt;y(); }
+
+Handle&amp; Handle::x(int x0)
+{
+    p_Point-&gt;x(x0);
+    return *this;
+}
+
+Handle&amp; Handle::y(int y0)
+{
+    p_Point-&gt;y(y0);
+    return *this;
+}
+
+#else
+/*
+   "Copy On Write"
+ */
+
+int Handle::x() const
+{
+    return p_Point-&gt;x();
+}
+
+Handle&amp; Handle::x(int x0)
+{
+    if(u.makeonly())
+    {
+        p_Point = new Point(*p_Point);
+    }
+
+    p_Point-&gt;x(x0);
+    return *this;
+}
+
+#endif
+
+int main()
+{
+    Handle h(3, 4);
+    Handle h2 = h;
+
+    cout &lt;&lt; "before rewriting" &lt;&lt; endl;
+    h.show_pointer();
+    h2.show_pointer();
+
+    h2.x(5);
+
+    cout &lt;&lt; "after rewriting" &lt;&lt; endl;
+    h.show_pointer();
+    h2.show_pointer();
+
+    int n = h.x();
+
+    cout &lt;&lt; "n = " &lt;&lt; n &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+
+<p>You will get this output :)</p>
+
+<p><img src="/images/img_for_2015_05_19/output.png" alt="images" /></p>
+
+<hr />
+
+<p>Photo by Jason Leaster in XiangTan University</p>
+
+<p><img src="/images/img_for_2015_05_19/scenery.png" alt="images" /></p>
+]]></content>
+  </entry>
+  
+</feed>
