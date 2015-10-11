@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2015-10-09T18:35:36+08:00</updated>
+  <updated>2015-10-11T19:58:39+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -53,7 +53,7 @@
 
 <p>It&rsquo;s very easy and obvious to implement the recursive definition of the three different traveller.</p>
 
-<p>You will find that it&rsquo;s very efficient way to understand what means Pre-traveller, In-traveller and Post-traveller.</p>
+<p>You will find that it&rsquo;s a very efficient way to understand what means Pre-traveller, In-traveller and Post-traveller.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
