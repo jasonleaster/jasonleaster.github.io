@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2015-10-11T19:58:39+08:00</updated>
+  <updated>2015-12-13T22:03:58+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,166 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Machine Learning With Boosting]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/12/13/machine-learning-with-boosting/"/>
+    <updated>2015-12-13T17:00:47+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/12/13/machine-learning-with-boosting</id>
+    <content type="html"><![CDATA[<p>This blog will talk about the theory and implementation about famouse
+concept in machine learning &ndash; <code>Boosting</code>.</p>
+
+<p>All algorithms are implemented in Python.</p>
+
+<p>There are two main tasks which people want to finished with Machine Learning</p>
+
+<ul>
+<li>Classification</li>
+<li>Regression</li>
+</ul>
+
+
+<p>There are a lot of other ways to do it but now we focus on boosting algorithm. You know that it&rsquo;s a fantastic way to make our work done.</p>
+
+<h3>Adaboost for classification</h3>
+
+<p>If you never hear about adaboost, I recommend you to finish the 7-th lab in MIT 6.034. It will help you a lot to understand what I&rsquo;m taking about. But this lab didn&rsquo;t build adaboost completely. So, I implement it individually.</p>
+
+<p>Give the input training samples which have tag with it.</p>
+
+<p>T = {(x1, y1), (x2, y2) &hellip; (xN, yN)}</p>
+
+<p>where x_i is the feature of the i-th sample point and y_i is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
+
+<p>In this algorithm, there are only to different label of samples {-1, +1}.</p>
+
+<p>Some classifier like dicision tree also can finish work about classification. But it&rsquo;s also easy to overfitting. So, we can&rsquo;t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code>.</p>
+
+<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting. It combine some weaker classifier into a stronger classifier to avoid overfitting.</p>
+
+<p>Test case:</p>
+
+<p>There are training points with two different label. What if we input a point which&rsquo;s type is unkown, what the result will be?</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/samples.png" alt="images" /></p>
+
+<p>The test result is below there:
+<img src="http://jasonleaster.github.io/images/img_for_2015_12_13/result.png" alt="images" /></p>
+
+<p>Just create a object of class <code>Adaboost</code> with your training samples with label. like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='Python'><span class='line'><span class="kn">import</span> <span class="nn">adaboost</span>
+</span><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="n">AdaBoost</span><span class="p">(</span><span class="n">Original_Data</span><span class="p">,</span> <span class="n">Tag</span><span class="p">)</span>
+</span><span class='line'><span class="c"># The up bound of training time to avoid the algorithm won&#39;t stop for not meeting the training accuracy.</span>
+</span><span class='line'><span class="n">times</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">UnkownPoints</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>API <code>prediction()</code> of class AdaBoost will return the result of prediction according to the model. All job done.</p>
+
+<p>You could find other test case in my repository in github.</p>
+
+<p><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Adaboost">Implementation of Adaboost in Python</a></p>
+
+<h3>Boosting Tree</h3>
+
+<p>We have knew to use <code>AdaBoost</code> to do classification. <code>Boosting Tree</code> will help us to do regression.</p>
+
+<p>We also use decision stump as the weak classifier. But implementation of decision stump in this algorithm is not the same as that in AdaBoost.</p>
+
+<p>There are ten samples in my test module:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">Original_Data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">6</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">7</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">8</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">9</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">10</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>        <span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ExpVal</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">5.70</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">5.91</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">6.40</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">6.80</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">7.05</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">8.90</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">8.70</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">9.00</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">9.05</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="mf">5.56</span><span class="p">]</span>
+</span><span class='line'>        <span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The expected value of Original_Data[i] is ExpVal[i]. The input is from 1 to 10. How about to predict the output when the input is 1 or 11?</p>
+
+<p>Let&rsquo;s test it. Here is the result:
+<img src="http://jasonleaster.github.io/images/img_for_2015_12_13/output_of_boosting_tree.png" alt="images" /></p>
+
+<p>Just used 11 weak classifier to construct a stronger classifier to do the regressio. The output is reasonable.</p>
+
+<p>Here is my implementation of <code>Boosting Tree</code>
+<a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Boosting_Tree">Implementation of Boosting Tree in Python</a></p>
+
+<p>Reference:</p>
+
+<ol>
+<li>MIT-6.034, Artificial Intelligence.</li>
+<li>&lt;&lt; The statistic methods >> by HangLi.</li>
+<li>Wikipedia.</li>
+</ol>
+
+
+<hr />
+
+<p>Photo by Jason Leaster</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/street.png" alt="images" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Binary Search Tree]]></title>

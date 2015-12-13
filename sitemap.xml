@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://jasonleaster.github.io/blog/2015/12/13/machine-learning-with-boosting/</loc>
+    <lastmod>2015-12-13T17:00:47+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://jasonleaster.github.io/blog/2015/09/24/binary-search-tree/</loc>
     <lastmod>2015-09-24T01:28:33+08:00</lastmod>
   </url>
@@ -64,6 +68,12 @@
   </url>
   <url>
     <loc>http://jasonleaster.github.io/blog/categories/algorithm/</loc>
+  </url>
+  <url>
+    <loc>http://jasonleaster.github.io/blog/categories/machine/</loc>
+  </url>
+  <url>
+    <loc>http://jasonleaster.github.io/blog/categories/learning/</loc>
   </url>
   <url>
     <loc>http://jasonleaster.github.io/posts/2/</loc>
