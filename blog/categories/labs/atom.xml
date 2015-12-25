@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Labs | EOF]]></title>
+  <link href="http://jasonleaster.github.io/blog/categories/labs/atom.xml" rel="self"/>
+  <link href="http://jasonleaster.github.io/"/>
+  <updated>2015-12-25T23:55:58+08:00</updated>
+  <id>http://jasonleaster.github.io/</id>
+  <author>
+    <name><![CDATA[Jason Leaster]]></name>
+    <email><![CDATA[jasonleaster@163.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Labs of MIT 6.034]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/12/25/labs-of-mit-6-dot-034/"/>
+    <updated>2015-12-25T23:30:06+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/12/25/labs-of-mit-6-dot-034</id>
+    <content type="html"><![CDATA[<p>Two month ago, I decide to do a project about machine learning. So, I get start to learn machine learning and implemment some algorithms of ML.
+I find that there is a course in MIT &ndash; 6.034 Artificial Intelligence which contain a lot of funny labs. That will help me to learn ML.</p>
+
+<p>I don&rsquo;t want to write a lot of analysis article about this course like what I have done in 6.008 . So, I just push my solution which also is incompletement onto github. If anyone interesting in this lab, you could touch me and I would like to communicate with you about these labs if I&rsquo;m not busy.</p>
+
+<p>What you should know is that the version of this labs is updated in 2015.</p>
+
+<p>Here is the link you could get my solution:
+<a href="https://github.com/jasonleaster/MIT_6.034_2015">My Solution of MIT 6.034</a></p>
+
+<hr />
+
+<p>Photo by Jason Leaster</p>
+
+<p><img src="/images/img_for_2015_12_25/girlfriend.png" alt="images" /></p>
+]]></content>
+  </entry>
+  
+</feed>
