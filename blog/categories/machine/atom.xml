@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Machine | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/machine/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2015-12-26T12:56:31+08:00</updated>
+  <updated>2015-12-28T21:17:57+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -55,8 +55,9 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p><img src="/images/img_for_2015_12_13/samples.png" alt="images" /></p>
 
-<p>The test result is below there:
-<img src="/images/img_for_2015_12_13/result.png" alt="images" /></p>
+<p>The test result is below there:</p>
+
+<p><img src="/images/img_for_2015_12_13/result.png" alt="images" /></p>
 
 <p>Just create a object of class <code>Adaboost</code> with your training samples with label. like this:</p>
 
@@ -75,6 +76,14 @@ a.prediction(UnkownPoints)
 <p>You could find other test case in my repository in github.</p>
 
 <p><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Adaboost">Implementation of Adaboost in Python</a></p>
+
+<p>You can check the validity of my implementation by the accuracy.</p>
+
+<p><img src="/images/img_for_2015_12_13/samples2.png" alt="images" /></p>
+
+<p>The data used to train the weaker classifier and get that accuracy is showed below there :</p>
+
+<p><img src="/images/img_for_2015_12_13/accuracy.png" alt="images" /></p>
 
 <h3>Boosting Tree</h3>
 
