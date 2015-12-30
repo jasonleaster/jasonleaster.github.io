@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Machinelearning | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2015-12-30T18:57:20+08:00</updated>
+  <updated>2015-12-30T20:12:12+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -39,9 +39,66 @@ Means =
  [1.66666   6       6]]
 </code></p>
 
+<p>In the implementation, I just choose the euclidean distance equation as my sensor to calculate the distance between samples. You could assign the <code>self.distance</code> with your function which is in your application.</p>
+
+<p>Here, I show you how to classify the sample point in <code>K-Means</code>.</p>
+
+<pre><code class="python">def classify(self):
+    for i in range(self.SampleNum):
+        minDis = +numpy.inf
+        label  = None
+        for k in range(self.classNum):
+            d = self.distance(self._Mat[:, i].tolist(), self.meanVal[:, k].tolist())
+                                                                                if d &lt; minDis:
+            minDis = d
+            label  = k
+
+        self.classification[i][0] = label
+        self.classification[i][1] = minDis
+</code></pre>
+
+<p>And, here you will glance at the main procesure of this algorithm.
+``` python</p>
+
+<pre><code>"""
+After you initialized this class, just call this
+function and K Means Model will be built
+"""
+def train(self):
+    while True:
+
+        if self.stopOrNot():
+            return
+
+        self.classify()
+
+        for k in range(self.classNum):
+            mean    = None
+            counter = 0
+            for i in range(self.SampleNum):
+                if self.classification[i][0] == k:
+                    if mean == None:
+                        mean =  numpy.array(self._Mat[:, i])*1.
+                    else:
+                        mean += self._Mat[:, i]
+
+                    counter += 1.
+
+                                                                                    mean /= counter
+             self.meanVal[:, k] = mean
+</code></pre>
+
+<p>```</p>
+
+<p>Hope my work will help you in some day. Thank you.</p>
+
+<p>Yous, EOF</p>
+
 <hr />
 
 <p>Photo by Jason Leaster</p>
+
+<p><img src="/images/img_for_2015_12_30/bigshark.png" alt="images" /></p>
 ]]></content>
   </entry>
   
