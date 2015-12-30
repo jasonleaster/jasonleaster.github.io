@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2015-12-30T20:17:02+08:00</updated>
+  <updated>2015-12-30T20:21:57+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -41,6 +41,9 @@
 </span><span class='line'><span class="p">[[</span><span class="mf">3.5</span>       <span class="mi">1</span>       <span class="mi">6</span><span class="p">]</span>
 </span><span class='line'> <span class="p">[</span><span class="mf">1.66666</span>   <span class="mi">6</span>       <span class="mi">6</span><span class="p">]]</span>
 </span></code></pre></td></tr></table></div></figure>
+
+
+<!-- more -->
 
 
 <p>In the implementation, I just choose the euclidean distance equation as my sensor to calculate the distance between samples. You could assign the <code>self.distance</code> with your function which is in your application.</p>
@@ -137,7 +140,7 @@
 
 <hr />
 
-<p>Photo by Jason Leaster</p>
+<p>Photo by Annabella</p>
 
 <p>Aha! Look! What a big shark. I&rsquo;m fighting &hellip;</p>
 

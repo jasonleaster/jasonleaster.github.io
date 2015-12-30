@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Machinelearning | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2015-12-30T20:17:02+08:00</updated>
+  <updated>2015-12-30T20:21:57+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -38,6 +38,9 @@ Means =
 [[3.5       1       6]
  [1.66666   6       6]]
 </code></p>
+
+<!-- more -->
+
 
 <p>In the implementation, I just choose the euclidean distance equation as my sensor to calculate the distance between samples. You could assign the <code>self.distance</code> with your function which is in your application.</p>
 
@@ -96,7 +99,7 @@ def train(self):
 
 <hr />
 
-<p>Photo by Jason Leaster</p>
+<p>Photo by Annabella</p>
 
 <p>Aha! Look! What a big shark. I&rsquo;m fighting &hellip;</p>
 
