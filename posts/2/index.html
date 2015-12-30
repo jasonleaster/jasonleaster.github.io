@@ -9,7 +9,7 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="Here is a question. How could we design a type of class to enable it to include the classes which is different but have something in common ? The &hellip;">
+  <meta name="description" content="For some types of class, if we could avoid the copy operation, it will be great advantage. Sometimes, copy cost a lot. It’s not a good way to use &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -67,6 +67,48 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/05/18/handle-class/">Handle Class</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-05-18T19:13:34+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:13 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>For some types of class, if we could avoid the copy operation, it will be great advantage.</p>
+
+<p>Sometimes, copy cost a lot.</p>
+
+<p>It’s not a good way to use pointer to avoid copy operation. It’s unsafe.</p>
+
+<p>What if we want the attribute of polymiorphism and reduce the cost of copy ?</p>
+
+<p>The answer is Handle which is a special class.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/05/18/handle-class/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -185,12 +227,17 @@
     
   </div>
 </div>
-<aside class="sidebar">
-   <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=300 height=86 src="http://music.163.com/outchain/player?type=2&id=34586075&auto=1&height=66"></iframe>
+<aside class="sidebar"> 
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="http://music.163.com/outchain/player?type=2&id=30706129&auto=1&height=66"></iframe>
+
   
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/12/30/machine-learning-with-k-means/">Machine Learning With K-Means</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/12/25/labs-of-mit-6-dot-034/">Labs of MIT 6.034</a>
@@ -206,10 +253,6 @@
     
       <li class="post">
         <a href="/blog/2015/07/24/binary-search/">Binary Search</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/06/17/what-should-we-focus-on/">What Should We Focus on ?</a>
       </li>
     
   </ul>

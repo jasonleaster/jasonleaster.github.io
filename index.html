@@ -9,8 +9,7 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="Two month ago, I decide to do a project about machine learning. So, I get start to learn machine learning and implemment some algorithms of ML.
-I &hellip;">
+  <meta name="description" content="K-Means is a classical unsupervised clustering Learning Algorithm. The detail of the theory about K-Means that you can find it in Wikipedia. Now I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +67,62 @@ I &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/12/30/machine-learning-with-k-means/">Machine Learning With K-Means</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-12-30T16:03:13+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:03 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>K-Means is a classical unsupervised clustering Learning Algorithm. The detail of the theory about K-Means that you can find it in Wikipedia. Now I introduce to implement this algorithm by myself.</p>
+
+<p>If you are interesting in the implementation and change it into a better version, you could find it in my github repository and give me some advices. I will be appreciated.</p>
+
+<hr />
+
+<p>So consider about if I want to classify the data into three different cluster. How could I make it?</p>
+
+<p><img src="/images/img_for_2015_12_30/original.png" alt="images" /></p>
+
+<p>Here is the result:</p>
+
+<p><img src="/images/img_for_2015_12_30/result.png" alt="images" /></p>
+
+<p>With the mean values:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">Means</span> <span class="o">=</span>
+</span><span class='line'><span class="p">[[</span><span class="mf">3.5</span>       <span class="mi">1</span>       <span class="mi">6</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span><span class="mf">1.66666</span>   <span class="mi">6</span>       <span class="mi">6</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<hr />
+
+<p>Photo by Jason Leaster</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -610,48 +665,6 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/05/18/handle-class/">Handle Class</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-05-18T19:13:34+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:13 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>For some types of class, if we could avoid the copy operation, it will be great advantage.</p>
-
-<p>Sometimes, copy cost a lot.</p>
-
-<p>It’s not a good way to use pointer to avoid copy operation. It’s unsafe.</p>
-
-<p>What if we want the attribute of polymiorphism and reduce the cost of copy ?</p>
-
-<p>The answer is Handle which is a special class.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/05/18/handle-class/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -660,12 +673,17 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
     
   </div>
 </div>
-<aside class="sidebar">
-   <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=300 height=86 src="http://music.163.com/outchain/player?type=2&id=34586075&auto=1&height=66"></iframe>
+<aside class="sidebar"> 
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="http://music.163.com/outchain/player?type=2&id=30706129&auto=1&height=66"></iframe>
+
   
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/12/30/machine-learning-with-k-means/">Machine Learning With K-Means</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/12/25/labs-of-mit-6-dot-034/">Labs of MIT 6.034</a>
@@ -681,10 +699,6 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
     
       <li class="post">
         <a href="/blog/2015/07/24/binary-search/">Binary Search</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/06/17/what-should-we-focus-on/">What Should We Focus on ?</a>
       </li>
     
   </ul>

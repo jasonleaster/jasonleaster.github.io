@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2015-12-28T21:17:57+08:00</updated>
+  <updated>2015-12-30T18:57:20+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,42 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Machine Learning With K-Means]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/12/30/machine-learning-with-k-means/"/>
+    <updated>2015-12-30T16:03:13+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/12/30/machine-learning-with-k-means</id>
+    <content type="html"><![CDATA[<p>K-Means is a classical unsupervised clustering Learning Algorithm. The detail of the theory about K-Means that you can find it in Wikipedia. Now I introduce to implement this algorithm by myself.</p>
+
+<p>If you are interesting in the implementation and change it into a better version, you could find it in my github repository and give me some advices. I will be appreciated.</p>
+
+<hr />
+
+<p>So consider about if I want to classify the data into three different cluster. How could I make it?</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2015_12_30/original.png" alt="images" /></p>
+
+<p>Here is the result:</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2015_12_30/result.png" alt="images" /></p>
+
+<p>With the mean values:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">Means</span> <span class="o">=</span>
+</span><span class='line'><span class="p">[[</span><span class="mf">3.5</span>       <span class="mi">1</span>       <span class="mi">6</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span><span class="mf">1.66666</span>   <span class="mi">6</span>       <span class="mi">6</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<hr />
+
+<p>Photo by Jason Leaster</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Labs of MIT 6.034]]></title>
