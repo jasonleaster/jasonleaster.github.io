@@ -92,7 +92,7 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p>All algorithms are implemented in Python.</p>
 
-<p>There are two main tasks which people want to finished with Machine Learning</p>
+<p>There are two main tasks which people want to finish with Machine Learning.</p>
 
 <ul>
 <li>Classification</li>
@@ -100,7 +100,7 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 </ul>
 
 
-<p>There are a lot of other ways to do it but now we focus on boosting algorithm. You know that it&rsquo;s a fantastic way to make our work done.</p>
+<p>There are a lot of other ways to do it but now we focus on <code>boosting</code> algorithm. You know that it&rsquo;s a fantastic way to make our work done.</p>
 
 <h3>Adaboost for classification</h3>
 
@@ -108,13 +108,13 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p>Give the input training samples which have tag with it.</p>
 
-<p>T = {(x1, y1), (x2, y2) &hellip; (xN, yN)}</p>
+<p><img src="/images/img_for_2015_12_13/equation.png" alt="images" /></p>
 
-<p>where x_i is the feature of the i-th sample point and y_i is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
+<p>where x[i] is the feature of the i-th sample point and y[i] is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
 
-<p>In this algorithm, there are only to different label of samples {-1, +1}.</p>
+<p>In this algorithm, there are only two different label of samples {-1, +1}.</p>
 
-<p>Some classifier like dicision tree also can finish work about classification. But it&rsquo;s also easy to overfitting. So, we can&rsquo;t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code>.</p>
+<p>Some classifier like decision tree also can work correctly about classification. But it&rsquo;s also easy to overfitting. So, we can&rsquo;t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which&rsquo;s depth is only one. So we call it as <code>decision stump</code>.</p>
 
 <p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting. It combine some weaker classifier into a stronger classifier to avoid overfitting.</p>
 
@@ -237,9 +237,9 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 <p>Reference:</p>
 
 <ol>
-<li>MIT-6.034, Artificial Intelligence.</li>
+<li>MIT-6.034, Artificial Intelligence. Lab-7</li>
 <li>&lt;&lt; The statistic methods >> by HangLi.</li>
-<li>Wikipedia.</li>
+<li><a href="https://en.wikipedia.org/wiki/AdaBoost">Wikipedia</a></li>
 </ol>
 
 
@@ -268,7 +268,7 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/learning/'>learning</a>, <a class='category' href='/blog/categories/machine/'>machine</a>
+    <a class='category' href='/blog/categories/machinelearning/'>machinelearning</a>
   
 </span>
 
