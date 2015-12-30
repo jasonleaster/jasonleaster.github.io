@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Machinelearning | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2015-12-30T20:12:12+08:00</updated>
+  <updated>2015-12-30T20:17:02+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -49,9 +49,9 @@ Means =
         label  = None
         for k in range(self.classNum):
             d = self.distance(self._Mat[:, i].tolist(), self.meanVal[:, k].tolist())
-                                                                                if d &lt; minDis:
-            minDis = d
-            label  = k
+            if d &lt; minDis:
+                minDis = d
+                label  = k
 
         self.classification[i][0] = label
         self.classification[i][1] = minDis
@@ -84,8 +84,8 @@ def train(self):
 
                     counter += 1.
 
-                                                                                    mean /= counter
-             self.meanVal[:, k] = mean
+            mean /= counter
+            self.meanVal[:, k] = mean
 </code></pre>
 
 <p>```</p>
@@ -97,6 +97,8 @@ def train(self):
 <hr />
 
 <p>Photo by Jason Leaster</p>
+
+<p>Aha! Look! What a big shark. I&rsquo;m fighting &hellip;</p>
 
 <p><img src="/images/img_for_2015_12_30/bigshark.png" alt="images" /></p>
 ]]></content>

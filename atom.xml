@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2015-12-30T20:12:12+08:00</updated>
+  <updated>2015-12-30T20:17:02+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -65,9 +65,9 @@
 </span><span class='line'>        <span class="n">label</span>  <span class="o">=</span> <span class="bp">None</span>
 </span><span class='line'>        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classNum</span><span class="p">):</span>
 </span><span class='line'>            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Mat</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">meanVal</span><span class="p">[:,</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
-</span><span class='line'>                                                                                <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">minDis</span><span class="p">:</span>
-</span><span class='line'>            <span class="n">minDis</span> <span class="o">=</span> <span class="n">d</span>
-</span><span class='line'>            <span class="n">label</span>  <span class="o">=</span> <span class="n">k</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">minDis</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">minDis</span> <span class="o">=</span> <span class="n">d</span>
+</span><span class='line'>                <span class="n">label</span>  <span class="o">=</span> <span class="n">k</span>
 </span><span class='line'>
 </span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">classification</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
 </span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">classification</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">minDis</span>
@@ -126,8 +126,8 @@
 </span><span class='line'>
 </span><span class='line'>                        <span class="n">counter</span> <span class="o">+=</span> <span class="mf">1.</span>
 </span><span class='line'>
-</span><span class='line'>                                                                                        <span class="n">mean</span> <span class="o">/=</span> <span class="n">counter</span>
-</span><span class='line'>                 <span class="bp">self</span><span class="o">.</span><span class="n">meanVal</span><span class="p">[:,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean</span>
+</span><span class='line'>                <span class="n">mean</span> <span class="o">/=</span> <span class="n">counter</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">meanVal</span><span class="p">[:,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -138,6 +138,8 @@
 <hr />
 
 <p>Photo by Jason Leaster</p>
+
+<p>Aha! Look! What a big shark. I&rsquo;m fighting &hellip;</p>
 
 <p><img src="http://jasonleaster.github.io/images/img_for_2015_12_30/bigshark.png" alt="images" /></p>
 ]]></content>
