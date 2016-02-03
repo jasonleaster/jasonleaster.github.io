@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://jasonleaster.github.io/blog/2016/02/03/memory-model-of-int-object-in-python/</loc>
+    <lastmod>2016-02-03T00:56:31+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://jasonleaster.github.io/blog/2015/12/30/machine-learning-with-k-means/</loc>
     <lastmod>2015-12-30T16:03:13+08:00</lastmod>
   </url>
@@ -82,6 +86,9 @@
   </url>
   <url>
     <loc>http://jasonleaster.github.io/blog/categories/labs/</loc>
+  </url>
+  <url>
+    <loc>http://jasonleaster.github.io/blog/categories/python/</loc>
   </url>
   <url>
     <loc>http://jasonleaster.github.io/posts/2/</loc>

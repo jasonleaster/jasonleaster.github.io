@@ -1,0 +1,788 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Int Object in Python - EOF</title>
+  <meta name="author" content="Jason Leaster">
+
+  
+  <meta name="description" content="Preparation Here, we are goint to analysis how Python deal with Int Object in itself. First of all, we should have a environment which help us to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jasonleaster.github.io/blog/2016/02/03/memory-model-of-int-object-in-python/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="EOF" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">EOF</a></h1>
+  
+    <h2>Rebuilding The Tower Of Babel</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jasonleaster.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/todo">TODO</a></li>
+  <li><a href="/about-me">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Int Object in Python</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-02-03T00:56:31+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>12:56 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>Preparation</h3>
+
+<p>Here, we are goint to analysis how Python deal with <code>Int Object</code> in itself.</p>
+
+<p>First of all, we should have a environment which help us to explore the detail of the implementation in <code>Python 2.7</code>. At the same time, our operation shouldn&rsquo;t influence the origianl Python in your workstation, if you have install Python before.</p>
+
+<p>You can get the source code from offical website of Python. And you will find that there have a file <code>configure</code> in the directory of the source.</p>
+
+<p><em>In the file configure, you can replace all string &lsquo;Python&rsquo; with &lsquo;pyLab&rsquo;. And then move all file prefix with <code>Python</code> into <code>pyLab</code>(mainly in directory Misc/ and Modules)</em></p>
+
+<p>Don&rsquo;t forget to run the configuration file &ndash; configure with the option <code>--prefix=Location where you want the Python which is for lab to install</code></p>
+
+<p>Finally, just run <code>make &amp; make install</code></p>
+
+<p>Repeat myself again, the reason that I move all &lsquo;Python&rsquo; into &lsquo;pyLab&rsquo; is all for making a difference with the original instance which is official and shouldn&rsquo;t be influence by any operation from us.</p>
+
+<h3>Rules of Object in Python.</h3>
+
+<ul>
+<li>Objects are structures allocated on the heap.</li>
+<li><p>Objects are never allocated statically or on the stack; they must be accessed through special macros and functions only.</p></li>
+<li><p>An object has a &lsquo;reference count&rsquo; that is increased or decreased when a pointer to the object is copied or deleted; when the reference count reaches zero there are no references to the object left and it can be removed from the heap.</p></li>
+<li><p>An object has a &lsquo;type&rsquo; that determines what it represents and what kind of data it contains.  An object&rsquo;s type is fixed when it is created. Types themselves are represented as objects; an object contains a pointer to the corresponding type object.  The type itself has a type pointer pointing to the object representing the type &lsquo;type&rsquo;, which contains a pointer to itself!).</p></li>
+<li><p>Objects do not float around in memory; once allocated an object keeps the same size and address.  Objects that must hold variable-size data can contain pointers to variable-size parts of the object.  Not all objects of the same type have the same size; but the size cannot change after allocation.</p></li>
+<li><p>Objects are always accessed through pointers of the type &lsquo;PyObject *&rsquo;.</p></li>
+</ul>
+
+
+<h3>Firt glance at the implementation.</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>/*
+</span><span class='line'>   There are two basic different type of Object in Python.
+</span><span class='line'>   1. PyObject.    (Immutable Object eg: int, string object which's 
+</span><span class='line'>                                size is known when it is creating.)
+</span><span class='line'>   2. PyVarObject. (Mutable Object eg: list object which's size is 
+</span><span class='line'>                    unknown when it is creating and support the 
+</span><span class='line'>                    operation of deleting and inserting)
+</span><span class='line'>                        -- notes by Jason Leaster
+</span><span class='line'> */
+</span><span class='line'>typedef struct _object {
+</span><span class='line'>    PyObject_HEAD
+</span><span class='line'>} PyObject;
+</span><span class='line'>
+</span><span class='line'>typedef struct {
+</span><span class='line'>    PyObject_VAR_HEAD
+</span><span class='line'>} PyVarObject;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Actually, PyObject are created by Macro <code>PyObject_HEAD</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[Include/object.h]
+</span><span class='line'>
+</span><span class='line'>...
+</span><span class='line'>
+</span><span class='line'>#define _PyObject_HEAD_EXTRA            \
+</span><span class='line'>    struct _object *_ob_next;           \
+</span><span class='line'>    struct _object *_ob_prev;
+</span><span class='line'>
+</span><span class='line'>#define _PyObject_EXTRA_INIT 0, 0,
+</span><span class='line'>
+</span><span class='line'>#define PyObject_HEAD                   \
+</span><span class='line'>    _PyObject_HEAD_EXTRA                \
+</span><span class='line'>    Py_ssize_t ob_refcnt;               \
+</span><span class='line'>    struct _typeobject *ob_type;
+</span><span class='line'>
+</span><span class='line'>/* 
+</span><span class='line'>   There also have some Macro to get the data member of PyObject.
+</span><span class='line'>                    -- notes by Jason Leaster
+</span><span class='line'> */
+</span><span class='line'>#define Py_REFCNT(ob)           (((PyObject*)(ob))-&gt;ob_refcnt)
+</span><span class='line'>#define Py_TYPE(ob)             (((PyObject*)(ob))-&gt;ob_type)
+</span><span class='line'>#define Py_SIZE(ob)             (((PyVarObject*)(ob))-&gt;ob_size)
+</span><span class='line'>
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Typically, the Int Object in Python <code>PyIntObject</code> is a <code>immutable object</code>. Once we created the object, we can&rsquo;t change the value in that object.</p>
+
+<p>Back to our topic, let&rsquo;s look at the definition of <code>PyIntObject</code>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//[Include/intobject.h]
+</span><span class='line'>
+</span><span class='line'>typedef struct{
+</span><span class='line'>    PyObject_HEAD
+</span><span class='line'>    long ob_ival;
+</span><span class='line'>} PyIntObject;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Aha, the <code>PyIntObject</code> is just a simple capsulation of <code>long</code> in C.
+This object maintain a long data member.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>static int
+</span><span class='line'>int_compare(PyIntObject *v, PyIntObject *w)
+</span><span class='line'>{
+</span><span class='line'>    /*
+</span><span class='line'>    You will sigh that "the author of Python is a master in 
+</span><span class='line'>    programming". For efficient, they use `register` keyword and 
+</span><span class='line'>    try to apply for using register to store the local variable.
+</span><span class='line'>                            -- notes by Jason Leaster.
+</span><span class='line'>    */
+</span><span class='line'>    register long i = v-&gt;ob_ival;
+</span><span class='line'>    register long j = w-&gt;ob_ival;
+</span><span class='line'>    return (i &lt; j) ? -1 : (i &gt; j) ? 1 : 0;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>How about the detail of printing a integer in Python ?</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/* ARGSUSED */
+</span><span class='line'>static int
+</span><span class='line'>int_print(PyIntObject *v, FILE *fp, int flags)
+</span><span class='line'>    /* flags -- not used but required by interface */
+</span><span class='line'>{
+</span><span class='line'>    long int_val = v-&gt;ob_ival;
+</span><span class='line'>    Py_BEGIN_ALLOW_THREADS
+</span><span class='line'>    fprintf(fp, "%ld", int_val);
+</span><span class='line'>    Py_END_ALLOW_THREADS
+</span><span class='line'>    return 0;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There have many others method which are defined in <code>PyNumberMethods</code>. Python programmer can get the information about the object with a data member <code>__doc__</code>, like this:</p>
+
+<p><img src="/images/img_for_2016_02_03/doc.png" alt="images" /></p>
+
+<p>The implementation of that is just a plain text string in <code>Object/intobject.c</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>PyDoc_STRVAR(int_doc,
+</span><span class='line'>"int(x=0) -&gt; int or long\n\
+</span><span class='line'>int(x, base=10) -&gt; int or long\n\
+</span><span class='line'>\n\
+</span><span class='line'>Convert a number or string to an integer, or return 0 if no arguments\n\
+</span><span class='line'>are given.  If x is floating point, the conversion truncates towards zero.\n\
+</span><span class='line'>If x is outside the integer range, the function returns a long instead.\n\
+</span><span class='line'>\n\
+</span><span class='line'>If x is not a number or if base is given, then x must be a string or\n\
+</span><span class='line'>Unicode object representing an integer literal in the given base.  The\n\
+</span><span class='line'>literal can be preceded by '+' or '-' and be surrounded by whitespace.\n\
+</span><span class='line'>The base defaults to 10.  Valid bases are 0 and 2-36.  Base 0 means to\n\
+</span><span class='line'>interpret the base from the string as an integer literal.\n\
+</span><span class='line'>&gt;&gt;&gt; int('0b100', base=0)\n\
+</span><span class='line'>4");
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Initialization of PyIntObject</h3>
+
+<p>Python support many different API to construct a <code>PyIntObject</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Include</span><span class="o">/</span><span class="n">intobject</span><span class="o">.</span><span class="n">h</span><span class="o">]</span>
+</span><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="no">PyAPI_FUNC</span><span class="p">(</span><span class="no">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="no">PyInt_FromString</span><span class="p">(</span><span class="n">char</span><span class="o">*</span><span class="p">,</span> <span class="n">char</span><span class="o">**</span><span class="p">,</span> <span class="n">int</span><span class="p">);</span>
+</span><span class='line'><span class="c1">#ifdef Py_USING_UNICODE</span>
+</span><span class='line'><span class="no">PyAPI_FUNC</span><span class="p">(</span><span class="no">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="no">PyInt_FromUnicode</span><span class="p">(</span><span class="no">Py_UNICODE</span><span class="o">*</span><span class="p">,</span> <span class="no">Py_ssize_t</span><span class="p">,</span> <span class="n">int</span><span class="p">);</span>
+</span><span class='line'><span class="c1">#endif</span>
+</span><span class='line'><span class="no">PyAPI_FUNC</span><span class="p">(</span><span class="no">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="no">PyInt_FromLong</span><span class="p">(</span><span class="n">long</span><span class="p">);</span>
+</span><span class='line'><span class="no">PyAPI_FUNC</span><span class="p">(</span><span class="no">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="no">PyInt_FromSize_t</span><span class="p">(</span><span class="n">size_t</span><span class="p">);</span>
+</span><span class='line'><span class="no">PyAPI_FUNC</span><span class="p">(</span><span class="no">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="no">PyInt_FromSsize_t</span><span class="p">(</span><span class="no">Py_ssize_t</span><span class="p">);</span>
+</span><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Before we dig into the implementation of the initialization process.
+Let&rsquo;s do a lab.</p>
+
+<p><img src="/images/img_for_2016_02_03/different_address.png" alt="images" /></p>
+
+<p><code>id(object)</code> will returen the address of object in CPython.</p>
+
+<p>Try to answer the following question.</p>
+
+<p>Why int object <code>m</code> and <code>n</code> of value <code>1000</code> have different address?</p>
+
+<p>Why int object <code>x</code> and <code>y</code> of value <code>1</code>    have the same  address?</p>
+
+<p>The answer relate to the mechanism with numbers in Python.</p>
+
+<p><em>In daily programming stuff, small number are used frequently. But large number may used frequent more than small numbers</em></p>
+
+<p>If there isn&rsquo;t a special mechanism, Python will allocate memory(call malloc() in C) again and again. This stratege isn&rsquo;t efficient at run time.
+So, Python support a mechanism which will create small number only once but not bigger number.</p>
+
+<p>There also have the other question. What means big? What means small?
+It&rsquo;s not clearly in theory. But in the implementation, there have a trade off. People can&rsquo;t cache all integer number for the limitation of memory(RAM).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="p">[</span><span class="n">Object</span><span class="o">/</span><span class="n">intobject</span><span class="p">]</span>
+</span><span class='line'><span class="p">...</span>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">NSMALLPOSINTS:    Numbers of small positive integers number</span>
+</span><span class='line'><span class="cm">NSMALLNEGINTS:    Numbers of small negative integers number</span>
+</span><span class='line'><span class="cm">        --notes by Jason Leaster</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="cp">#ifndef NSMALLPOSINTS  </span>
+</span><span class='line'><span class="cp">#define NSMALLPOSINTS           257</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'><span class="cp">#ifndef NSMALLNEGINTS  </span>
+</span><span class='line'><span class="cp">#define NSMALLNEGINTS           5</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'><span class="cp">#if NSMALLNEGINTS + NSMALLPOSINTS &gt; 0</span>
+</span><span class='line'><span class="cm">/*  References to small integers are saved in this array so that they</span>
+</span><span class='line'><span class="cm">    can be shared.</span>
+</span><span class='line'><span class="cm">    The integers that are saved are those in the range</span>
+</span><span class='line'><span class="cm">    -NSMALLNEGINTS (inclusive) to NSMALLPOSINTS (not inclusive).</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="k">static</span> <span class="n">PyIntObject</span> <span class="o">*</span><span class="n">small_ints</span><span class="p">[</span><span class="n">NSMALLNEGINTS</span> <span class="o">+</span> <span class="n">NSMALLPOSINTS</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>According to the implementation, the small number is [-5, 257). You can also modify the source code and recomplie it to change the range of small number, if you would like to.</p>
+
+<blockquote><p>  Integers are quite normal objects, to make object handling uniform.
+   (Using odd pointers to represent integers would save much space
+   but require extra checks for this special case throughout the code.)
+   Since a typical Python program spends much of its time allocating
+   and deallocating integers, these operations should be very fast.
+   Therefore we use a dedicated allocation scheme with a much lower
+   overhead (in space and time) than straight malloc(): a simple
+   dedicated free list, filled when necessary with memory from malloc().
+   block_list is a singly-linked list of all PyIntBlocks ever allocated,  linked via their next members.  PyIntBlocks are never returned to the
+   system before shutdown (PyInt_Fini).
+   free_list is a singly-linked list of available PyIntObjects, linked
+   via abuse of their ob_type members.</p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="cp">#define BLOCK_SIZE      1000    </span><span class="cm">/* 1K less typical malloc overhead */</span><span class="cp"></span>
+</span><span class='line'><span class="cp">#define BHEAD_SIZE      8       </span><span class="cm">/* Enough for a 64-bit pointer */</span><span class="cp"></span>
+</span><span class='line'><span class="cp">#define N_INTOBJECTS    ((BLOCK_SIZE - BHEAD_SIZE) / sizeof(PyIntObject))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">struct</span> <span class="n">_intblock</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">_intblock</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">PyIntObject</span> <span class="n">objects</span><span class="p">[</span><span class="n">N_INTOBJECTS</span><span class="p">];</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_intblock</span> <span class="n">PyIntBlock</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="n">PyIntBlock</span> <span class="o">*</span><span class="n">block_list</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="k">static</span> <span class="n">PyIntObject</span> <span class="o">*</span><span class="n">free_list</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">// Initliazed by fill_free_list()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Insert and Delete</h3>
+
+<p>A initialization routine from <code>long type</code> integer number.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">PyObject</span> <span class="o">*</span>
+</span><span class='line'><span class="no">PyInt_FromLong</span><span class="p">(</span><span class="n">long</span> <span class="n">ival</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">register</span> <span class="no">PyIntObject</span> <span class="o">*</span><span class="n">v</span><span class="p">;</span>
+</span><span class='line'>    <span class="sr">//</span> <span class="n">try</span> <span class="n">to</span> <span class="n">use</span> <span class="n">small</span> <span class="n">number</span> <span class="n">pool</span>
+</span><span class='line'><span class="c1">#if NSMALLNEGINTS + NSMALLPOSINTS &gt; 0</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">-</span><span class="no">NSMALLNEGINTS</span> <span class="o">&lt;=</span> <span class="n">ival</span> <span class="o">&amp;&amp;</span> <span class="n">ival</span> <span class="o">&lt;</span> <span class="no">NSMALLPOSINTS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">v</span> <span class="o">=</span> <span class="n">small_ints</span><span class="o">[</span><span class="n">ival</span> <span class="o">+</span> <span class="no">NSMALLNEGINTS</span><span class="o">]</span><span class="p">;</span>
+</span><span class='line'>        <span class="no">Py_INCREF</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+</span><span class='line'><span class="c1">#ifdef COUNT_ALLOCS</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">ival</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">quick_int_allocs</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>            <span class="n">quick_neg_int_allocs</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'><span class="c1">#endif</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="no">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="n">v</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="c1">#endif</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="sr">//</span> <span class="k">if</span> <span class="n">ival</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">a</span> <span class="n">small</span> <span class="n">number</span><span class="p">,</span> <span class="n">create</span> <span class="n">a</span> <span class="kp">new</span> <span class="n">instance</span> <span class="n">object</span><span class="o">.</span>
+</span><span class='line'>   <span class="k">if</span> <span class="p">(</span><span class="n">free_list</span> <span class="o">==</span> <span class="no">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="k">if</span> <span class="p">((</span><span class="n">free_list</span> <span class="o">=</span> <span class="n">fill_free_list</span><span class="p">())</span> <span class="o">==</span> <span class="no">NULL</span><span class="p">)</span>
+</span><span class='line'>           <span class="sr">/*</span>
+</span><span class='line'><span class="sr">              fill_free_list() will create a general number pool </span>
+</span><span class='line'><span class="sr">              for PyIntObjects.</span>
+</span><span class='line'><span class="sr">              But if there is no memory, return NULL</span>
+</span><span class='line'><span class="sr">            */</span>
+</span><span class='line'>           <span class="k">return</span> <span class="no">NULL</span><span class="p">;</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'>   <span class="sr">/* Inline PyObject_New */</span>
+</span><span class='line'>   <span class="n">v</span> <span class="o">=</span> <span class="n">free_list</span><span class="p">;</span>
+</span><span class='line'>   <span class="n">free_list</span> <span class="o">=</span> <span class="p">(</span><span class="no">PyIntObject</span> <span class="o">*</span><span class="p">)</span><span class="no">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+</span><span class='line'>   <span class="sr">//</span> <span class="no">Py_TYPE</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>  <span class="p">(((</span><span class="no">PyObject</span><span class="o">*</span><span class="p">)(</span><span class="n">ob</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">ob_type</span><span class="p">)</span> <span class="o">--</span><span class="n">notes</span> <span class="n">by</span> <span class="no">Jason</span> <span class="no">Leaster</span>
+</span><span class='line'>   <span class="no">PyObject_INIT</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">&amp;</span><span class="no">PyInt_Type</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">v</span><span class="o">-&gt;</span><span class="n">ob_ival</span> <span class="o">=</span> <span class="n">ival</span><span class="p">;</span>
+</span><span class='line'>   <span class="k">return</span> <span class="p">(</span><span class="no">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="n">v</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Time for Hacking</h3>
+
+<p>Modify the <code>int_print</code> function in <code>Object/intobject.c</code>.
+Here is my modification:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm"> Programmer : Jason Leaster</span>
+</span><span class='line'><span class="cm"> Date       : 2016.02.03</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> Modify from Robert Chen&#39;s code.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">tatic</span> <span class="kt">int</span> <span class="n">values</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+</span><span class='line'><span class="k">static</span> <span class="kt">int</span> <span class="n">refcounts</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="kt">int</span>
+</span><span class='line'><span class="nf">int_print</span><span class="p">(</span><span class="n">PyIntObject</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span>
+</span><span class='line'>         <span class="cm">/* flags -- not used but required by interface */</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>        <span class="c1">// &lt;&lt;&lt; modified by Jason Leaster</span>
+</span><span class='line'>        <span class="n">PyIntObject</span><span class="o">*</span> <span class="n">intObjectPtr</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">PyIntBlock</span><span class="o">*</span> <span class="n">p</span>    <span class="o">=</span> <span class="n">block_list</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">PyIntBlock</span><span class="o">*</span> <span class="n">last</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">while</span><span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">count</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">last</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">intObjectPtr</span> <span class="o">=</span> <span class="n">last</span><span class="o">-&gt;</span><span class="n">objects</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">intObjectPtr</span><span class="o">+=</span> <span class="n">N_INTOBJECTS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot; Address @%p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">,</span> <span class="o">--</span><span class="n">intObjectPtr</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">intObjectPtr</span><span class="o">-&gt;</span><span class="n">ob_ival</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">refcounts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">intObjectPtr</span><span class="o">-&gt;</span><span class="n">ob_refcnt</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot; Values: &quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot; refcnt: &quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">refcounts</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot; block_list count: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot; free_list : %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">free_list</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// &gt;&gt;&gt; Origianl</span>
+</span><span class='line'>        <span class="kt">long</span> <span class="n">int_val</span> <span class="o">=</span> <span class="n">v</span><span class="o">-&gt;</span><span class="n">ob_ival</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">Py_BEGIN_ALLOW_THREADS</span>
+</span><span class='line'>        <span class="n">fprintf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">&quot;%ld&quot;</span><span class="p">,</span> <span class="n">int_val</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">Py_END_ALLOW_THREADS</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/img_for_2016_02_03/printout.png" alt="images" /></p>
+
+<hr />
+
+<p>Photo by Jason Leaster
+<img src="/images/img_for_2016_02_03/street.jpg" alt="images" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason Leaster</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-02-03T00:56:31+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>12:56 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/12/30/machine-learning-with-k-means/" title="Previous Post: Machine Learning With K-Means">&laquo; Machine Learning With K-Means</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/02/03/memory-model-of-int-object-in-python/">Int Object in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/30/machine-learning-with-k-means/">Machine Learning With K-Means</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/25/labs-of-mit-6-dot-034/">Labs of MIT 6.034</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/13/machine-learning-with-boosting/">Machine Learning With Boosting</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/24/binary-search-tree/">Binary Search Tree</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Jason Leaster -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
