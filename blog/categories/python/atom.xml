@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-03T20:36:51+08:00</updated>
+  <updated>2016-02-03T20:44:15+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -38,7 +38,14 @@
 
 <ul>
 <li>Objects are structures allocated on the heap.</li>
-<li><p>Objects are never allocated statically or on the stack; they must be accessed through special macros and functions only.</p></li>
+<li>Objects are never allocated statically or on the stack; they must be accessed through special macros and functions only.</li>
+</ul>
+
+
+<!-- more -->
+
+
+<ul>
 <li><p>An object has a &lsquo;reference count&rsquo; that is increased or decreased when a pointer to the object is copied or deleted; when the reference count reaches zero there are no references to the object left and it can be removed from the heap.</p></li>
 <li><p>An object has a &lsquo;type&rsquo; that determines what it represents and what kind of data it contains.  An object&rsquo;s type is fixed when it is created. Types themselves are represented as objects; an object contains a pointer to the corresponding type object.  The type itself has a type pointer pointing to the object representing the type &lsquo;type&rsquo;, which contains a pointer to itself!).</p></li>
 <li><p>Objects do not float around in memory; once allocated an object keeps the same size and address.  Objects that must hold variable-size data can contain pointers to variable-size parts of the object.  Not all objects of the same type have the same size; but the size cannot change after allocation.</p></li>
@@ -48,7 +55,7 @@
 
 <h3>Firt glance at the implementation.</h3>
 
-<pre><code>
+<pre><code class="C++">
 /*
    There are two basic different type of Object in Python.
    1. PyObject.    (Immutable Object eg: int, string object which's 
@@ -69,7 +76,7 @@ typedef struct {
 
 <p>Actually, PyObject are created by Macro <code>PyObject_HEAD</code></p>
 
-<pre><code>[Include/object.h]
+<pre><code class="C++">[Include/object.h]
 
 ...
 
@@ -99,7 +106,7 @@ typedef struct {
 
 <p>Back to our topic, let&rsquo;s look at the definition of <code>PyIntObject</code>.</p>
 
-<pre><code>//[Include/intobject.h]
+<pre><code class="C++">//[Include/intobject.h]
 
 typedef struct{
     PyObject_HEAD
@@ -110,7 +117,7 @@ typedef struct{
 <p>Aha, the <code>PyIntObject</code> is just a simple capsulation of <code>long</code> in C.
 This object maintain a long data member.</p>
 
-<pre><code>static int
+<pre><code class="C++">static int
 int_compare(PyIntObject *v, PyIntObject *w)
 {
     /*
@@ -127,7 +134,7 @@ int_compare(PyIntObject *v, PyIntObject *w)
 
 <p>How about the detail of printing a integer in Python ?</p>
 
-<pre><code>/* ARGSUSED */
+<pre><code class="C++">/* ARGSUSED */
 static int
 int_print(PyIntObject *v, FILE *fp, int flags)
     /* flags -- not used but required by interface */
@@ -146,7 +153,7 @@ int_print(PyIntObject *v, FILE *fp, int flags)
 
 <p>The implementation of that is just a plain text string in <code>Object/intobject.c</code></p>
 
-<pre><code>
+<pre><code class="C++">
 PyDoc_STRVAR(int_doc,
 "int(x=0) -&gt; int or long\n\
 int(x, base=10) -&gt; int or long\n\
@@ -168,7 +175,7 @@ interpret the base from the string as an integer literal.\n\
 
 <p>Python support many different API to construct a <code>PyIntObject</code>.</p>
 
-<pre><code class="ruby">[Include/intobject.h]
+<pre><code class="C++">[Include/intobject.h]
 ...
 PyAPI_FUNC(PyObject *) PyInt_FromString(char*, char**, int);
 #ifdef Py_USING_UNICODE
@@ -261,7 +268,7 @@ static PyIntObject *free_list = NULL; // Initliazed by fill_free_list()
 
 <p>A initialization routine from <code>long type</code> integer number.</p>
 
-<pre><code class="ruby">
+<pre><code class="C++">
 PyObject *
 PyInt_FromLong(long ival)
 {
