@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithm | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-03T23:12:39+08:00</updated>
+  <updated>2016-02-04T18:43:04+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -14,16 +14,295 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Binary Search Tree]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/09/24/binary-search-tree/"/>
+    <updated>2015-09-24T01:28:33+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/09/24/binary-search-tree</id>
+    <content type="html"><![CDATA[<p>I try to collect problems about <code>Binary Search Tree (BST)</code> which are asked in interview frequently.</p>
+
+<p>Basicly, here is the definition of Binary Search Tree. And I show the way how to implement the basic operation like <code>insert</code>, <code>delete</code> and so on.</p>
+
+<p><code>python
+class TreeNode() :
+    def __init__(self, num = -1) :
+      self.val = num
+      self.right  = None
+      self.left   = None
+</code></p>
+
+<p>You could find all my practices with BST in github: <a href="https://github.com/jasonleaster/Algorithm/blob/master/Binary_Search_Tree/Python_version/bst.py">BST</a></p>
+
+<p><img src="/images/img_for_2015_09_25/bst.png" alt="images" /></p>
+
+<!-- more -->
+
+<p>There are three different ways to travel a BST. N(node), L(left subtree), R(right subtree)</p>
+
+<ul>
+  <li>
+    <p>NLR: Firstly the traveller access the data of the Node(N) and then it enter into the left sub-tree, travel the right sub-tree</p>
+  </li>
+  <li>
+    <p>LNR</p>
+  </li>
+  <li>
+    <p>LRN</p>
+  </li>
+</ul>
+
+<p>It’s very easy and obvious to implement the recursive definition of the three different traveller.</p>
+
+<p>You will find that it’s a very efficient way to understand what means Pre-traveller, In-traveller and Post-traveller.</p>
+
+<p>``` python
+    “””
+    Recursive definition
+    “””
+    def pre_traveller(self, node):
+        if node == None :
+            return None</p>
+
+<pre><code>    print node.val
+    self.pre_traveller(node.left)
+    self.pre_traveller(node.right)
+
+def in_traveller(self, node):
+    if node == None:
+        return None
+
+    self.in_traveller(node.left)
+    print node.val
+    self.in_traveller(node.right)
+
+def post_traveller(self, node):
+    if node == None:
+        return None
+
+    self.post_traveller(node.left)
+    self.post_traveller(node.right)
+    print node.val
+</code></pre>
+
+<p>```</p>
+
+<p>But the interview officer may not be satisfy with your recursive implementation. Take some time to understand the iteratly implementation below there.</p>
+
+<p>``` python</p>
+
+<pre><code>"""
+Iterately implementation
+
+Given a binary tree, return the preorder traversal of 
+its nodes' values.
+"""
+def preorderTraversal(self, root):
+    """
+    :type root: TreeNode
+    :rtype: List[int]
+    """
+    if root is None:
+        return []
+
+    stack = [root]
+    ret = []
+    
+    while len(stack) != 0:
+        node = stack.pop()
+        ret.append(node.val)
+        if node.right is not None:
+            stack.append(node.right)
+        if node.left is not None:
+            stack.append(node.left)
+            
+    return ret
+
+"""
+Given a binary tree, return the inorder traversal 
+of its nodes' values.
+"""
+def inorderTraversal(self, root):
+    res, stack = [], []
+    while True:
+        while root:
+            stack.append(root)
+            root = root.left
+        if not stack:
+            return res
+        node = stack.pop()
+        res.append(node.val)
+        root = node.right
+
+def postorderTraversal(self, root):
+    """
+    :type root: TreeNode
+    :rtype: List[int]
+    """
+    res   = []
+    stack = [root]
+    
+    while len(stack):
+        node = stack.pop()
+        if node:
+            res.append(node.val)
+            stack.append(node.left)
+            stack.append(node.right)
+            
+    return res[::-1] ```
+</code></pre>
+
+<p>There is another interesting problem that how to travel a BST in level order. Something like this:
+For example:</p>
+
+<p>Given binary tree {3,9,20,#,#,15,7},</p>
+
+<p><img src="/images/img_for_2015_09_25/1.png" alt="images" /></p>
+
+<p>return its level order traversal as:</p>
+
+<p><img src="/images/img_for_2015_09_25/2.png" alt="images" /></p>
+
+<p>At this moment, you should try to use some basic data structure to solve this problem. Don’t forget STACK :)</p>
+
+<p>``` python
+    “””
+    Given a binary tree, return the level order traversal of 
+    its nodes’ values. (ie, from left to right, level by level).
+    “””
+    def levelOrder(self, node):
+        if node is None:
+            return []</p>
+
+<pre><code>    stack = [node]
+    length = len(stack)
+    ret = []
+    j = 0
+
+    while length != 0:
+        ret.append([])
+        for i in range(0, length):
+            
+            ret[j].append(stack[i].val)
+            if stack[i].left != None:
+
+                stack.append(stack[i].left)
+            if stack[i].right != None:
+                stack.append(stack[i].right)
+
+        for i in range(0, length):
+            stack.remove(stack[0])
+
+        length = len(stack)
+        j += 1
+
+    return ret ```
+</code></pre>
+
+<p>After you solve this problem, you have knew that stack is a efficient and useful ADT. Once you meet a hard problem, try to use another ADT to solve your problem.</p>
+
+<p>Function <code>isValidBST</code> help us to check whether the tree is a BST. Now, if you have no idea about what means a BST, go to wikipedia and help yourself :)</p>
+
+<p>You know that if we travel the tree with <code>In-Order traveller</code>, the output of the traveller is sorted from small element to big one.
+``` python
+    def isValidBST(self, root):
+        A = []
+        A = self.in_traveller(self.root)</p>
+
+<pre><code>    for i in range(0, len(A)):
+        if A[i-1] &gt;= A[i]:
+            return False
+
+    return True ```
+</code></pre>
+
+<p>There is a joke about how to invert a BST. 
+&gt; Google: 90% of our engineers use the software you wrote (Homebrew), but you can’t invert a binary tree on a whiteboard so fuck off.</p>
+
+<p>It’s easy to solve this problem by recursion.</p>
+
+<p>``` python</p>
+
+<pre><code>def invertTree(self, root):
+    if root is None:
+        return
+    
+    root.left, root.right = root.right, root.left
+    self.invertTree(root.left)
+    self.invertTree(root.right) ```
+</code></pre>
+
+<p>You may also be asked to translate a sorted array into BST. So, how to make it?</p>
+
+<p>``` python
+    def sortedArrayToBST(self, nums):
+        “””
+        :type nums: List[int]
+        :rtype: TreeNode
+        “””
+        return self.helperSortedArrayToBST(nums, 0, len(nums)-1)</p>
+
+<pre><code>def helperSortedArrayToBST(self, nums, start, end):
+    if start &gt; end:
+        return None
+        
+    middle = int((start + end)/2)
+    
+    root = TreeNode(nums[middle])
+    root.left  = self.helper(nums, start, middle-1) 
+    root.right = self.helper(nums, middle + 1, end)
+    
+    return root ```
+</code></pre>
+
+<p>How to use the output of <code>InOrder-Traveller</code> and <code>PostOrder-Traveller</code> to rebuild a BST ?</p>
+
+<p>``` python
+    “””
+    Given inorder and postorder traversal of a tree, 
+    construct the binary tree.</p>
+
+<pre><code>Note:
+You may assume that duplicates do not exist in the tree.
+"""
+def buildTree(self, inorder, postorder):
+    """
+    :type inorder: List[int]
+    :type postorder: List[int]
+    :rtype: TreeNode
+    """
+    if len(inorder) == 0 or len(postorder) == 0:
+        return None
+    
+    index = inorder.index(postorder.pop())
+    root = TreeNode(inorder[index])
+    
+    # You HAVE TO build right sub-tree first, 
+    # otherwise you will get wrong answer
+    # because you poped the last element of @postorder before here.
+    root.right = self.buildTree(inorder[index+1:], postorder)
+    root.left  = self.buildTree(inorder[0:index] , postorder)
+    
+    return root ```
+</code></pre>
+
+<hr />
+<p>Photo By Jason Leaster in ChangDe, China</p>
+
+<p><img src="/images/img_for_2015_09_25/highschool.jpg" alt="images" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Binary Search]]></title>
     <link href="http://jasonleaster.github.io/blog/2015/07/24/binary-search/"/>
     <updated>2015-07-24T10:17:20+08:00</updated>
     <id>http://jasonleaster.github.io/blog/2015/07/24/binary-search</id>
     <content type="html"><![CDATA[<p>This is a story why I write this algorithm again.</p>
 
-<blockquote><p>In this days, I work as an intern for Alibaba. To be honest, it totally a bad time for the beginning days. More awful fact to me is that my mentor do his job mostly in Java and I have to pick it up as quickly as possible. It’s totally a stranger for me about Java. <strong>What I have to say is that thanks god and my mentor.</strong> He is so nice and never blame me for my problem. You know that I suffer pressure heavily for I learned nothing but time wasted in this two weeks. I asked for help from human resource manager and hope to find someone guide me to walk out this shadow. Bo who is my mentor. He understand me and know my feeling. Bo encourage me and try to let me believe things will be better. Today, I face to a problem which I think is very naive but I didn’t show the solution to a leader of a department very well. And I could feel that he doubt about my ability in programming. I feel shame about he ask me that “Do you have programming in C or C++ for ten thousand lines ?”.</p></blockquote>
+<blockquote>
+  <p>In this days, I work as an intern for Alibaba. To be honest, it totally a bad time for the beginning days. More awful fact to me is that my mentor do his job mostly in Java and I have to pick it up as quickly as possible. It’s totally a stranger for me about Java. <strong>What I have to say is that thanks god and my mentor.</strong> He is so nice and never blame me for my problem. You know that I suffer pressure heavily for I learned nothing but time wasted in this two weeks. I asked for help from human resource manager and hope to find someone guide me to walk out this shadow. Bo who is my mentor. He understand me and know my feeling. Bo encourage me and try to let me believe things will be better. Today, I face to a problem which I think is very naive but I didn’t show the solution to a leader of a department very well. And I could feel that he doubt about my ability in programming. I feel shame about he ask me that “Do you have programming in C or C++ for ten thousand lines ?”.</p>
+</blockquote>
 
 <!-- more -->
-
 
 <p>Ok, the story end and it don’t important anymore. What I should do is to pay attention to my weak ability and work hard to make me more stronger. Then I will prepare for the coming recruitment in autumn.</p>
 
@@ -35,17 +314,18 @@
 
 <p>Here you could see my code and show you how to implement a Binary Search in C++, Java and Python.</p>
 
-<pre><code class="C++">/**********************************************************
+<p>``` C++
+/<strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><em>**</em>
 Programmer   :  EOF
 E-mail       :  jasonleaster@163.com
 File         :  binary_search.cpp
-Date         :  2015.07.25
+Date         :  2015.07.25</p>
 
-***********************************************************/
+<p><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong><strong>**</strong>*****/</p>
 
-#include &lt;iostream&gt;
+<h1 id="include-iostream">include <iostream></iostream></h1>
 
-template&lt;class T&gt;
+<p>template<class t="">
 T BinarySearch(const T p_array[], int start, int end, T target)
 {
     if (!p_array || start &gt; end)
@@ -56,56 +336,55 @@ T BinarySearch(const T p_array[], int start, int end, T target)
                      "than @end"
                    &lt;&lt; std::endl;
         return -1;
-    }
+    }</class></p>
 
-    int middle = -1;
+<pre><code>int middle = -1;
 
-    if(p_array[start] == target)
-    {
-        return start;
-    }
-    else if(p_array[end] == target)
-    {
-        return end;
-    }
-
-    for(;start &lt; end;)
-    {
-        middle = (start + end)/2;
-
-        if(p_array[middle] == target)
-        {
-            return middle;
-        }
-        else if (p_array[middle] &lt; target)
-        {
-            start = middle + 1;
-        }
-        else
-        {
-            end = middle - 1;
-        }
-    }
-
-    std::cout &lt;&lt; "The element you find don't exist in the data set"
-              &lt;&lt; std::endl;
-
-    return -1;
-}
-
-int main()
+if(p_array[start] == target)
 {
-    int array[10] = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20};
-
-    int ret = -1;
-
-    ret = BinarySearch(array, 0, sizeof(array)/sizeof(array[0]), 7);
-
-    ret = BinarySearch(array, 0, sizeof(array)/sizeof(array[0]), 12);
-
-    std::cout &lt;&lt; ret &lt;&lt; std::endl;
-    return 0;
+    return start;
 }
+else if(p_array[end] == target)
+{
+    return end;
+}
+
+for(;start &lt; end;)
+{
+    middle = (start + end)/2;
+
+    if(p_array[middle] == target)
+    {
+        return middle;
+    }
+    else if (p_array[middle] &lt; target)
+    {
+        start = middle + 1;
+    }
+    else
+    {
+        end = middle - 1;
+    }
+}
+
+std::cout &lt;&lt; "The element you find don't exist in the data set"
+          &lt;&lt; std::endl;
+
+return -1; }
+</code></pre>
+
+<p>int main()
+{
+    int array[10] = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20};</p>
+
+<pre><code>int ret = -1;
+
+ret = BinarySearch(array, 0, sizeof(array)/sizeof(array[0]), 7);
+
+ret = BinarySearch(array, 0, sizeof(array)/sizeof(array[0]), 12);
+
+std::cout &lt;&lt; ret &lt;&lt; std::endl;
+return 0; } ```
 </code></pre>
 
 <p>You could also find the other implementation follow this link:</p>
@@ -113,10 +392,10 @@ int main()
 <p><a href="https://github.com/jasonleaster/Algorithm/tree/master/Binary_search">Binary Search</a></p>
 
 <hr />
-
 <p>Photo by Jason Leaster, Hangzhou, China</p>
 
 <p><img src="/images/img_for_2015_07_24/cute.png" alt="images" /></p>
+
 ]]></content>
   </entry>
   

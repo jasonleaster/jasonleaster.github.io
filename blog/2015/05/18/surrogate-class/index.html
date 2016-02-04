@@ -94,69 +94,67 @@
 
 <!-- more -->
 
-
 <p>A demo about “Vehicle”:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm">    Programmer  :  EOF</span>
-</span><span class='line'><span class="cm">    Date        :  2015.05.18</span>
-</span><span class='line'><span class="cm">    File        :  5.1.c</span>
-</span><span class='line'><span class="cm">    E-mail      :  jasonleaster@gmail.com</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">Vehicle</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
-</span><span class='line'>        <span class="cm">/*</span>
-</span><span class='line'><span class="cm">           It will be OK, if you don&#39;t use virtual function.</span>
-</span><span class='line'><span class="cm">        double weight() const;</span>
-</span><span class='line'><span class="cm">        void start();</span>
-</span><span class='line'><span class="cm">        */</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">virtual</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// ...</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">RoadVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
-</span><span class='line'><span class="k">class</span> <span class="nc">AutoVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">RoadVehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
-</span><span class='line'><span class="k">class</span> <span class="nc">Aircraft</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
-</span><span class='line'><span class="k">class</span> <span class="nc">Helicopter</span><span class="o">:</span> <span class="k">public</span> <span class="n">Aircraft</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Vehicle</span> <span class="n">parking_lot</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*</span>
+</span><span class="line"><span class="cm">    Programmer  :  EOF</span>
+</span><span class="line"><span class="cm">    Date        :  2015.05.18</span>
+</span><span class="line"><span class="cm">    File        :  5.1.c</span>
+</span><span class="line"><span class="cm">    E-mail      :  jasonleaster@gmail.com</span>
+</span><span class="line">
+</span><span class="line"><span class="cm"> */</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">Vehicle</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span><span class="o">:</span>
+</span><span class="line">        <span class="cm">/*</span>
+</span><span class="line"><span class="cm">           It will be OK, if you don&#39;t use virtual function.</span>
+</span><span class="line"><span class="cm">        double weight() const;</span>
+</span><span class="line"><span class="cm">        void start();</span>
+</span><span class="line"><span class="cm">        */</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">virtual</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">        <span class="c1">// ...</span>
+</span><span class="line"><span class="p">};</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">RoadVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">AutoVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">RoadVehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">Aircraft</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">Helicopter</span><span class="o">:</span> <span class="k">public</span> <span class="n">Aircraft</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class="line">
+</span><span class="line"><span class="n">Vehicle</span> <span class="n">parking_lot</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>If you gona to compile this source file, you will got errors and warnings like this:</p>
 
@@ -172,18 +170,17 @@
 
 <p>Eg, if we delete all pure virtual functions in Vehicle, what would happen?</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="n">Vehicle</span> <span class="n">parking_lot</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Automobile</span> <span class="n">x</span> <span class="o">=</span> <span class="cm">/* ... */</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Parking_lot</span><span class="p">[</span><span class="n">num_vihicles</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="n">Vehicle</span> <span class="n">parking_lot</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+</span><span class="line">
+</span><span class="line"><span class="n">Automobile</span> <span class="n">x</span> <span class="o">=</span> <span class="cm">/* ... */</span>
+</span><span class="line">
+</span><span class="line"><span class="n">Parking_lot</span><span class="p">[</span><span class="n">num_vihicles</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>The answer is that there would be a cast on @x. @x is class Automobile which inhiret from base class Vehicle. @x will be cast into class Vehicle and then assign to object Parking_lot[num_vihicles]. In the process of casing, @x will lost anything which is not in Vehicle.</p>
 
@@ -191,328 +188,327 @@
 
 <p>It’s time release our scheme to solve that problem.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-<span class='line-number'>159</span>
-<span class='line-number'>160</span>
-</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="cm">/**********************************************</span>
-</span><span class='line'><span class="cm">Programmer  :   EOF</span>
-</span><span class='line'><span class="cm">Date        :   2015.05.18</span>
-</span><span class='line'><span class="cm">File        :   5.4.cpp</span>
-</span><span class='line'><span class="cm">E-mail      :   jasonleaster@gmail.com</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">***********************************************/</span>
-</span><span class='line'><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">Vehicle</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
-</span><span class='line'>        <span class="cm">/*</span>
-</span><span class='line'><span class="cm">           It will be OK, if you don&#39;t use virtual function.</span>
-</span><span class='line'><span class="cm">        double weight() const;</span>
-</span><span class='line'><span class="cm">        void start();</span>
-</span><span class='line'><span class="cm">        */</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">virtual</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">virtual</span> <span class="n">Vehicle</span><span class="o">*</span> <span class="n">copy</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">virtual</span> <span class="o">~</span><span class="n">Vehicle</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span> <span class="p">;</span>
-</span><span class='line'>        <span class="c1">// ...</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">RoadVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
-</span><span class='line'><span class="k">class</span> <span class="nc">AutoVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">RoadVehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
-</span><span class='line'><span class="k">class</span> <span class="nc">Aircraft</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
-</span><span class='line'><span class="k">class</span> <span class="nc">Helicopter</span><span class="o">:</span> <span class="k">public</span> <span class="n">Aircraft</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">VehicleSurrogate</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
-</span><span class='line'>        <span class="cm">/*</span>
-</span><span class='line'><span class="cm">           Constructor</span>
-</span><span class='line'><span class="cm">         */</span>
-</span><span class='line'>        <span class="n">VehicleSurrogate</span><span class="p">();</span>
-</span><span class='line'>        <span class="n">VehicleSurrogate</span><span class="p">(</span><span class="k">const</span> <span class="n">Vehicle</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">VehicleSurrogate</span><span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="cm">/*</span>
-</span><span class='line'><span class="cm">           De-constructor</span>
-</span><span class='line'><span class="cm">         */</span>
-</span><span class='line'>        <span class="o">~</span><span class="n">VehicleSurrogate</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">VehicleSurrogate</span><span class="o">&amp;</span> <span class="k">operator</span> <span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="cm">/*</span>
-</span><span class='line'><span class="cm">           Operations from class Vehicle</span>
-</span><span class='line'><span class="cm">         */</span>
-</span><span class='line'>        <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class='line'>        <span class="kt">void</span> <span class="nf">start</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// ...</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span><span class="o">:</span>
-</span><span class='line'>        <span class="n">Vehicle</span><span class="o">*</span> <span class="n">vp</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">VehicleSurrogate</span><span class="p">()</span><span class="o">:</span> <span class="n">vp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">VehicleSurrogate</span><span class="p">(</span><span class="k">const</span> <span class="n">Vehicle</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span>
-</span><span class='line'>    <span class="n">vp</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">copy</span><span class="p">())</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span> <span class="o">~</span><span class="n">VehicleSurrogate</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">delete</span> <span class="n">vp</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">VehicleSurrogate</span> <span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span>
-</span><span class='line'>    <span class="n">vp</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">vp</span> <span class="o">?</span> <span class="n">v</span><span class="p">.</span><span class="n">vp</span><span class="o">-&gt;</span><span class="n">copy</span><span class="p">()</span> <span class="o">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">&amp;</span>
-</span><span class='line'><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">v</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">delete</span> <span class="n">vp</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">vp</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">vp</span> <span class="o">?</span> <span class="n">v</span><span class="p">.</span><span class="n">vp</span><span class="o">-&gt;</span><span class="n">copy</span><span class="p">()</span> <span class="o">:</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">double</span> <span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">weight</span><span class="p">()</span> <span class="k">const</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">vp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">throw</span> <span class="s">&quot;empty VehicleSurrogate.weight()&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">vp</span><span class="o">-&gt;</span><span class="n">weight</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">start</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">vp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">throw</span> <span class="s">&quot;empty VehicleSurrogate.start()&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">vp</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">Automobile</span><span class="o">:</span> <span class="k">public</span> <span class="n">AutoVehicle</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>        <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class='line'>        <span class="kt">void</span> <span class="nf">start</span><span class="p">();</span>
-</span><span class='line'>        <span class="n">Vehicle</span><span class="o">*</span> <span class="n">copy</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">double</span>
-</span><span class='line'><span class="n">Automobile</span><span class="o">::</span><span class="n">weight</span><span class="p">()</span> <span class="k">const</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mf">0.0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span>
-</span><span class='line'><span class="n">Automobile</span><span class="o">::</span><span class="n">start</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Hello this is automobile&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Vehicle</span><span class="o">*</span>
-</span><span class='line'><span class="n">Automobile</span><span class="o">::</span><span class="n">copy</span><span class="p">()</span> <span class="k">const</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="n">Automobile</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm">   Here is our test unit.</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">   Attention! </span>
-</span><span class='line'><span class="cm">   Never use assignment between class objects out of function block.</span>
-</span><span class='line'><span class="cm">   If your assignment operation is not in function block, you must got </span>
-</span><span class='line'><span class="cm">   an error from compiler.</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">   But it&#39;s ok, if you would like to define the varibles outside of blocks.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">VehicleSurrogate</span> <span class="n">parking_lot</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Automobile</span> <span class="n">x</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="n">num_vehicles</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="cm">/*</span>
-</span><span class='line'><span class="cm">       These two assignment statement are doing the same thing.</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="n">parking_lot</span><span class="p">[</span><span class="n">num_vehicles</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//parking_lot[num_vehicles++] = VehicleSurrogate(x);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+<span class="line-number">102</span>
+<span class="line-number">103</span>
+<span class="line-number">104</span>
+<span class="line-number">105</span>
+<span class="line-number">106</span>
+<span class="line-number">107</span>
+<span class="line-number">108</span>
+<span class="line-number">109</span>
+<span class="line-number">110</span>
+<span class="line-number">111</span>
+<span class="line-number">112</span>
+<span class="line-number">113</span>
+<span class="line-number">114</span>
+<span class="line-number">115</span>
+<span class="line-number">116</span>
+<span class="line-number">117</span>
+<span class="line-number">118</span>
+<span class="line-number">119</span>
+<span class="line-number">120</span>
+<span class="line-number">121</span>
+<span class="line-number">122</span>
+<span class="line-number">123</span>
+<span class="line-number">124</span>
+<span class="line-number">125</span>
+<span class="line-number">126</span>
+<span class="line-number">127</span>
+<span class="line-number">128</span>
+<span class="line-number">129</span>
+<span class="line-number">130</span>
+<span class="line-number">131</span>
+<span class="line-number">132</span>
+<span class="line-number">133</span>
+<span class="line-number">134</span>
+<span class="line-number">135</span>
+<span class="line-number">136</span>
+<span class="line-number">137</span>
+<span class="line-number">138</span>
+<span class="line-number">139</span>
+<span class="line-number">140</span>
+<span class="line-number">141</span>
+<span class="line-number">142</span>
+<span class="line-number">143</span>
+<span class="line-number">144</span>
+<span class="line-number">145</span>
+<span class="line-number">146</span>
+<span class="line-number">147</span>
+<span class="line-number">148</span>
+<span class="line-number">149</span>
+<span class="line-number">150</span>
+<span class="line-number">151</span>
+<span class="line-number">152</span>
+<span class="line-number">153</span>
+<span class="line-number">154</span>
+<span class="line-number">155</span>
+<span class="line-number">156</span>
+<span class="line-number">157</span>
+<span class="line-number">158</span>
+<span class="line-number">159</span>
+<span class="line-number">160</span>
+</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/**********************************************</span>
+</span><span class="line"><span class="cm">Programmer  :   EOF</span>
+</span><span class="line"><span class="cm">Date        :   2015.05.18</span>
+</span><span class="line"><span class="cm">File        :   5.4.cpp</span>
+</span><span class="line"><span class="cm">E-mail      :   jasonleaster@gmail.com</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">***********************************************/</span>
+</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">Vehicle</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span><span class="o">:</span>
+</span><span class="line">        <span class="cm">/*</span>
+</span><span class="line"><span class="cm">           It will be OK, if you don&#39;t use virtual function.</span>
+</span><span class="line"><span class="cm">        double weight() const;</span>
+</span><span class="line"><span class="cm">        void start();</span>
+</span><span class="line"><span class="cm">        */</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">virtual</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">        <span class="k">virtual</span> <span class="n">Vehicle</span><span class="o">*</span> <span class="n">copy</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">        <span class="k">virtual</span> <span class="o">~</span><span class="n">Vehicle</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span> <span class="p">;</span>
+</span><span class="line">        <span class="c1">// ...</span>
+</span><span class="line"><span class="p">};</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">RoadVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">AutoVehicle</span><span class="o">:</span> <span class="k">public</span> <span class="n">RoadVehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">Aircraft</span><span class="o">:</span> <span class="k">public</span> <span class="n">Vehicle</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">Helicopter</span><span class="o">:</span> <span class="k">public</span> <span class="n">Aircraft</span> <span class="p">{</span><span class="cm">/* ... */</span><span class="p">};</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">VehicleSurrogate</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span><span class="o">:</span>
+</span><span class="line">        <span class="cm">/*</span>
+</span><span class="line"><span class="cm">           Constructor</span>
+</span><span class="line"><span class="cm">         */</span>
+</span><span class="line">        <span class="n">VehicleSurrogate</span><span class="p">();</span>
+</span><span class="line">        <span class="n">VehicleSurrogate</span><span class="p">(</span><span class="k">const</span> <span class="n">Vehicle</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">        <span class="n">VehicleSurrogate</span><span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="cm">/*</span>
+</span><span class="line"><span class="cm">           De-constructor</span>
+</span><span class="line"><span class="cm">         */</span>
+</span><span class="line">        <span class="o">~</span><span class="n">VehicleSurrogate</span><span class="p">();</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">VehicleSurrogate</span><span class="o">&amp;</span> <span class="k">operator</span> <span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="cm">/*</span>
+</span><span class="line"><span class="cm">           Operations from class Vehicle</span>
+</span><span class="line"><span class="cm">         */</span>
+</span><span class="line">        <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</span><span class="line">        <span class="kt">void</span> <span class="nf">start</span><span class="p">();</span>
+</span><span class="line">
+</span><span class="line">        <span class="c1">// ...</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">private</span><span class="o">:</span>
+</span><span class="line">        <span class="n">Vehicle</span><span class="o">*</span> <span class="n">vp</span><span class="p">;</span>
+</span><span class="line"><span class="p">};</span>
+</span><span class="line">
+</span><span class="line"><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">VehicleSurrogate</span><span class="p">()</span><span class="o">:</span> <span class="n">vp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class="line"><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">VehicleSurrogate</span><span class="p">(</span><span class="k">const</span> <span class="n">Vehicle</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span>
+</span><span class="line">    <span class="n">vp</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">copy</span><span class="p">())</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">VehicleSurrogate</span><span class="o">::</span> <span class="o">~</span><span class="n">VehicleSurrogate</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">delete</span> <span class="n">vp</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">VehicleSurrogate</span> <span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span>
+</span><span class="line">    <span class="n">vp</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">vp</span> <span class="o">?</span> <span class="n">v</span><span class="p">.</span><span class="n">vp</span><span class="o">-&gt;</span><span class="n">copy</span><span class="p">()</span> <span class="o">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">VehicleSurrogate</span><span class="o">&amp;</span>
+</span><span class="line"><span class="n">VehicleSurrogate</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">VehicleSurrogate</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="k">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">v</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">delete</span> <span class="n">vp</span><span class="p">;</span>
+</span><span class="line">        <span class="n">vp</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">vp</span> <span class="o">?</span> <span class="n">v</span><span class="p">.</span><span class="n">vp</span><span class="o">-&gt;</span><span class="n">copy</span><span class="p">()</span> <span class="o">:</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">double</span> <span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">weight</span><span class="p">()</span> <span class="k">const</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="n">vp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">throw</span> <span class="s">&quot;empty VehicleSurrogate.weight()&quot;</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="n">vp</span><span class="o">-&gt;</span><span class="n">weight</span><span class="p">();</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">void</span> <span class="n">VehicleSurrogate</span><span class="o">::</span><span class="n">start</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="n">vp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">throw</span> <span class="s">&quot;empty VehicleSurrogate.start()&quot;</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">vp</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">();</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">Automobile</span><span class="o">:</span> <span class="k">public</span> <span class="n">AutoVehicle</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">        <span class="kt">double</span> <span class="n">weight</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</span><span class="line">        <span class="kt">void</span> <span class="nf">start</span><span class="p">();</span>
+</span><span class="line">        <span class="n">Vehicle</span><span class="o">*</span> <span class="n">copy</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</span><span class="line"><span class="p">};</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">double</span>
+</span><span class="line"><span class="n">Automobile</span><span class="o">::</span><span class="n">weight</span><span class="p">()</span> <span class="k">const</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="mf">0.0</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">void</span>
+</span><span class="line"><span class="n">Automobile</span><span class="o">::</span><span class="n">start</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Hello this is automobile&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">Vehicle</span><span class="o">*</span>
+</span><span class="line"><span class="n">Automobile</span><span class="o">::</span><span class="n">copy</span><span class="p">()</span> <span class="k">const</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="k">new</span> <span class="n">Automobile</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="cm">/*</span>
+</span><span class="line"><span class="cm">   Here is our test unit.</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">   Attention! </span>
+</span><span class="line"><span class="cm">   Never use assignment between class objects out of function block.</span>
+</span><span class="line"><span class="cm">   If your assignment operation is not in function block, you must got </span>
+</span><span class="line"><span class="cm">   an error from compiler.</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">   But it&#39;s ok, if you would like to define the varibles outside of blocks.</span>
+</span><span class="line"><span class="cm"> */</span>
+</span><span class="line">
+</span><span class="line"><span class="n">VehicleSurrogate</span> <span class="n">parking_lot</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+</span><span class="line">
+</span><span class="line"><span class="n">Automobile</span> <span class="n">x</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">int</span> <span class="n">num_vehicles</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="cm">/*</span>
+</span><span class="line"><span class="cm">       These two assignment statement are doing the same thing.</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="n">parking_lot</span><span class="p">[</span><span class="n">num_vehicles</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">//parking_lot[num_vehicles++] = VehicleSurrogate(x);</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>You may noticed that the key point of our solution is to use the class to represent a concept.</p>
 
@@ -529,10 +525,10 @@
 <p>The objects in this type of class could be used to represent others class objects which are have completly relationships of inhiretance.</p>
 
 <hr />
-
 <p>Margaret Heafield Hamilton who is a very famous computer scientist, systems engineer, and business owner. Picture blew there is that hamilton during the Apollo Program.</p>
 
 <p><img src="/images/img_for_2015_05_18/margaret.png" alt="images" /></p>
+
 </div>
 
 
@@ -553,7 +549,7 @@
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/c-plus-plus/'>c++</a>
+    <a class='category' href='/blog/categories/cplusplus/'>cplusplus</a>
   
 </span>
 
@@ -587,6 +583,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/02/04/dict-object-in-python/">Dict Object in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/02/03/memory-model-of-int-object-in-python/">Int Object in Python</a>
       </li>
     
@@ -602,16 +602,23 @@
         <a href="/blog/2015/12/13/machine-learning-with-boosting/">Machine Learning With Boosting</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2015/09/24/binary-search-tree/">Binary Search Tree</a>
-      </li>
-    
   </ul>
 </section>
 
 
-
-
+<section> 
+  <h1>Categories</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/algorithm/'>algorithm (2)</a></li>
+<li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
+<li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
+<li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
+<li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (3)</a></li>
+<li class='category'><a href='/blog/categories/python/'>python (2)</a></li>
+ 
+  </ul> 
+</section>
 
   
 </aside>

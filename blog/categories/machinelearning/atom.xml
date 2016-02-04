@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Machinelearning | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-03T23:12:39+08:00</updated>
+  <updated>2016-02-04T18:43:04+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -32,21 +32,25 @@
 
 <p><img src="/images/img_for_2015_12_30/result.png" alt="images" /></p>
 
-<p>With the mean values:
-<code>python
-Means =
+<p>With the mean values:</p>
+
+<p>``` python</p>
+
+<p>Means =
 [[3.5       1       6]
- [1.66666   6       6]]
-</code></p>
+ [1.66666   6       6]]</p>
+
+<p>```</p>
 
 <!-- more -->
-
 
 <p>In the implementation, I just choose the euclidean distance equation as my sensor to calculate the distance between samples. You could assign the <code>self.distance</code> with your function which is in your application.</p>
 
 <p>Here, I show you how to classify the sample point in <code>K-Means</code>.</p>
 
-<pre><code class="python">def classify(self):
+<p>``` python</p>
+
+<p>def classify(self):
     for i in range(self.SampleNum):
         minDis = +numpy.inf
         label  = None
@@ -54,14 +58,16 @@ Means =
             d = self.distance(self._Mat[:, i].tolist(), self.meanVal[:, k].tolist())
             if d &lt; minDis:
                 minDis = d
-                label  = k
+                label  = k</p>
 
-        self.classification[i][0] = label
-        self.classification[i][1] = minDis
+<pre><code>    self.classification[i][0] = label
+    self.classification[i][1] = minDis
 </code></pre>
 
-<p>And, here you will glance at the main procesure of this algorithm.
-``` python</p>
+<p>```
+And, here you will glance at the main procesure of this algorithm.</p>
+
+<p>``` python</p>
 
 <pre><code>"""
 After you initialized this class, just call this
@@ -98,12 +104,37 @@ def train(self):
 <p>Yous, EOF</p>
 
 <hr />
-
 <p>Photo by Annabella</p>
 
-<p>Aha! Look! What a big shark. I&rsquo;m fighting &hellip;</p>
+<p>Aha! Look! What a big shark. I’m fighting …</p>
 
 <p><img src="/images/img_for_2015_12_30/bigshark.png" alt="images" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Labs of MIT 6.034]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/12/25/labs-of-mit-6-dot-034/"/>
+    <updated>2015-12-25T23:30:06+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/12/25/labs-of-mit-6-dot-034</id>
+    <content type="html"><![CDATA[<p>Two month ago, I decide to do a project about machine learning. So, I get start to learn machine learning and implemment some algorithms of ML.
+I find that there is a course in MIT – 6.034 Artificial Intelligence which contain a lot of funny labs. That will help me to learn ML.</p>
+
+<p>I don’t want to write a lot of analysis article about this course like what I have done in 6.008 . So, I just push my solution which also is incompletement onto github. If anyone interesting in this lab, you could touch me and I would like to communicate with you about these labs if I’m not busy.</p>
+
+<p>What you should know is that the version of this labs is updated in 2015.</p>
+
+<p>Here is the link you could get my solution:
+<a href="https://github.com/jasonleaster/MIT_6.034_2015">My Solution of MIT 6.034</a></p>
+
+<!-- more -->
+
+<hr />
+<p>Photo by Jason Leaster</p>
+
+<p>Thanks god. There is a beautiful girl in my life and encourage me walk through the dark time of my life. Thank you. Annabella.</p>
+
+<p><img src="/images/img_for_2015_12_25/girlfriend.png" alt="images" /></p>
 ]]></content>
   </entry>
   
@@ -113,23 +144,22 @@ def train(self):
     <updated>2015-12-13T17:00:47+08:00</updated>
     <id>http://jasonleaster.github.io/blog/2015/12/13/machine-learning-with-boosting</id>
     <content type="html"><![CDATA[<p>This blog will talk about the theory and implementation about famouse
-concept in machine learning &ndash; <code>Boosting</code>.</p>
+concept in machine learning – <code>Boosting</code>.</p>
 
 <p>All algorithms are implemented in Python.</p>
 
 <p>There are two main tasks which people want to finish with Machine Learning.</p>
 
 <ul>
-<li>Classification</li>
-<li>Regression</li>
+  <li>Classification</li>
+  <li>Regression</li>
 </ul>
 
+<p>There are a lot of other ways to do it but now we focus on <code>boosting</code> algorithm. You know that it’s a fantastic way to make our work done.</p>
 
-<p>There are a lot of other ways to do it but now we focus on <code>boosting</code> algorithm. You know that it&rsquo;s a fantastic way to make our work done.</p>
+<h3 id="adaboost-for-classification">Adaboost for classification</h3>
 
-<h3>Adaboost for classification</h3>
-
-<p>If you never hear about adaboost, I recommend you to finish the 7-th lab in MIT 6.034. It will help you a lot to understand what I&rsquo;m taking about. But this lab didn&rsquo;t build adaboost completely. So, I implement it individually.</p>
+<p>If you never hear about adaboost, I recommend you to finish the 7-th lab in MIT 6.034. It will help you a lot to understand what I’m taking about. But this lab didn’t build adaboost completely. So, I implement it individually.</p>
 
 <p>Give the input training samples which have tag with it.</p>
 
@@ -139,13 +169,13 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p>In this algorithm, there are only two different label of samples {-1, +1}.</p>
 
-<p>Some classifier like decision tree also can work correctly about classification. But it&rsquo;s also easy to overfitting. So, we can&rsquo;t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which&rsquo;s depth is only one. So we call it as <code>decision stump</code>.</p>
+<p>Some classifier like decision tree also can work correctly about classification. But it’s also easy to overfitting. So, we can’t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which’s depth is only one. So we call it as <code>decision stump</code>.</p>
 
 <p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting. It combine some weaker classifier into a stronger classifier to avoid overfitting.</p>
 
 <p>Test case:</p>
 
-<p>There are training points with two different label. What if we input a point which&rsquo;s type is unkown, what the result will be?</p>
+<p>There are training points with two different label. What if we input a point which’s type is unkown, what the result will be?</p>
 
 <p><img src="/images/img_for_2015_12_13/samples.png" alt="images" /></p>
 
@@ -155,15 +185,18 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p>Just create a object of class <code>Adaboost</code> with your training samples with label. like this:</p>
 
-<pre><code class="Python">import adaboost
+<p>``` python</p>
+
+<p>import adaboost
 a = AdaBoost(Original_Data, Tag)
-# The up bound of training time to avoid the algorithm won't stop for not meeting the training accuracy.
-times = 5 
+# The up bound of training time to avoid the algorithm won’t stop for not meeting the training accuracy.
+times = 5</p>
 
-a.train(times)
+<p>a.train(times)</p>
 
-a.prediction(UnkownPoints)
-</code></pre>
+<p>a.prediction(UnkownPoints)</p>
+
+<p>```</p>
 
 <p>API <code>prediction()</code> of class AdaBoost will return the result of prediction according to the model. All job done.</p>
 
@@ -179,7 +212,7 @@ a.prediction(UnkownPoints)
 
 <p><img src="/images/img_for_2015_12_13/accuracy.png" alt="images" /></p>
 
-<h3>Boosting Tree</h3>
+<h3 id="boosting-tree">Boosting Tree</h3>
 
 <p>We have knew to use <code>AdaBoost</code> to do classification. <code>Boosting Tree</code> will help us to do regression.</p>
 
@@ -187,7 +220,9 @@ a.prediction(UnkownPoints)
 
 <p>There are ten samples in my test module:</p>
 
-<pre><code class="python">Original_Data = numpy.array([
+<p>``` python</p>
+
+<p>Original_Data = numpy.array([
         [2],
         [3],
         [4],
@@ -198,9 +233,9 @@ a.prediction(UnkownPoints)
         [9],
         [10],
         [1]
-        ]).transpose()
+        ]).transpose()</p>
 
-ExpVal = numpy.array([
+<p>ExpVal = numpy.array([
         [5.70],
         [5.91],
         [6.40],
@@ -211,12 +246,13 @@ ExpVal = numpy.array([
         [9.00],
         [9.05],
         [5.56]
-        ]).transpose()
-</code></pre>
+        ]).transpose()</p>
+
+<p>```</p>
 
 <p>The expected value of Original_Data[i] is ExpVal[i]. The input is from 1 to 10. How about to predict the output when the input is 1 or 11?</p>
 
-<p>Let&rsquo;s test it. Here is the result:
+<p>Let’s test it. Here is the result:
 <img src="/images/img_for_2015_12_13/output_of_boosting_tree.png" alt="images" /></p>
 
 <p>Just used 11 weak classifier to construct a stronger classifier to do the regressio. The output is reasonable.</p>
@@ -227,11 +263,10 @@ ExpVal = numpy.array([
 <p>Reference:</p>
 
 <ol>
-<li>MIT-6.034, Artificial Intelligence. Lab-7</li>
-<li>&lt;&lt; The statistic methods >> by HangLi.</li>
-<li><a href="https://en.wikipedia.org/wiki/AdaBoost">Wikipedia</a></li>
+  <li>MIT-6.034, Artificial Intelligence. Lab-7</li>
+  <li>« The statistic methods » by HangLi.</li>
+  <li><a href="https://en.wikipedia.org/wiki/AdaBoost">Wikipedia</a></li>
 </ol>
-
 
 <hr />
 

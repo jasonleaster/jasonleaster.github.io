@@ -91,10 +91,9 @@
 <p>There are only two types of container in C++/C :</p>
 
 <ul>
-<li>array</li>
-<li>structure</li>
+  <li>array</li>
+  <li>structure</li>
 </ul>
-
 
 <p>C++ could provide more container but it didn’t.</p>
 
@@ -103,8 +102,6 @@
 <p>:)</p>
 
 <!-- more -->
-
-
 <p>Here we are gona to design a container which is like array but not the same.</p>
 
 <p><img src="/images/img_for_2015_05_24/arch.png" alt="images" /></p>
@@ -115,66 +112,65 @@
 
 <p>You could test out container by this program.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='C++'><span class='line'><span class="cp">#include &quot;con_array.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">Array</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">ap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">Pointer</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">//delete ap;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;The size of Array &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">ap</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">ap</span><span class="o">-&gt;</span><span class="n">resize</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;After resize(), the size of Array &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">ap</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cp">#include &quot;con_array.h&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">Array</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">ap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span class="line">    <span class="n">Pointer</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">//delete ap;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;The size of Array &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">ap</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">ap</span><span class="o">-&gt;</span><span class="n">resize</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;After resize(), the size of Array &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">ap</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>You could also see the output beblow there:</p>
 
 <p><img src="/images/img_for_2015_05_24/output1.png" alt="images" /></p>
 
 <hr />
-
 <p>Photo by Jason Leaster in ChangDe, China</p>
 
 <p><img src="/images/img_for_2015_05_24/cherry_blossom.png" alt="images" /></p>
+
 </div>
 
 
@@ -195,7 +191,7 @@
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/c-plus-plus/'>c++</a>
+    <a class='category' href='/blog/categories/cplusplus/'>cplusplus</a>
   
 </span>
 
@@ -229,6 +225,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/02/04/dict-object-in-python/">Dict Object in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/02/03/memory-model-of-int-object-in-python/">Int Object in Python</a>
       </li>
     
@@ -244,16 +244,23 @@
         <a href="/blog/2015/12/13/machine-learning-with-boosting/">Machine Learning With Boosting</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2015/09/24/binary-search-tree/">Binary Search Tree</a>
-      </li>
-    
   </ul>
 </section>
 
 
-
-
+<section> 
+  <h1>Categories</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/algorithm/'>algorithm (2)</a></li>
+<li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
+<li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
+<li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
+<li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (3)</a></li>
+<li class='category'><a href='/blog/categories/python/'>python (2)</a></li>
+ 
+  </ul> 
+</section>
 
   
 </aside>

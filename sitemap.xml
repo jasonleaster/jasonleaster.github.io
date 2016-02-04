@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://jasonleaster.github.io/blog/2016/02/04/dict-object-in-python/</loc>
+    <lastmod>2016-02-04T12:54:11+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://jasonleaster.github.io/blog/2016/02/03/memory-model-of-int-object-in-python/</loc>
     <lastmod>2016-02-03T00:56:31+08:00</lastmod>
   </url>
@@ -73,10 +77,10 @@
     <loc>http://jasonleaster.github.io/todo/</loc>
   </url>
   <url>
-    <loc>http://jasonleaster.github.io/blog/categories/c-plus-plus/</loc>
+    <loc>http://jasonleaster.github.io/blog/categories/essay/</loc>
   </url>
   <url>
-    <loc>http://jasonleaster.github.io/blog/categories/daily/</loc>
+    <loc>http://jasonleaster.github.io/blog/categories/cplusplus/</loc>
   </url>
   <url>
     <loc>http://jasonleaster.github.io/blog/categories/algorithm/</loc>
@@ -89,6 +93,9 @@
   </url>
   <url>
     <loc>http://jasonleaster.github.io/blog/categories/python/</loc>
+  </url>
+  <url>
+    <loc>http://jasonleaster.github.io/blog/categories/c/</loc>
   </url>
   <url>
     <loc>http://jasonleaster.github.io/posts/2/</loc>

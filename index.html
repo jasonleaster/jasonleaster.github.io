@@ -9,7 +9,7 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="Preparation Here, we are goint to analysis how Python deal with Int Object in itself. First of all, we should have a environment which help us to &hellip;">
+  <meta name="description" content="Dictionary object type – mapping from hashable object to object In the implemenation, Python don’t choose Red-Black Tree as the basic data structure &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -73,6 +73,219 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2016/02/04/dict-object-in-python/">Dict Object in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-02-04T12:54:11+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:54 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Dictionary object type – mapping from hashable object to object</p>
+
+<p>In the implemenation, Python don’t choose <code>Red-Black Tree</code> as the basic data structure but Hash Table with a special technology – <code>Open Addressing</code>.</p>
+
+<p>About open addressing:</p>
+
+<blockquote>
+  <p>In computer science, lazy deletion refers to a method of deleting elements from a hash table that uses open addressing. In this method, deletions are done by marking an element as deleted, rather than erasing it entirely. Deleted locations are treated as empty when inserting and as occupied during a search. – Wikipedia</p>
+</blockquote>
+
+<p>There three kinds of slots in the table:</p>
+
+<ol>
+  <li>
+    <p>Unused.  <code>me_key</code> == <code>me_value</code> == <code>NULL</code>
+Does not hold an active (key, value) pair now and never did.  Unused can transition to Active upon key insertion.  This is the only case in which <code>me_key</code> is NULL, and is each slot’s initial state.</p>
+  </li>
+  <li>
+    <p>Active.  <code>me_key</code> != NULL and <code>me_key</code> != dummy and <code>me_value</code> != NULL Holds an active (key, value) pair.  Active can transition to Dummy upon key deletion.  This is the only case in which <code>me_value</code> != NULL.</p>
+  </li>
+  <li>
+    <p>Dummy.  <code>me_key</code> == dummy and <code>me_value</code> == NULL
+Previously held an active (key, value) pair, but that was deleted and an active pair has not yet overwritten the slot.  Dummy can transition to Active upon key insertion. Dummy slots cannot be made Unused again (cannot have <code>me_key</code> set to NULL), else the probe sequence in case of collision would have no way to know they were once active.</p>
+  </li>
+</ol>
+
+<p>Here, Python define the entry data type of dict in python <code>PyDictObejct</code>. A entry is like a paire (key, value). To avoid calculating the hash value of <code>me_key</code>, <code>me_hash</code> used as a cached value for it.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="C"><span class="line"><span class="p">[</span><span class="n">Include</span><span class="o">/</span><span class="n">dictobject</span><span class="p">.</span><span class="n">h</span><span class="p">]</span>
+</span><span class="line"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">Py_ssize_t</span> <span class="n">me_hash</span><span class="p">;</span>
+</span><span class="line">    <span class="n">PyObject</span> <span class="o">*</span><span class="n">me_key</span><span class="p">;</span>
+</span><span class="line">    <span class="n">PyObject</span> <span class="o">*</span><span class="n">me_value</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span> <span class="n">PyDictEntry</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To ensure the lookup algorithm terminates, there must be at least one Unused slot (NULL key) in the table.</p>
+
+<p>The value <code>ma_fill</code> is the number of non-NULL keys (sum of Active and Dummy);
+   <code>ma_used</code> is the number of non-NULL, non-dummy keys (== the number of non-NULL values == the number of Active items).
+   To avoid slowing down lookups on a near-full table, we resize the table when it’s <font color="red">two-thirds</font> full.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="C"><span class="line"><span class="p">[</span><span class="n">Include</span><span class="o">/</span><span class="n">dictobject</span><span class="p">.</span><span class="n">h</span><span class="p">]</span>
+</span><span class="line"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_dictobject</span> <span class="n">PyDictObject</span><span class="p">;</span>
+</span><span class="line"><span class="k">struct</span> <span class="n">_dictobject</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">PyObject_HEAD</span>
+</span><span class="line">    <span class="n">Py_ssize_t</span> <span class="n">ma_fill</span><span class="p">;</span>  <span class="cm">/* # Active + # Dummy */</span>
+</span><span class="line">    <span class="n">Py_ssize_t</span> <span class="n">ma_used</span><span class="p">;</span>  <span class="cm">/* # Active */</span>
+</span><span class="line">    <span class="cm">/* The table contains ma_mask + 1 slots, and that&#39;s a power of 2.</span>
+</span><span class="line"><span class="cm">     * We store the mask instead of the size because the mask is more</span>
+</span><span class="line"><span class="cm">     * frequently needed.</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="n">Py_ssize_t</span> <span class="n">ma_mask</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">     <span class="err">*/</span>
+</span><span class="line">    <span class="n">PyDictEntry</span> <span class="o">*</span><span class="n">ma_table</span><span class="p">;</span>
+</span><span class="line">    <span class="n">PyDictEntry</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">ma_lookup</span><span class="p">)(</span><span class="n">PyDictObject</span> <span class="o">*</span><span class="n">mp</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">long</span> <span class="n">hash</span><span class="p">);</span>
+</span><span class="line">    <span class="n">PyDictEntry</span> <span class="n">ma_smalltable</span><span class="p">[</span><span class="n">PyDict_MINSIZE</span><span class="p">];</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>PyDict_MINSIZE</code> is the minimum size of a dictionary.  This many slots are allocated directly in the dict object.
+(in the <code>ma_smalltable</code> member). 
+It must be a power of 2, and at least 4.  8 allows dicts with no more than 5 active entries to live in <code>ma_smalltable</code> (and so avoid an additional malloc); instrumentation suggested this suffices for the majority of dicts (consisting mostly of usually-small instance dicts and usually-small dicts created to pass keyword arguments).</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="C"><span class="line"><span class="cp">#define PyDict_MINSIZE 8</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Here defined a array <code>ma_smalltable</code> which store 8 <code>PyDictEntry</code>.
+<code>ma_table</code> points to <code>ma_smalltable</code> for small tables, else to 
+additional malloc’ed memory.  <code>ma_table</code> is never NULL!<br />
+This rule saves repeated runtime null-tests in the workhorse getitem and setitem calls.</p>
+
+<p>I draw a figure to make the idea easy to be understand.</p>
+
+<p><img src="/images/img_for_2016_02_04/dictTable.png" alt="images" /></p>
+
+<p>The question is coming. When Python will resize the diction table of that object?</p>
+
+<p>The answer is in function <code>dictresize</code> in file <code>Object/dictobject.c</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="C"><span class="line"><span class="p">[</span><span class="n">Object</span><span class="o">/</span><span class="n">dictobject</span><span class="p">.</span><span class="n">c</span><span class="p">]</span>
+</span><span class="line"><span class="p">...</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// Recall the rule of 2/3 --notes by Jason Leaster</span>
+</span><span class="line"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">mp</span><span class="o">-&gt;</span><span class="n">ma_used</span> <span class="o">&gt;</span> <span class="n">n_used</span> <span class="o">&amp;&amp;</span> <span class="n">mp</span><span class="o">-&gt;</span><span class="n">ma_fill</span><span class="o">*</span><span class="mi">3</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">mp</span><span class="o">-&gt;</span><span class="n">ma_mask</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+</span><span class="line">        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// Debug information add by Jason Leaster</span>
+</span><span class="line">    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Try to resize the old diction</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class="line">    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;mp-&gt;ma_used  :%p </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">mp</span><span class="o">-&gt;</span><span class="n">ma_used</span><span class="p">);</span>
+</span><span class="line">    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;mp-&gt;ma_fill  :%p </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">mp</span><span class="o">-&gt;</span><span class="n">ma_fill</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="nf">dictresize</span><span class="p">(</span><span class="n">mp</span><span class="p">,</span> <span class="p">(</span><span class="n">mp</span><span class="o">-&gt;</span><span class="n">ma_used</span> <span class="o">&gt;</span> <span class="mi">50000</span> <span class="o">?</span> <span class="mi">2</span> <span class="o">:</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="n">mp</span><span class="o">-&gt;</span><span class="n">ma_used</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Attention, once <code>mp-ma_fill</code> bigger or equal to (2/3)<code>mp-&gt;ma_mask+1</code> and we have finished a insert operation(<code>mp-&gt;ma_used</code> &gt; <code>n_used</code>), <strong>we should resize the container(ma_table) of  the dictionary</strong>.</p>
+
+<p>Yes, we should resize the dictionary object if there have 6 or more object in the container but <strong>not</strong> 8.</p>
+
+<p>Here is the result of hacking.</p>
+
+<p><img src="/images/img_for_2016_02_04/testResizeDict.png" alt="images" /></p>
+
+<p>Actually, <code>dummy</code> PyDictObject is just a <code>PyStringObject</code> in Python. Initially, dummy is a pointer in C but it finally comes to a <code>PyStringObject</code> after initialization of <code>PyDictObject</code> first time.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="C"><span class="line"><span class="cm">/* Object used as dummy key to fill deleted entries */</span>
+</span><span class="line"><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">dummy</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="cm">/* Initialized by first call to newPyDictObject() */</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="initialization-part">Initialization Part</h3>
+
+<p>There are two ways to create a dict:  <code>PyDict_New()</code> is the main C API function, 
+and the <code>tp_new</code> slot maps to <code>dict_new()</code>.  In the latter case we
+    can save a little time over what PyDict_New does because it’s guaranteed
+    that the PyDictObject struct is already zeroed out.
+    Everyone except dict_new() should use EMPTY_TO_MINSIZE (unless they have an excellent reason not to).</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="C"><span class="line"><span class="cp">#define INIT_NONZERO_DICT_SLOTS(mp) do { \</span>
+</span><span class="line"><span class="cp">    (mp)-&gt;ma_table = (mp)-&gt;ma_smalltable;\</span>
+</span><span class="line"><span class="cp">    (mp)-&gt;ma_mask = PyDict_MINSIZE - 1; \</span>
+</span><span class="line"><span class="cp">} while(0)</span>
+</span><span class="line">
+</span><span class="line"><span class="cp">#define EMPTY_TO_MINSIZE(mp) do {   \</span>
+</span><span class="line"><span class="cp">    memset((mp)-&gt;ma_smalltable, 0, sizeof((mp)-&gt;ma_smalltable))\</span>
+</span><span class="line"><span class="cp">    (mp)-&gt;ma_used = (mp)-&gt;ma_fill = 0;\</span>
+</span><span class="line"><span class="cp">    INIT_NONZERO_DICT_SLOTS(mp); \</span>
+</span><span class="line"><span class="cp">        } while(0)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<hr />
+<p>Photo By Jason Leaster</p>
+
+<p><img src="/images/img_for_2016_02_04/street.jpg" alt="images" /></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2016/02/03/memory-model-of-int-object-in-python/">Int Object in Python</a></h1>
     
     
@@ -89,29 +302,37 @@
   </header>
 
 
-  <div class="entry-content"><h3>Preparation</h3>
+  <div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#preparation" id="markdown-toc-preparation">Preparation</a></li>
+  <li><a href="#rules-of-object-in-python" id="markdown-toc-rules-of-object-in-python">Rules of Object in Python.</a></li>
+  <li><a href="#firt-glance-at-the-implementation" id="markdown-toc-firt-glance-at-the-implementation">Firt glance at the implementation.</a></li>
+  <li><a href="#initialization-of-pyintobject" id="markdown-toc-initialization-of-pyintobject">Initialization of PyIntObject</a></li>
+  <li><a href="#insert-and-delete" id="markdown-toc-insert-and-delete">Insert and Delete</a></li>
+  <li><a href="#time-for-hacking" id="markdown-toc-time-for-hacking">Time for Hacking</a></li>
+</ul>
+
+<h3 id="preparation">Preparation</h3>
 
 <p>Here, we are goint to analysis how Python deal with <code>Int Object</code> in itself.</p>
 
-<p>First of all, we should have a environment which help us to explore the detail of the implementation in <code>Python 2.7</code>. At the same time, our operation shouldn&rsquo;t influence the origianl Python in your workstation, if you have install Python before.</p>
+<p>First of all, we should have a environment which help us to explore the detail of the implementation in <code>Python 2.7</code>. At the same time, our operation shouldn’t influence the origianl Python in your workstation, if you have install Python before.</p>
 
 <p>You can get the source code from offical website of Python. And you will find that there have a file <code>configure</code> in the directory of the source.</p>
 
-<p><em>In the file configure, you can replace all string &lsquo;Python&rsquo; with &lsquo;pyLab&rsquo;. And then move all file prefix with <code>Python</code> into <code>pyLab</code>(mainly in directory Misc/ and Modules)</em></p>
+<p><em>In the file configure, you can replace all string ‘Python’ with ‘pyLab’. And then move all file prefix with <code>Python</code> into <code>pyLab</code>(mainly in directory Misc/ and Modules)</em></p>
 
-<p>Don&rsquo;t forget to run the configuration file &ndash; configure with the option <code>--prefix=Location where you want the Python which is for lab to install</code></p>
+<p>Don’t forget to run the configuration file – configure with the option <code>--prefix=Location where you want the Python which is for lab to install </code></p>
 
 <p>Finally, just run <code>make &amp; make install</code></p>
 
-<p>Repeat myself again, the reason that I move all &lsquo;Python&rsquo; into &lsquo;pyLab&rsquo; is all for making a difference with the original instance which is official and shouldn&rsquo;t be influence by any operation from us.</p>
+<p>Repeat myself again, the reason that I move all ‘Python’ into ‘pyLab’ is all for making a difference with the original instance which is official and shouldn’t be influence by any operation from us.</p>
 
-<h3>Rules of Object in Python.</h3>
+<h3 id="rules-of-object-in-python">Rules of Object in Python.</h3>
 
 <ul>
-<li>Objects are structures allocated on the heap.</li>
-<li>Objects are never allocated statically or on the stack; they must be accessed through special macros and functions only.</li>
+  <li>Objects are structures allocated on the heap.</li>
+  <li>Objects are never allocated statically or on the stack; they must be accessed through special macros and functions only.</li>
 </ul>
-
 
 </div>
   
@@ -161,14 +382,13 @@
 
 <p>With the mean values:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">Means</span> <span class="o">=</span>
-</span><span class='line'><span class="p">[[</span><span class="mf">3.5</span>       <span class="mi">1</span>       <span class="mi">6</span><span class="p">]</span>
-</span><span class='line'> <span class="p">[</span><span class="mf">1.66666</span>   <span class="mi">6</span>       <span class="mi">6</span><span class="p">]]</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">Means</span> <span class="o">=</span>
+</span><span class="line"><span class="p">[[</span><span class="mf">3.5</span>       <span class="mi">1</span>       <span class="mi">6</span><span class="p">]</span>
+</span><span class="line"> <span class="p">[</span><span class="mf">1.66666</span>   <span class="mi">6</span>       <span class="mi">6</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 </div>
   
@@ -203,9 +423,9 @@
 
 
   <div class="entry-content"><p>Two month ago, I decide to do a project about machine learning. So, I get start to learn machine learning and implemment some algorithms of ML.
-I find that there is a course in MIT &ndash; 6.034 Artificial Intelligence which contain a lot of funny labs. That will help me to learn ML.</p>
+I find that there is a course in MIT – 6.034 Artificial Intelligence which contain a lot of funny labs. That will help me to learn ML.</p>
 
-<p>I don&rsquo;t want to write a lot of analysis article about this course like what I have done in 6.008 . So, I just push my solution which also is incompletement onto github. If anyone interesting in this lab, you could touch me and I would like to communicate with you about these labs if I&rsquo;m not busy.</p>
+<p>I don’t want to write a lot of analysis article about this course like what I have done in 6.008 . So, I just push my solution which also is incompletement onto github. If anyone interesting in this lab, you could touch me and I would like to communicate with you about these labs if I’m not busy.</p>
 
 <p>What you should know is that the version of this labs is updated in 2015.</p>
 
@@ -245,23 +465,22 @@ I find that there is a course in MIT &ndash; 6.034 Artificial Intelligence which
 
 
   <div class="entry-content"><p>This blog will talk about the theory and implementation about famouse
-concept in machine learning &ndash; <code>Boosting</code>.</p>
+concept in machine learning – <code>Boosting</code>.</p>
 
 <p>All algorithms are implemented in Python.</p>
 
 <p>There are two main tasks which people want to finish with Machine Learning.</p>
 
 <ul>
-<li>Classification</li>
-<li>Regression</li>
+  <li>Classification</li>
+  <li>Regression</li>
 </ul>
 
+<p>There are a lot of other ways to do it but now we focus on <code>boosting</code> algorithm. You know that it’s a fantastic way to make our work done.</p>
 
-<p>There are a lot of other ways to do it but now we focus on <code>boosting</code> algorithm. You know that it&rsquo;s a fantastic way to make our work done.</p>
+<h3 id="adaboost-for-classification">Adaboost for classification</h3>
 
-<h3>Adaboost for classification</h3>
-
-<p>If you never hear about adaboost, I recommend you to finish the 7-th lab in MIT 6.034. It will help you a lot to understand what I&rsquo;m taking about. But this lab didn&rsquo;t build adaboost completely. So, I implement it individually.</p>
+<p>If you never hear about adaboost, I recommend you to finish the 7-th lab in MIT 6.034. It will help you a lot to understand what I’m taking about. But this lab didn’t build adaboost completely. So, I implement it individually.</p>
 
 <p>Give the input training samples which have tag with it.</p>
 
@@ -271,13 +490,13 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p>In this algorithm, there are only two different label of samples {-1, +1}.</p>
 
-<p>Some classifier like decision tree also can work correctly about classification. But it&rsquo;s also easy to overfitting. So, we can&rsquo;t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which&rsquo;s depth is only one. So we call it as <code>decision stump</code>.</p>
+<p>Some classifier like decision tree also can work correctly about classification. But it’s also easy to overfitting. So, we can’t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which’s depth is only one. So we call it as <code>decision stump</code>.</p>
 
 <p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting. It combine some weaker classifier into a stronger classifier to avoid overfitting.</p>
 
 <p>Test case:</p>
 
-<p>There are training points with two different label. What if we input a point which&rsquo;s type is unkown, what the result will be?</p>
+<p>There are training points with two different label. What if we input a point which’s type is unkown, what the result will be?</p>
 
 <p><img src="/images/img_for_2015_12_13/samples.png" alt="images" /></p>
 
@@ -287,24 +506,23 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p>Just create a object of class <code>Adaboost</code> with your training samples with label. like this:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='Python'><span class='line'><span class="kn">import</span> <span class="nn">adaboost</span>
-</span><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="n">AdaBoost</span><span class="p">(</span><span class="n">Original_Data</span><span class="p">,</span> <span class="n">Tag</span><span class="p">)</span>
-</span><span class='line'><span class="c"># The up bound of training time to avoid the algorithm won&#39;t stop for not meeting the training accuracy.</span>
-</span><span class='line'><span class="n">times</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">UnkownPoints</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">adaboost</span>
+</span><span class="line"><span class="n">a</span> <span class="o">=</span> <span class="n">AdaBoost</span><span class="p">(</span><span class="n">Original_Data</span><span class="p">,</span> <span class="n">Tag</span><span class="p">)</span>
+</span><span class="line"><span class="c"># The up bound of training time to avoid the algorithm won&#39;t stop for not meeting the training accuracy.</span>
+</span><span class="line"><span class="n">times</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class="line">
+</span><span class="line"><span class="n">a</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">a</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">UnkownPoints</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>API <code>prediction()</code> of class AdaBoost will return the result of prediction according to the model. All job done.</p>
 
@@ -320,7 +538,7 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p><img src="/images/img_for_2015_12_13/accuracy.png" alt="images" /></p>
 
-<h3>Boosting Tree</h3>
+<h3 id="boosting-tree">Boosting Tree</h3>
 
 <p>We have knew to use <code>AdaBoost</code> to do classification. <code>Boosting Tree</code> will help us to do regression.</p>
 
@@ -328,62 +546,61 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p>There are ten samples in my test module:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">Original_Data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">4</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">5</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">6</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">7</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">8</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">9</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">10</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</span><span class='line'>        <span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">ExpVal</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">5.70</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">5.91</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">6.40</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">6.80</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">7.05</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">8.90</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">8.70</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">9.00</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">9.05</span><span class="p">],</span>
-</span><span class='line'>        <span class="p">[</span><span class="mf">5.56</span><span class="p">]</span>
-</span><span class='line'>        <span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">Original_Data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">6</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">7</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">8</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">9</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">10</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class="line">        <span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="n">ExpVal</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">5.70</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">5.91</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">6.40</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">6.80</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">7.05</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">8.90</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">8.70</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">9.00</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">9.05</span><span class="p">],</span>
+</span><span class="line">        <span class="p">[</span><span class="mf">5.56</span><span class="p">]</span>
+</span><span class="line">        <span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>The expected value of Original_Data[i] is ExpVal[i]. The input is from 1 to 10. How about to predict the output when the input is 1 or 11?</p>
 
-<p>Let&rsquo;s test it. Here is the result:
+<p>Let’s test it. Here is the result:
 <img src="/images/img_for_2015_12_13/output_of_boosting_tree.png" alt="images" /></p>
 
 <p>Just used 11 weak classifier to construct a stronger classifier to do the regressio. The output is reasonable.</p>
@@ -394,11 +611,10 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 <p>Reference:</p>
 
 <ol>
-<li>MIT-6.034, Artificial Intelligence. Lab-7</li>
-<li>&lt;&lt; The statistic methods >> by HangLi.</li>
-<li><a href="https://en.wikipedia.org/wiki/AdaBoost">Wikipedia</a></li>
+  <li>MIT-6.034, Artificial Intelligence. Lab-7</li>
+  <li>« The statistic methods » by HangLi.</li>
+  <li><a href="https://en.wikipedia.org/wiki/AdaBoost">Wikipedia</a></li>
 </ol>
-
 
 <hr />
 
@@ -437,18 +653,17 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p>Basicly, here is the definition of Binary Search Tree. And I show the way how to implement the basic operation like <code>insert</code>, <code>delete</code> and so on.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">TreeNode</span><span class="p">()</span> <span class="p">:</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">:</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">num</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">right</span>  <span class="o">=</span> <span class="bp">None</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">left</span>   <span class="o">=</span> <span class="bp">None</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">class</span> <span class="nc">TreeNode</span><span class="p">()</span> <span class="p">:</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">:</span>
+</span><span class="line">      <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">num</span>
+</span><span class="line">      <span class="bp">self</span><span class="o">.</span><span class="n">right</span>  <span class="o">=</span> <span class="bp">None</span>
+</span><span class="line">      <span class="bp">self</span><span class="o">.</span><span class="n">left</span>   <span class="o">=</span> <span class="bp">None</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>You could find all my practices with BST in github: <a href="https://github.com/jasonleaster/Algorithm/blob/master/Binary_Search_Tree/Python_version/bst.py">BST</a></p>
 
@@ -488,7 +703,9 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
   <div class="entry-content"><p>This is a story why I write this algorithm again.</p>
 
-<blockquote><p>In this days, I work as an intern for Alibaba. To be honest, it totally a bad time for the beginning days. More awful fact to me is that my mentor do his job mostly in Java and I have to pick it up as quickly as possible. It’s totally a stranger for me about Java. <strong>What I have to say is that thanks god and my mentor.</strong> He is so nice and never blame me for my problem. You know that I suffer pressure heavily for I learned nothing but time wasted in this two weeks. I asked for help from human resource manager and hope to find someone guide me to walk out this shadow. Bo who is my mentor. He understand me and know my feeling. Bo encourage me and try to let me believe things will be better. Today, I face to a problem which I think is very naive but I didn’t show the solution to a leader of a department very well. And I could feel that he doubt about my ability in programming. I feel shame about he ask me that “Do you have programming in C or C++ for ten thousand lines ?”.</p></blockquote>
+<blockquote>
+  <p>In this days, I work as an intern for Alibaba. To be honest, it totally a bad time for the beginning days. More awful fact to me is that my mentor do his job mostly in Java and I have to pick it up as quickly as possible. It’s totally a stranger for me about Java. <strong>What I have to say is that thanks god and my mentor.</strong> He is so nice and never blame me for my problem. You know that I suffer pressure heavily for I learned nothing but time wasted in this two weeks. I asked for help from human resource manager and hope to find someone guide me to walk out this shadow. Bo who is my mentor. He understand me and know my feeling. Bo encourage me and try to let me believe things will be better. Today, I face to a problem which I think is very naive but I didn’t show the solution to a leader of a department very well. And I could feel that he doubt about my ability in programming. I feel shame about he ask me that “Do you have programming in C or C++ for ten thousand lines ?”.</p>
+</blockquote>
 
 </div>
   
@@ -534,14 +751,17 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 
 <p>I like a motto from steve jobs.</p>
 
-<blockquote><p>If you want to live your life in a creative way, as an artist, you have to not look back too much. You have to be willing to take whatever you’ve done and whoever you were and throw them away. People think focus means saying yes to the thing you’ve got to focus on. But that’s not what it means at all. It means saying not to the hundred other good ideas that there be. You have to pick carefully. I’m actually as proud of the things we haven’t done as the things I have done. Innovation is saying no to 1,000 things.</p></blockquote>
+<blockquote>
+  <p>If you want to live your life in a creative way, as an artist, you have to not look back too much. You have to be willing to take whatever you’ve done and whoever you were and throw them away. People think focus means saying yes to the thing you’ve got to focus on. But that’s not what it means at all. It means saying not to the hundred other good ideas that there be. You have to pick carefully. I’m actually as proud of the things we haven’t done as the things I have done. Innovation is saying no to 1,000 things.</p>
+</blockquote>
 
 <p>What I want to say is that</p>
 
-<blockquote><p>“Focus on yourself :)”.</p></blockquote>
+<blockquote>
+  <p>“Focus on yourself :)”.</p>
+</blockquote>
 
 <hr />
-
 <p>Photo by Jason Leaster</p>
 
 <p><img src="/images/img_for_2015_06_17/street.png" alt="images" /></p>
@@ -616,10 +836,9 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
 <p>There are only two types of container in C++/C :</p>
 
 <ul>
-<li>array</li>
-<li>structure</li>
+  <li>array</li>
+  <li>structure</li>
 </ul>
-
 
 <p>C++ could provide more container but it didn’t.</p>
 
@@ -632,42 +851,6 @@ concept in machine learning &ndash; <code>Boosting</code>.</p>
   
     <footer>
       <a rel="full-article" href="/blog/2015/05/25/learn-to-design-a-container/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/05/24/an-exercise-of-c-plus-plus/">An Exercise of C++</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-05-24T13:57:36+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:57 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In &lt;&lt; The C++ Programming Language >> , there is a exercise for learner who is studying C++. It’s that student should write a program in C++ to manipulate “character picture”, something like this.</p>
-
-<p><img src="/images/img_for_2015_05_24/output.png" alt="images" /></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/05/24/an-exercise-of-c-plus-plus/">Read on &rarr;</a>
     </footer>
   
 
@@ -695,6 +878,10 @@ Hello, world
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/02/04/dict-object-in-python/">Dict Object in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/02/03/memory-model-of-int-object-in-python/">Int Object in Python</a>
       </li>
     
@@ -710,16 +897,23 @@ Hello, world
         <a href="/blog/2015/12/13/machine-learning-with-boosting/">Machine Learning With Boosting</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2015/09/24/binary-search-tree/">Binary Search Tree</a>
-      </li>
-    
   </ul>
 </section>
 
 
-
-
+<section> 
+  <h1>Categories</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/algorithm/'>algorithm (2)</a></li>
+<li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
+<li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
+<li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
+<li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (3)</a></li>
+<li class='category'><a href='/blog/categories/python/'>python (2)</a></li>
+ 
+  </ul> 
+</section>
 
   
 </aside>

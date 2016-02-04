@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Daily | EOF]]></title>
-  <link href="http://jasonleaster.github.io/blog/categories/daily/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Essay | EOF]]></title>
+  <link href="http://jasonleaster.github.io/blog/categories/essay/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-03T23:12:39+08:00</updated>
+  <updated>2016-02-04T18:43:04+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -30,17 +30,31 @@
 
 <p>I like a motto from steve jobs.</p>
 
-<blockquote><p>If you want to live your life in a creative way, as an artist, you have to not look back too much. You have to be willing to take whatever you’ve done and whoever you were and throw them away. People think focus means saying yes to the thing you’ve got to focus on. But that’s not what it means at all. It means saying not to the hundred other good ideas that there be. You have to pick carefully. I’m actually as proud of the things we haven’t done as the things I have done. Innovation is saying no to 1,000 things.</p></blockquote>
+<blockquote>
+  <p>If you want to live your life in a creative way, as an artist, you have to not look back too much. You have to be willing to take whatever you’ve done and whoever you were and throw them away. People think focus means saying yes to the thing you’ve got to focus on. But that’s not what it means at all. It means saying not to the hundred other good ideas that there be. You have to pick carefully. I’m actually as proud of the things we haven’t done as the things I have done. Innovation is saying no to 1,000 things.</p>
+</blockquote>
 
 <p>What I want to say is that</p>
 
-<blockquote><p>“Focus on yourself :)”.</p></blockquote>
+<blockquote>
+  <p>“Focus on yourself :)”.</p>
+</blockquote>
 
 <hr />
-
 <p>Photo by Jason Leaster</p>
 
 <p><img src="/images/img_for_2015_06_17/street.png" alt="images" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[What Means Freedom ?]]></title>
+    <link href="http://jasonleaster.github.io/blog/2015/05/09/what-means-freedom/"/>
+    <updated>2015-05-09T00:46:36+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2015/05/09/what-means-freedom</id>
+    <content type="html"><![CDATA[<p>What does it mean to be free? Free is being able to choose. To choose your own space to be in. To form your surrounding in a way that will make you to take out the best of you. Free is to say no. Get your freedom …</p>
+
+<p><img src="/images/img_for_What_means_freedom/freedom.png" alt="images" /></p>
 ]]></content>
   </entry>
   
