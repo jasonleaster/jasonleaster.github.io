@@ -9,7 +9,8 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="Dictionary object type – mapping from hashable object to object In the implemenation, Python don’t choose Red-Black Tree as the basic data structure &hellip;">
+  <meta name="description" content="Functional programming is not only use functions.
+Think of “y = f(x)” or “h = f * g” For comparasion, there are different paradigms in programming. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -67,6 +68,316 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/02/05/functional-programming-in-python/">Functional Programming in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-02-05T02:37:57+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>2:37 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Functional programming is not only use functions.
+Think of “y = f(x)” or “h = f * g”</p>
+
+<p>For comparasion, there are different paradigms in programming.</p>
+
+<ul>
+  <li>Structured/Procedural – Functions, loops, conditions</li>
+  <li>Object-Oriented Programming (OOP) – Classes, objects, methods</li>
+  <li>Functional Programming – Decorators, comprehensions, and generators</li>
+  <li>Logic Programming</li>
+</ul>
+
+<p>Functions in Python are <code>first class value</code>. It can take functions as arguments and return functions like a value.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">function @calc take @f as an argument and use it as a function.</span>
+</span><span class="line"><span class="sd">Something like function pointer in C.</span>
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
+</span><span class="line">
+</span><span class="line"><span class="n">calc</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>In Python, there have anonymous functions which is called <code>Lambda Expression</code> which’s body is limited to one expression.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">calc</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Here, lambda expression used as a argument which is passed into function <code>calc</code>. Function like <code>add</code> and <code>sub</code>, they are too short and don’t need a special name to be identified. So, Python support a mechanism – anonymous function which is called <code>Lambda Expression</code>.</p>
+
+<p>There is a another demo. We will change the code from procedure oriented into functional style.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">In a procedure way.</span>
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="k">def</span> <span class="nf">incr</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">increment_each</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
+</span><span class="line">    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+</span><span class="line">        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incr</span><span class="p">(</span><span class="n">elem</span><span class="p">))</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">results</span>
+</span><span class="line">
+</span><span class="line"><span class="n">increment_each</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span class="line"><span class="c"># -&gt; [2, 3, 4]</span>
+</span><span class="line">
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">In a functional way.</span>
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="nb">map</span><span class="p">(</span><span class="n">incr</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span class="line"><span class="c"># or</span>
+</span><span class="line"><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span class="line">
+</span><span class="line"><span class="c"># if we want to get the length of each element in a iterable object</span>
+</span><span class="line"><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">iterable_object</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>filter</code> is a related idea in functional tools like map.
+<code>filter</code> return a new sequence where values are taken from the given sequence if they return True when passed to a given function.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+</span><span class="line"><span class="c"># -&gt; [2, 4]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>reduce</code> will accumulate and return a single result, given a sequence
+and passing each value to a function along with the current result.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="nb">reduce</span>
+</span><span class="line"><span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">accum</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="n">accum</span> <span class="o">+</span> <span class="n">current</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class="line"><span class="c"># -&gt; 6</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="decorator">Decorator</h3>
+
+<p>In Python, function is first-class value and can be used as returned value.
+So, programmer can define nested functions in Python like this:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">Nested function</span>
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="k">def</span> <span class="nf">outer</span><span class="p">():</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">inner</span><span class="p">():</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;I am the inner function&quot;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="n">inner</span>
+</span><span class="line">
+</span><span class="line"><span class="n">func</span> <span class="o">=</span> <span class="n">outer</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="n">func</span><span class="p">()</span>
+</span><span class="line"><span class="c"># -&gt; I am the inner function</span>
+</span><span class="line">
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">Closure</span>
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="n">var</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+</span><span class="line">
+</span><span class="line">    <span class="s">&quot;Local scope of function @outer&quot;</span>
+</span><span class="line">
+</span><span class="line">     <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+</span><span class="line">         <span class="k">print</span> <span class="s">&quot;I am the inner function!&quot;</span>
+</span><span class="line">         <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">         You can&#39;t change value of variable once the</span>
+</span><span class="line"><span class="sd">         @outer function finished. You will get error</span>
+</span><span class="line"><span class="sd">         if you modify variable which is not in scope</span>
+</span><span class="line"><span class="sd">         of function @inner. You can&#39;t modify @var</span>
+</span><span class="line"><span class="sd">         like this: var += 1 (You will get exception</span>
+</span><span class="line"><span class="sd">         information like &quot;UnboundLocalError&quot;)</span>
+</span><span class="line"><span class="sd">         &quot;&quot;&quot;</span>
+</span><span class="line">         <span class="k">return</span> <span class="n">var</span> <span class="o">+</span> <span class="n">number</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="n">inner</span>
+</span><span class="line">
+</span><span class="line"><span class="n">func</span> <span class="o">=</span> <span class="n">outer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">func</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+</span><span class="line"><span class="c"># -&gt; 100</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Look the demo below there.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">cheker</span><span class="p">(</span><span class="n">arguments_of_func</span><span class="p">):</span>
+</span><span class="line">        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">            @checker receive the same arguments as @func</span>
+</span><span class="line"><span class="sd">            and do something that @func didn&#39;t do.</span>
+</span><span class="line"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">new_retVal</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="n">checker</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Actually, the reture value of <code>wrapper</code> is a function just little different from the original function passed into <code>wrapper</code> – <code>func</code>. Function <code>wrapper</code> like a shell on the original function and return with a more powerful function. That’s decorator. <code>wrapper</code> is a decorator.</p>
+
+<p><strong>Decorator: A decorator is any callable Python object that is used to modify a function, method or class definition. A decorator is passed th original object being defined and returns a modified object, which is then bound to the name in the definition. Python decorators were inspired in part by Java annotations, and have a similar syntax; teh decorator syntax is pure syntactic sugar, using @ as the keyword               – Wikipedia</strong></p>
+
+<p>Here is a more generic decorators</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;Show arguments: </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">inner</span>
+</span><span class="line">
+</span><span class="line"><span class="nd">@wrapper</span>
+</span><span class="line"><span class="k">def</span> <span class="nf">adder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</span><span class="line">
+</span><span class="line"><span class="k">print</span> <span class="n">adder</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c">#-&gt; Show arguments: (10, 90), {}</span>
+</span><span class="line"><span class="c">#   100</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>A better and more detailed explaination reader could read the blog
+<a href="http://www.simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/">Understanding Python Decoratos in 12 Easy Steps!</a>
+which is written by <code>simeon franklin</code>.</p>
+
+<h3 id="generator">Generator</h3>
+
+<hr />
+
+<p>Waiting for update</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -810,53 +1121,6 @@ concept in machine learning – <code>Boosting</code>.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/05/25/learn-to-design-a-container/">Learn to Design a Container</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-05-25T19:14:38+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:14 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Container is a collection which help us to store data of different types of data structure.</p>
-
-<p>There are only two types of container in C++/C :</p>
-
-<ul>
-  <li>array</li>
-  <li>structure</li>
-</ul>
-
-<p>C++ could provide more container but it didn’t.</p>
-
-<p><strong>Give a man a fish and you feed him for a day; teach a man to fish and you feed him for a lifetime; knowledge is the best charity;</strong></p>
-
-<p>:)</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/05/25/learn-to-design-a-container/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -878,6 +1142,10 @@ Hello, world
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/02/05/functional-programming-in-python/">Functional Programming in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/02/04/dict-object-in-python/">Dict Object in Python</a>
       </li>
     
@@ -893,10 +1161,6 @@ Hello, world
         <a href="/blog/2015/12/25/labs-of-mit-6-dot-034/">Labs of MIT 6.034</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2015/12/13/machine-learning-with-boosting/">Machine Learning With Boosting</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -910,7 +1174,7 @@ Hello, world
 <li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
 <li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
 <li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (3)</a></li>
-<li class='category'><a href='/blog/categories/python/'>python (2)</a></li>
+<li class='category'><a href='/blog/categories/python/'>python (3)</a></li>
  
   </ul> 
 </section>

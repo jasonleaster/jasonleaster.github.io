@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithm | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-04T18:43:04+08:00</updated>
+  <updated>2016-02-06T02:20:48+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -304,7 +304,7 @@ def buildTree(self, inorder, postorder):
 
 <!-- more -->
 
-<p>Ok, the story end and it don’t important anymore. What I should do is to pay attention to my weak ability and work hard to make me more stronger. Then I will prepare for the coming recruitment in autumn.</p>
+<p>Ok, the story is end and it don’t important to me anymore. What should I do is to pay attention to my weak ability and work hard to make me more stronger. Then I will prepare for the coming recruitment in autumn.</p>
 
 <p>This is a classical question. How to find an element in sequenced data ? The solution is <code>Binary Search</code>. It’s the quickest way to find element in sorted data set.</p>
 
