@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-06T16:08:41+08:00</updated>
+  <updated>2016-02-06T18:32:19+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -61,6 +61,8 @@ Think of “y = f(x)” or “h = f * g”</p>
 </span><span class="line">
 </span><span class="line"><span class="n">calc</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<!-- more -->
 
 <p>In Python, there have anonymous functions which is called <code>Lambda Expression</code> which’s body is limited to one expression.</p>
 
@@ -397,7 +399,9 @@ Generator is a factory that lazily produces values.</p>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <hr />
-<p>Photo by Jason Leaster in changde, HuNan, China.</p>
+<p>Photo by Jason Leaster in ChangDe, HuNan, China.</p>
+
+<p>What a big banana :)</p>
 
 <p><img src="http://jasonleaster.github.io/images/img_for_2016_02_06/banana.png" alt="images" /></p>
 ]]></content>
@@ -417,6 +421,8 @@ Generator is a factory that lazily produces values.</p>
 <blockquote>
   <p>In computer science, lazy deletion refers to a method of deleting elements from a hash table that uses open addressing. In this method, deletions are done by marking an element as deleted, rather than erasing it entirely. Deleted locations are treated as empty when inserting and as occupied during a search. – Wikipedia</p>
 </blockquote>
+
+<!-- more -->
 
 <p>There three kinds of slots in the table:</p>
 

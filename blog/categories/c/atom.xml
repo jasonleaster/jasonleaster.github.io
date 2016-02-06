@@ -4,7 +4,7 @@
   <title><![CDATA[Category: C | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/c/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-06T16:08:41+08:00</updated>
+  <updated>2016-02-06T18:32:19+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -27,6 +27,8 @@
 <blockquote>
   <p>In computer science, lazy deletion refers to a method of deleting elements from a hash table that uses open addressing. In this method, deletions are done by marking an element as deleted, rather than erasing it entirely. Deleted locations are treated as empty when inserting and as occupied during a search. – Wikipedia</p>
 </blockquote>
+
+<!-- more -->
 
 <p>There three kinds of slots in the table:</p>
 

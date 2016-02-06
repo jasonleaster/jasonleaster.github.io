@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-06T16:08:41+08:00</updated>
+  <updated>2016-02-06T18:32:19+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -50,6 +50,8 @@ def calc(f, x, y):
 <p>calc(add, 10, 20)</p>
 
 <p>```</p>
+
+<!-- more -->
 
 <p>In Python, there have anonymous functions which is called <code>Lambda Expression</code> which’s body is limited to one expression.</p>
 
@@ -272,7 +274,9 @@ Out[22]: 9</p>
 <p>```</p>
 
 <hr />
-<p>Photo by Jason Leaster in changde, HuNan, China.</p>
+<p>Photo by Jason Leaster in ChangDe, HuNan, China.</p>
+
+<p>What a big banana :)</p>
 
 <p><img src="/images/img_for_2016_02_06/banana.png" alt="images" /></p>
 ]]></content>
@@ -292,6 +296,8 @@ Out[22]: 9</p>
 <blockquote>
   <p>In computer science, lazy deletion refers to a method of deleting elements from a hash table that uses open addressing. In this method, deletions are done by marking an element as deleted, rather than erasing it entirely. Deleted locations are treated as empty when inserting and as occupied during a search. – Wikipedia</p>
 </blockquote>
+
+<!-- more -->
 
 <p>There three kinds of slots in the table:</p>
 
