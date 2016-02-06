@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-06T02:20:48+08:00</updated>
+  <updated>2016-02-06T16:08:41+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -215,9 +215,66 @@ which is written by <code>simeon franklin</code>.</p>
 
 <h3 id="generator">Generator</h3>
 
-<hr />
+<p>A <code>generator</code> is a special type of iterator(not vice versa!). 
+Generator is a factory that lazily produces values.</p>
 
-<p>Waiting for update</p>
+<p>There are two types of generators in Python: generator functions and generator expression.</p>
+
+<p>``` python</p>
+
+<p>”””
+Demo for generator
+“””</p>
+
+<p>def fib():
+    prev, curr = 0, 1
+    while True:
+        “””
+            There is no @return keyword in generator,
+        but there must be a @yield with a return object 
+        if there is a  generator function.
+        “””
+        yield curr 
+        prev, curr = curr, prev + curr</p>
+
+<p>f = fib()
+f.next()</p>
+
+<h6 id="section">#</h6>
+
+<p>”””
+Generator Expression
+“””
+numbers = [1, 2, 3, 4, 5, 6]</p>
+
+<p>lazy_square = ( x * x for x in numbers)
+“””
+Type:        generator
+String form: &lt;generator object <genexpr> at 0x7fd3bc119fa0&gt;
+Docstring:   <no docstring="">
+"""</no></genexpr></p>
+
+<p>In [18]: lazy_square == list
+Out[18]: False</p>
+
+<p>In [19]: lazy_square
+Out[19]: &lt;generator object <genexpr> at 0x7fd3bc0da410&gt;</genexpr></p>
+
+<p>In [20]: lazy_square.next()
+Out[20]: 1</p>
+
+<p>In [21]: lazy_square.next()
+Out[21]: 4</p>
+
+<p>In [22]: lazy_square.next()
+Out[22]: 9</p>
+
+<p>```</p>
+
+<hr />
+<p>Photo by Jason Leaster in changde, HuNan, China.</p>
+
+<p><img src="/images/img_for_2016_02_06/banana.png" alt="images" /></p>
 ]]></content>
   </entry>
   
