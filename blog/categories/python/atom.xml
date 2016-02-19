@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-06T18:32:19+08:00</updated>
+  <updated>2016-02-19T22:57:16+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,238 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Web Crawler]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/02/19/web-crawler/"/>
+    <updated>2016-02-19T21:27:47+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/02/19/web-crawler</id>
+    <content type="html"><![CDATA[<table>
+  <tbody>
+    <tr>
+      <td>Finished my first web scrawler … =_=</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Here is all about the spider. It’s small but funny.</p>
+
+<p>After I finish this web scrawler, I learn that. The most important thing to build a web scrawler is not the code but the inverse process. How to build your program like a web browser.</p>
+
+<p>Static web page is easy to get but how about a dynamic web page. Nowadays, more and more website use <code>ajax</code> to meet their bussiness requirement. If you just send a simple request to the server of that web site, you will find than the returned page is just only part of the total user page that you saw in the web browser.</p>
+
+<p>Here is my demonstration.
+<a href="www.duitang.com">duitang.com</a> is a funny images web site. I love a cute virtual character who is named as Mr.zhangcao . There is a lot of images of that guy. So I want build a web crawler to get that images all.</p>
+
+<p>If you send a request to the <a href="http://www.duitang.com/album/56759353">main page</a> and anlysis the returned page (Python’s library <strong>BeautifulSoup</strong> is helpful to analysis html files), you will find there are some links in the html file. But you will only get about 20+ images but not all images that you viewed in the web browser. When you pull down the button of the brower, you will see more and more images coming out to user.</p>
+
+<p>Why the returned page don’t have all links of images? The answer is <code>ajax</code>(asynchronous JavaScript and XML) is a set of web development techniques using many web technologies on the client-side to create asynchronous Web application.</p>
+
+<p><strong>The monitor in browswer will help programmer who is writing a web spider.</strong></p>
+
+<p>Dig into the detail of http transport, you will find a special request which are sent to server by the client browser.</p>
+
+<p>This is that special url.</p>
+
+<p>``` python</p>
+
+<p>http://www.duitang.com/napi/blog/list/by_album/?album_id=
+&amp;limit=24
+&amp;include_fields=top_comments%2Cis_root%2Csource_link%2Cbuyable%2Croot_id%2C
+status%2Clike_count%2Csender%2Creply_count&amp;start=48&amp;_=1455881387791</p>
+
+<p>```</p>
+
+<p>If client request that url to the server, the server will return a json data object. The job left is to analysis the json object and then get the resource links.</p>
+
+<p>The important part of building a web crawler is not the code but how to find the useful url and get more useful information.</p>
+
+<p>Here is a screenshut for what my web scrawler got.
+<img src="/images/img_for_2016_02_19/screenshut.png" alt="images" /></p>
+
+<p>``` python</p>
+
+<p>”””
+Programmer 	: EOF
+E-mail 		: jasonleaster@163.com
+File        : duitang.py
+Date        : 2016.02.19</p>
+
+<p>”””
+#!/usr/bin/env python
+# -<em>- coding: utf-8 -</em>-</p>
+
+<p>import urllib
+import urllib2
+import json
+import re
+import time</p>
+
+<p>downloadCount = 0</p>
+
+<p>album_id = 72129639
+limit = 100
+start = 1</p>
+
+<h1 id="this-function-return-a-url-and-this-url-will-return-a-json-object-data">This function return a URL and this URL will return a json object data.</h1>
+<p>def duitangURLMaker(album_id, limit, start):
+    url_part_1 = “http://www.duitang.com/napi/blog/list/by_album/?album_id=”
+    url_part_2 = “&amp;limit=”
+    url_part_3 = “&amp;include_fields=top_comments%2Cis_root%2Csource_link%2Cbuyable%2Croot_id%2Cstatus%2Clike_count%2Csender%2Creply_count&amp;start=”
+    url_part_4 = “&amp;_=1455881387791”</p>
+
+<pre><code>URL = url_part_1 + str(album_id) + url_part_2 + str(limit) + url_part_3 + str(start) + url_part_4
+
+return URL
+</code></pre>
+
+<p>def imgURLs(jsonDict):
+	URLs = []
+	object_list = jsonDict[“data”][“object_list”]
+	for item in object_list:
+		URLs.append(item[“photo”][“path”])</p>
+
+<pre><code>return URLs
+</code></pre>
+
+<p>URL 		= duitangURLMaker(album_id, limit, start)
+string 		= urllib.urlopen(URL).read()
+jsonDict 	= json.loads(string)</p>
+
+<p>URLs = imgURLs(jsonDict)</p>
+
+<p>for url in URLs:
+    Filename = “duitang_%s.jpeg” % (downloadCount)
+    try:
+        urllib.urlretrieve(url, Filename)
+        print “Download from”, url
+        downloadCount += 1
+    except:
+        print “Analyse Failed”</p>
+
+<p>```</p>
+
+<hr />
+<p>Photo by Jason Leaster. LiuYe Lake in ChangDe, HuNan, China.
+<img src="/images/img_for_2016_02_19/liuyehu.jpg" alt="images" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Brief Introduction to Opcodes in Python]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/02/06/brief-introduction-to-opcodes-in-python/"/>
+    <updated>2016-02-06T18:39:50+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/02/06/brief-introduction-to-opcodes-in-python</id>
+    <content type="html"><![CDATA[<p>Python program is compiled down to bytecode which is sort of like assembly for the python virtual machine. The interpreter executes each of these bytecodes one by one.</p>
+
+<p>Let’s look the following code. It’s easy to understand what it is doing without my explanation.</p>
+
+<p>``` python</p>
+
+<p>[demo.py]</p>
+
+<p>x = 1
+y = 2
+z = x + y
+print “x, y, z”, x, y, z</p>
+
+<p>```
+<!-- more --></p>
+
+<p>Programmer can use python module <code>dis</code> to transform that code into the assemble program of Python.</p>
+
+<p>``` python</p>
+
+<p>python -m dis “./demo.py”
+#line number 
+#in the       #assemble code           # object name in the source code
+#source code
+1           0 LOAD_CONST               0 (1)
+            3 STORE_NAME               0 (x)</p>
+
+<p>2           6 LOAD_CONST               1 (2)
+            9 STORE_NAME               1 (y)</p>
+
+<p>3          12 LOAD_NAME                0 (x)
+           15 LOAD_NAME                1 (y)
+           18 BINARY_ADD
+           19 STORE_NAME               2 (z)</p>
+
+<p>4          22 LOAD_NAME                0 (x)
+           25 PRINT_ITEM
+           26 LOAD_NAME                1 (y)
+           29 PRINT_ITEM
+           30 LOAD_NAME                2 (z)
+           33 PRINT_ITEM
+           34 PRINT_NEWLINE
+           35 LOAD_CONST               2 (None)
+           38 RETURN_VALUE</p>
+
+<h6 id="section">#</h6>
+
+<p>”””
+In the interpreter of Python, programmer also can call
+the built-in function @compile and import module @dis
+to do the same thing.
+“””</p>
+
+<p>In [5]: source = open(“./hello.py”).read()</p>
+
+<p>In [6]: code = compile(source, “demo”, “exec”)</p>
+
+<p>In [7]: import dis</p>
+
+<p>In [8]: dis.dis(code)</p>
+
+<p>```</p>
+
+<p>It’s not hard to understand the <code>opcode</code>. In implementation of CPython, all opcode defined as Macro in the header file <code>Include/opcode.h</code>.</p>
+
+<p>``` C</p>
+
+<p>[Include/opcode.h]
+…
+#define LOAD_CONST  100 /* Index in const list <em>/
+#define LOAD_NAME   101 /</em> Index in name list */
+…</p>
+
+<p>```</p>
+
+<p>The evaluation machine of Python is a stack-based machine.
+If you find the detail of <code>18 BINARY_ADD</code>, you will find that this opcode 
+will pop the two object on the stack and then add them together.</p>
+
+<p>``` C</p>
+
+<p>[Python/ceval.c]
+…</p>
+
+<p>/* Stack manipulation macros */</p>
+
+<p>/* The stack can grow at most MAXINT deep, as co_nlocals and
+      co_stacksize are ints. */</p>
+
+<h1 id="define-stacklevel-----intstackpointer---f-fvaluestack">define STACK_LEVEL()     ((int)(stack_pointer - f-&gt;f_valuestack))</h1>
+<p>#define EMPTY()           (STACK_LEVEL() == 0)
+#define TOP()             (stack_pointer[-1])
+#define SECOND()          (stack_pointer[-2])
+#define THIRD()           (stack_pointer[-3])
+#define FOURTH()          (stack_pointer[-4])
+#define PEEK(n)           (stack_pointer[-(n)])
+#define SET_TOP(v)        (stack_pointer[-1] = (v))
+#define SET_SECOND(v)     (stack_pointer[-2] = (v))
+#define SET_THIRD(v)      (stack_pointer[-3] = (v))
+#define SET_FOURTH(v)     (stack_pointer[-4] = (v))
+#define SET_VALUE(n, v)   (stack_pointer[-(n)] = (v))
+#define BASIC_STACKADJ(n) (stack_pointer += n)
+#define BASIC_PUSH(v)     (<em>stack_pointer++ = (v))
+#define BASIC_POP()       (</em>–stack_pointer)
+…</p>
+
+<p>```</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Functional Programming in Python]]></title>
@@ -861,6 +1093,9 @@ int_print(PyIntObject <em>v, FILE *fp, int flags)
     Py_END_ALLOW_THREADS
     return 0; }
 </code></pre>
+
+<p>Tips for debugging:
+<code>getrefcount</code> in module <code>sys</code> is helpful to get the reference number of object.</p>
 
 <p>```</p>
 
