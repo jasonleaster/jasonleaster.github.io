@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-19T23:28:46+08:00</updated>
+  <updated>2016-02-21T22:30:06+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,272 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Architecture of Python Virtual Machine]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/02/21/architecture-of-python-virtual-machine/"/>
+    <updated>2016-02-21T11:42:50+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/02/21/architecture-of-python-virtual-machine</id>
+    <content type="html"><![CDATA[<p>Python virtual machine is the core part of this language. After compiling the original python code into <code>Opcode</code>(byte code), python VM will take the job left. Python will take every opcode from <code>PyCodeObject</code>.</p>
+
+<!-- more -->
+
+<h3 id="executing-environment-in-python-vm">Executing environment in Python VM</h3>
+
+<p>Actually, all the things that VM do is simulating what the OS do to excute a program.</p>
+
+<p><img src="/images/img_for_2016_02_21/stack.png" alt="images" /></p>
+
+<p>The figure over there show the representation of the model of stack-based machine.</p>
+
+<p>If you are fimilary with system programming in C, it’s easy to understand the meaning of that figure.</p>
+
+<p>But if you are an beginner with programming in C, you may try to finish the lab2( bomb ) in CSAPP. It will help beginner a lot to understand the mechanism of stack-based machine.</p>
+
+<p><strong>We know that all the static information about the program store in <code>PyCodeObject</code>. But what about the dynamic information when the program is running in the Python VM?</strong></p>
+
+<p><code>PyCodeObject</code> can’t include the dynamic information and the environment where program is running.</p>
+
+<p>``` python</p>
+
+<p>number = 2016</p>
+
+<p>def f():
+    number = 42
+    print number # 42</p>
+
+<p>```</p>
+
+<p>You must know <code>number</code> in function <code>f()</code> and the variable which is not inside the block of function <code>f()</code> with the same name. That two variable are in different frame which means envrionment in running time.</p>
+
+<p>In Python, there is a class to describe the envrionment at running time – <code>PyFrameObject</code>. It’s a simulation of stack frame in x86 platform.</p>
+
+<p>You noticed that <code>PyFrameObject</code> is a size-variable Python Object class. Because this class maintain a <code>PyCodeObject</code> and stack in different block have different size. So <code>PyFrameObject</code> can’t be a size fixed class.</p>
+
+<p>``` C</p>
+
+<p>[Inlcude/frameobject.h]</p>
+
+<p>typedef struct _frame {
+    PyObject_VAR_HEAD
+    struct _frame <em>f_back;  /</em> previous frame, or NULL */</p>
+
+<pre><code>PyCodeObject *f_code;   /* code segment */
+PyObject *f_builtins;   /* builtin symbol table (PyDictObject) */
+PyObject *f_globals;    /* global symbol table (PyDictObject) */
+PyObject *f_locals;     /* local symbol table (any mapping) */
+PyObject **f_valuestack;/* points after the last local */
+
+/* Next free slot in f_valuestack.  
+Frame creation sets to f_valuestack.
+Frame evaluation usually NULLs it, but a frame that yields sets it
+to the current stack top. */
+PyObject **f_stacktop;
+
+...
+</code></pre>
+
+<p>} PyFrameObject;</p>
+
+<p>```</p>
+
+<p>This figure show the origanization of PyFrameObject like a single linked-list. <code>f_back</code> point to the previous frame. <code>f_valuestack</code> is something like <code>ebp</code> register in x86 and <code>f_stacktop</code> like the <code>esp</code> register.</p>
+
+<p><img src="/images/img_for_2016_02_21/frame.png" alt="images" /></p>
+
+<p>How to create a new PyFrameObject? The answer is function <code>PyFrame_New</code>.</p>
+
+<p>``` C</p>
+
+<p>[Object/frameobject.c]</p>
+
+<p>PyFrameObject *
+PyFrame_New(PyThreadState <em>tstate, PyCodeObject *code, PyObject *globals,
+                    PyObject *locals)
+{
+    PyFrameObject *back = tstate-&gt;frame;
+    PyFrameObject *f; /</em> New frame object */
+    PyObject *builtins;
+    Py_ssize_t i;</p>
+
+<pre><code>... 
+/* Big block of code to set value of @builtins */
+...
+
+f-&gt;f_stacktop = f-&gt;f_valuestack;
+f-&gt;f_builtins = builtins;
+Py_XINCREF(back);
+f-&gt;f_back = back;
+Py_INCREF(code);
+Py_INCREF(globals);
+f-&gt;f_globals = globals;
+
+...
+/* some details are ommited */
+...
+
+f-&gt;f_locals = locals;
+f-&gt;f_tstate = tstate;
+f-&gt;f_lasti = -1;
+f-&gt;f_lineno = code-&gt;co_firstlineno;
+f-&gt;f_iblock = 0;
+
+_PyObject_GC_TRACK(f);
+return f; }
+</code></pre>
+
+<p>```</p>
+
+<p>Luckly, we could access <code>PyFrameObject</code> in Python at running time.</p>
+
+<p>``` python</p>
+
+<p>import sys</p>
+
+<p>value = 3</p>
+
+<p>def g():
+    “””
+    _getframe([depth]) return a frame object from the call stack.
+    If that is deeper than the call stack, ValueError is raised.  The default
+    for depth is zero, returning the frame at the top of the call stack.
+    “””
+    frame = sys._getframe()
+    print “current function is : “, frame.f_code.co_name
+    caller = frame.f_back
+    print “caller function is : “, caller.f_code.co_name
+    print “caller’s local namespace : “, caller.f_locals
+    print “caller’s global namespace : “, caller.f_globals.keys()</p>
+
+<p>def f():
+    a = 1
+    b = 2
+    g()</p>
+
+<p>def show():
+    f()</p>
+
+<p>show()</p>
+
+<p>”””
+the output of this program :
+jasonleaster@ubuntu:~/Code_by_Jason/Python_language$ python caller.py 
+current function is :  g
+caller function is :  f
+caller’s local namespace :  {‘a’: 1, ‘b’: 2}
+caller’s global namespace :  [‘g’, ‘f’, ‘<strong>builtins</strong>’, ‘<strong>file</strong>’, ‘show’, ‘value’, ‘<strong>package</strong>’, ‘sys’, ‘<strong>name</strong>’, ‘<strong>doc</strong>’]
+“””</p>
+
+<p>```</p>
+
+<h3 id="name-scope-and-namespace">Name, Scope and Namespace</h3>
+
+<p>We have knew the three different namespace – locals, globals and builtins.
+In Python, there is a important basic structure – <code>module</code>.
+More generally, every <code>.py</code> file is a module in Python. This concept help Python to divide namespace and reuse the program which have been writed.</p>
+
+<p>Name is helpful to memory something which is not simple enough.</p>
+
+<p>Assignment expression in Python have two things in common:</p>
+
+<ul>
+  <li>Create a new object</li>
+  <li>build a connection between that new object and a name</li>
+</ul>
+
+<p>You may be familary with assignment like this <code>x = 1</code>. But expression like
+<code>def function():</code> and <code>class A():</code>, all these expression are also assignment expressions. What assignment to do is that build a connection between the object and name. It’s like a pair (name, object), (x, 1), (code, codeObject) and so on.</p>
+
+<p>A namespace is corresponding with unique scope.</p>
+
+<p>There is a comparasion between Python and C about namespace.</p>
+
+<p><img src="/images/img_for_2016_02_21/compare.png" alt="images" /></p>
+
+<p>Just guess what would happend if you run these two program ?</p>
+
+<p>The right side C program will run correctly but the left side Python program will run into exception for “local variable ‘a’ referenced before assignment”.</p>
+
+<p>The reason is that no matter where the variable are decalred in the scope, all things in that scope can see that variable. But what is interesting is that the assignment expression are after the first print expression. When program run into the first print expression, the assginment are unfinished, 
+<strong>which means the local object haven’t created yet.</strong></p>
+
+<p><code>global</code> keyword help programmer to declare a name which is in the global scope.</p>
+
+<p>``` python</p>
+
+<p>def f():
+    global a
+    print a
+    a = 2016
+    print a</p>
+
+<p>```
+But you should know that once you declare a variable with <code>global</code> keyword, all thing happen to the variable in the local scope will influence that object in the global scope and change it’s value. After function <code>f()</code> finished, the value of a in global scope changed into 2016.</p>
+
+<h3 id="runtime-architecture-of-python-vm">Runtime Architecture of Python VM</h3>
+
+<p>This function is the core part of virtual machine in Python. Once we get the opcode from <code>PyFrameObject</code>, the function <code>PyEval_EvalFrameEx</code> will process that opcode and run it.</p>
+
+<p>``` C</p>
+
+<p>[Python/ceval.c]</p>
+
+<p>…</p>
+
+<p>/* Code access macros */</p>
+
+<h1 id="define-instroffset--intnextinstr---firstinstr">define INSTR_OFFSET()  ((int)(next_instr - first_instr))</h1>
+<p>#define NEXTOP()        (*next_instr++)
+#define NEXTARG()       (next_instr += 2, (next_instr[-1]«8) + next_instr[-2])
+#define PEEKARG()       ((next_instr[2]«8) + next_instr[1])
+#define JUMPTO(x)       (next_instr = first_instr + (x))
+#define JUMPBY(x)       (next_instr += (x))</p>
+
+<p>…</p>
+
+<p>PyObject *
+PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
+{
+    …
+    for(;;)
+    {
+            f-&gt;f_lasti = INSTR_OFFSET();// get the opcode
+            …
+            opcode = NEXTOP();</p>
+
+<pre><code>        oparg = 0;   
+        /* allows oparg to be stored in a register because
+           it doesn't have to be remembered across a full loop */
+        if (HAS_ARG(opcode))
+            oparg = NEXTARG(); dispatch_opcode:
+                                                                                /* Main switch on opcode */
+                                                                                    READ_TIMESTAMP(inst0);
+        switch (opcode) {
+
+            case NOP:
+                ...
+            case LOAD_FAST:
+                ...
+            case LOAD_CONST:
+                ...
+                ...
+        }
+
+
+}
+
+... }
+</code></pre>
+
+<p>```</p>
+
+<hr />
+
+<p>Photo by QianNan Qu. In XiangTan, HuNan, China.</p>
+
+<p><img src="/images/img_for_2016_02_21/me.jpg" alt="images" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Web Crawler]]></title>
@@ -120,6 +386,59 @@ jsonDict 	= json.loads(string)</p>
         downloadCount += 1
     except:
         print “Analyse Failed”</p>
+
+<p>```</p>
+
+<h3 id="download-some-pdf-documents-on-a-website">Download some pdf documents on a website</h3>
+
+<p>``` python</p>
+
+<p>”””
+Programmer 	:   EOF
+E-mail 		:   jasonleaster@163.com
+File        :   stanford.py
+Date        :   2016.02.19</p>
+
+<p>Description:
+	This programmer will help user who is learn cs97 in stanford to download some pdf material in the website.</p>
+
+<p>”””
+import urllib
+from BeautifulSoup import *
+import urllib2
+import json
+import re
+import time</p>
+
+<p>URL = “http://web.stanford.edu/class/cs97si/”
+html = urllib.urlopen(URL).read()
+soup = BeautifulSoup(html)
+tags = soup(‘a’)</p>
+
+<p>downloadCount = 0</p>
+
+<p>pattern = “.pdf$”
+regex = re.compile(pattern)
+for tag in tags:
+    fileName = tag[“href”]
+    url = URL + fileName</p>
+
+<pre><code>"""
+search(string[, pos[, endpos]]) --&gt; match object or None.
+Scan through string looking for a match, and return a corresponding
+MatchObject instance. Return None if no position in the string matches.
+"""
+url = regex.search(url)
+regex.search
+if url is not None:
+    url = url.string
+    try:
+        urllib.urlretrieve(url, fileName)
+        print "Download from", url
+        downloadCount += 1
+    except:
+        print "Analyse Failed"
+</code></pre>
 
 <p>```</p>
 
@@ -674,438 +993,6 @@ INIT_NONZERO_DICT_SLOTS(mp); \
 <p>Photo By Jason Leaster</p>
 
 <p><img src="/images/img_for_2016_02_04/street.jpg" alt="images" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Int Object in Python]]></title>
-    <link href="http://jasonleaster.github.io/blog/2016/02/03/memory-model-of-int-object-in-python/"/>
-    <updated>2016-02-03T00:56:31+08:00</updated>
-    <id>http://jasonleaster.github.io/blog/2016/02/03/memory-model-of-int-object-in-python</id>
-    <content type="html"><![CDATA[<ul id="markdown-toc">
-  <li><a href="#preparation" id="markdown-toc-preparation">Preparation</a></li>
-  <li><a href="#rules-of-object-in-python" id="markdown-toc-rules-of-object-in-python">Rules of Object in Python.</a></li>
-  <li><a href="#firt-glance-at-the-implementation" id="markdown-toc-firt-glance-at-the-implementation">Firt glance at the implementation.</a></li>
-  <li><a href="#define-pyobjectheadextra------------" id="markdown-toc-define-pyobjectheadextra------------">define _PyObject_HEAD_EXTRA            \</a></li>
-  <li><a href="#define-pyobjectextrainit-0-0" id="markdown-toc-define-pyobjectextrainit-0-0">define _PyObject_EXTRA_INIT 0, 0,</a></li>
-  <li><a href="#define-pyobjecthead-------------------" id="markdown-toc-define-pyobjecthead-------------------">define PyObject_HEAD                   \</a>    <ul>
-      <li><a href="#initialization-of-pyintobject" id="markdown-toc-initialization-of-pyintobject">Initialization of PyIntObject</a></li>
-    </ul>
-  </li>
-  <li><a href="#define-blocksize------1000-----1k-less-typical-malloc-overhead-" id="markdown-toc-define-blocksize------1000-----1k-less-typical-malloc-overhead-">define BLOCK_SIZE      1000    /* 1K less typical malloc overhead */</a>    <ul>
-      <li><a href="#insert-and-delete" id="markdown-toc-insert-and-delete">Insert and Delete</a></li>
-      <li><a href="#time-for-hacking" id="markdown-toc-time-for-hacking">Time for Hacking</a></li>
-    </ul>
-  </li>
-</ul>
-
-<h3 id="preparation">Preparation</h3>
-
-<p>Here, we are goint to analysis how Python deal with <code>Int Object</code> in itself.</p>
-
-<p>First of all, we should have a environment which help us to explore the detail of the implementation in <code>Python 2.7</code>. At the same time, our operation shouldn’t influence the origianl Python in your workstation, if you have install Python before.</p>
-
-<p>You can get the source code from offical website of Python. And you will find that there have a file <code>configure</code> in the directory of the source.</p>
-
-<p><em>In the file configure, you can replace all string ‘Python’ with ‘pyLab’. And then move all file prefix with <code>Python</code> into <code>pyLab</code>(mainly in directory Misc/ and Modules)</em></p>
-
-<p>Don’t forget to run the configuration file – configure with the option <code>--prefix=Location where you want the Python which is for lab to install </code></p>
-
-<p>Finally, just run <code>make &amp; make install</code></p>
-
-<p>Repeat myself again, the reason that I move all ‘Python’ into ‘pyLab’ is all for making a difference with the original instance which is official and shouldn’t be influence by any operation from us.</p>
-
-<h3 id="rules-of-object-in-python">Rules of Object in Python.</h3>
-
-<ul>
-  <li>Objects are structures allocated on the heap.</li>
-  <li>Objects are never allocated statically or on the stack; they must be accessed through special macros and functions only.</li>
-</ul>
-
-<!-- more -->
-
-<ul>
-  <li>
-    <p>An object has a ‘reference count’ that is increased or decreased when a pointer to the object is copied or deleted; when the reference count reaches zero there are no references to the object left and it can be removed from the heap.</p>
-  </li>
-  <li>
-    <p>An object has a ‘type’ that determines what it represents and what kind of data it contains.  An object’s type is fixed when it is created. Types themselves are represented as objects; an object contains a pointer to the corresponding type object.  The type itself has a type pointer pointing to the object representing the type ‘type’, which contains a pointer to itself!).</p>
-  </li>
-  <li>
-    <p>Objects do not float around in memory; once allocated an object keeps the same size and address.  Objects that must hold variable-size data can contain pointers to variable-size parts of the object.  Not all objects of the same type have the same size; but the size cannot change after allocation.</p>
-  </li>
-  <li>
-    <p>Objects are always accessed through pointers of the type ‘PyObject *’.</p>
-  </li>
-</ul>
-
-<h3 id="firt-glance-at-the-implementation">Firt glance at the implementation.</h3>
-
-<p>``` C++</p>
-
-<p>/*
-   There are two basic different type of Object in Python.
-   1. PyObject.    (Immutable Object eg: int, string object which’s 
-                                size is known when it is creating.)
-   2. PyVarObject. (Mutable Object eg: list object which’s size is 
-                    unknown when it is creating and support the 
-                    operation of deleting and inserting)
-                        – notes by Jason Leaster
- */
-typedef struct _object {
-    PyObject_HEAD
-} PyObject;</p>
-
-<p>typedef struct {
-    PyObject_VAR_HEAD
-} PyVarObject;
-```</p>
-
-<p>Actually, PyObject are created by Macro <code>PyObject_HEAD</code></p>
-
-<p>``` C++</p>
-
-<p>[Include/object.h]</p>
-
-<p>…</p>
-
-<h1 id="define-pyobjectheadextra------------">define _PyObject_HEAD_EXTRA            \</h1>
-<pre><code>struct _object *_ob_next;           \
-struct _object *_ob_prev;
-</code></pre>
-
-<h1 id="define-pyobjectextrainit-0-0">define _PyObject_EXTRA_INIT 0, 0,</h1>
-
-<h1 id="define-pyobjecthead-------------------">define PyObject_HEAD                   \</h1>
-<pre><code>_PyObject_HEAD_EXTRA                \
-Py_ssize_t ob_refcnt;               \
-struct _typeobject *ob_type;
-</code></pre>
-
-<p>/* 
-   There also have some Macro to get the data member of PyObject.
-                    – notes by Jason Leaster
- <em>/
-#define Py_REFCNT(ob)           (((PyObject</em>)(ob))-&gt;ob_refcnt)
-#define Py_TYPE(ob)             (((PyObject<em>)(ob))-&gt;ob_type)
-#define Py_SIZE(ob)             (((PyVarObject</em>)(ob))-&gt;ob_size)</p>
-
-<p>…</p>
-
-<p>```</p>
-
-<p>Typically, the Int Object in Python <code>PyIntObject</code> is a <code>immutable object</code>. Once we created the object, we can’t change the value in that object.</p>
-
-<p>Back to our topic, let’s look at the definition of <code>PyIntObject</code>.</p>
-
-<p>``` C++</p>
-
-<p>//[Include/intobject.h]</p>
-
-<p>typedef struct{
-    PyObject_HEAD
-    long ob_ival;
-} PyIntObject;</p>
-
-<p>```</p>
-
-<p>Aha, the <code>PyIntObject</code> is just a simple capsulation of <code>long</code> in C.
-This object maintain a long data member.</p>
-
-<p>``` C++</p>
-
-<p>static int
-int_compare(PyIntObject <em>v, PyIntObject *w)
-{
-    /</em>
-    You will sigh that “the author of Python is a master in 
-    programming”. For efficient, they use <code>register</code> keyword and 
-    try to apply for using register to store the local variable.
-                            – notes by Jason Leaster.
-    */
-    register long i = v-&gt;ob_ival;
-    register long j = w-&gt;ob_ival;
-    return (i &lt; j) ? -1 : (i &gt; j) ? 1 : 0;
-}</p>
-
-<p>```</p>
-
-<p>How about the detail of printing a integer in Python ?</p>
-
-<p>``` C++</p>
-
-<p>/* ARGSUSED <em>/
-static int
-int_print(PyIntObject *v, FILE *fp, int flags)
-    /</em> flags – not used but required by interface */
-{
-    long int_val = v-&gt;ob_ival;
-    Py_BEGIN_ALLOW_THREADS
-    fprintf(fp, “%ld”, int_val);
-    Py_END_ALLOW_THREADS
-    return 0;
-}</p>
-
-<p>```</p>
-
-<p>There have many others method which are defined in <code>PyNumberMethods</code>. Python programmer can get the information about the object with a data member <code>__doc__</code>, like this:</p>
-
-<p><img src="/images/img_for_2016_02_03/doc.png" alt="images" /></p>
-
-<p>The implementation of that is just a plain text string in <code>Object/intobject.c</code></p>
-
-<p>``` C++</p>
-
-<p>PyDoc_STRVAR(int_doc,
-“int(x=0) -&gt; int or long\n\
-int(x, base=10) -&gt; int or long\n\
-\n\
-Convert a number or string to an integer, or return 0 if no arguments\n\
-are given.  If x is floating point, the conversion truncates towards zero.\n\
-If x is outside the integer range, the function returns a long instead.\n\
-\n\
-If x is not a number or if base is given, then x must be a string or\n\
-Unicode object representing an integer literal in the given base.  The\n\
-literal can be preceded by ‘+’ or ‘-‘ and be surrounded by whitespace.\n\
-The base defaults to 10.  Valid bases are 0 and 2-36.  Base 0 means to\n\
-interpret the base from the string as an integer literal.\n\
-»&gt; int(‘0b100’, base=0)\n\
-4”);</p>
-
-<p>```</p>
-
-<h3 id="initialization-of-pyintobject">Initialization of PyIntObject</h3>
-
-<p>Python support many different API to construct a <code>PyIntObject</code>.</p>
-
-<p>``` C++</p>
-
-<p>[Include/intobject.h]
-…
-PyAPI_FUNC(PyObject <em>) PyInt_FromString(char</em>, char<em>*, int);
-#ifdef Py_USING_UNICODE
-PyAPI_FUNC(PyObject *) PyInt_FromUnicode(Py_UNICODE</em>, Py_ssize_t, int);
-#endif
-PyAPI_FUNC(PyObject *) PyInt_FromLong(long);
-PyAPI_FUNC(PyObject *) PyInt_FromSize_t(size_t);
-PyAPI_FUNC(PyObject *) PyInt_FromSsize_t(Py_ssize_t);
-…</p>
-
-<p>```</p>
-
-<p>Before we dig into the implementation of the initialization process.
-Let’s do a lab.</p>
-
-<p><img src="/images/img_for_2016_02_03/different_address.png" alt="images" /></p>
-
-<p><code>id(object)</code> will returen the address of object in CPython.</p>
-
-<p>Try to answer the following question.</p>
-
-<p>Why int object <code>m</code> and <code>n</code> of value <code>1000</code> have different address?</p>
-
-<p>Why int object <code>x</code> and <code>y</code> of value <code>1</code>    have the same  address?</p>
-
-<p>The answer relate to the mechanism with numbers in Python.</p>
-
-<p><em>In daily programming stuff, small number are used frequently. But large number may used frequent more than small numbers</em></p>
-
-<p>If there isn’t a special mechanism, Python will allocate memory(call malloc() in C) again and again. This stratege isn’t efficient at run time.
-So, Python support a mechanism which will create small number only once but not bigger number.</p>
-
-<p>There also have the other question. What means big? What means small?
-It’s not clearly in theory. But in the implementation, there have a trade off. People can’t cache all integer number for the limitation of memory(RAM).</p>
-
-<p>``` C++</p>
-
-<p>[Object/intobject]
-…
-/*
-NSMALLPOSINTS:    Numbers of small positive integers number
-NSMALLNEGINTS:    Numbers of small negative integers number
-        –notes by Jason Leaster
-<em>/
-#ifndef NSMALLPOSINTS<br />
-#define NSMALLPOSINTS           257
-#endif
-#ifndef NSMALLNEGINTS<br />
-#define NSMALLNEGINTS           5
-#endif
-#if NSMALLNEGINTS + NSMALLPOSINTS &gt; 0
-/</em>  References to small integers are saved in this array so that they
-    can be shared.
-    The integers that are saved are those in the range
-    -NSMALLNEGINTS (inclusive) to NSMALLPOSINTS (not inclusive).
-*/
-static PyIntObject *small_ints[NSMALLNEGINTS + NSMALLPOSINTS];
-#endif
-…</p>
-
-<p>```</p>
-
-<p>According to the implementation, the small number is [-5, 257). You can also modify the source code and recomplie it to change the range of small number, if you would like to.</p>
-
-<blockquote>
-  <p>Integers are quite normal objects, to make object handling uniform.
-   (Using odd pointers to represent integers would save much space
-   but require extra checks for this special case throughout the code.)
-   Since a typical Python program spends much of its time allocating
-   and deallocating integers, these operations should be very fast.
-   Therefore we use a dedicated allocation scheme with a much lower
-   overhead (in space and time) than straight malloc(): a simple
-   dedicated free list, filled when necessary with memory from malloc().
-   block_list is a singly-linked list of all PyIntBlocks ever allocated,  linked via their next members.  PyIntBlocks are never returned to the
-   system before shutdown (PyInt_Fini).
-   free_list is a singly-linked list of available PyIntObjects, linked
-   via abuse of their ob_type members.</p>
-</blockquote>
-
-<p>``` C++</p>
-
-<h1 id="define-blocksize------1000-----1k-less-typical-malloc-overhead-">define BLOCK_SIZE      1000    /* 1K less typical malloc overhead */</h1>
-<p>#define BHEAD_SIZE      8       /* Enough for a 64-bit pointer */
-#define N_INTOBJECTS    ((BLOCK_SIZE - BHEAD_SIZE) / sizeof(PyIntObject))</p>
-
-<p>struct _intblock {
-    struct _intblock *next;
-    PyIntObject objects[N_INTOBJECTS];
-};</p>
-
-<p>typedef struct _intblock PyIntBlock;</p>
-
-<p>static PyIntBlock *block_list = NULL;
-static PyIntObject *free_list = NULL; // Initliazed by fill_free_list()</p>
-
-<p>```</p>
-
-<h3 id="insert-and-delete">Insert and Delete</h3>
-
-<p>A initialization routine from <code>long type</code> integer number.</p>
-
-<p>``` C++</p>
-
-<p>PyObject *
-PyInt_FromLong(long ival)
-{
-    register PyIntObject *v;
-    // try to use small number pool
-#if NSMALLNEGINTS + NSMALLPOSINTS &gt; 0
-    if (-NSMALLNEGINTS &lt;= ival &amp;&amp; ival &lt; NSMALLPOSINTS) {
-        v = small_ints[ival + NSMALLNEGINTS];
-        Py_INCREF(v);
-#ifdef COUNT_ALLOCS
-        if (ival &gt;= 0)
-            quick_int_allocs++;
-        else
-            quick_neg_int_allocs++;
-#endif
-        return (PyObject *) v;
-    }
-#endif</p>
-
-<p>// if ival is not a small number, create a new instance object.
-   if (free_list == NULL) {
-       if ((free_list = fill_free_list()) == NULL)
-           /*
-              fill_free_list() will create a general number pool 
-              for PyIntObjects.
-              But if there is no memory, return NULL
-            <em>/
-           return NULL;
-   }
-   /</em> Inline PyObject_New <em>/
-   v = free_list;
-   free_list = (PyIntObject *)Py_TYPE(v); 
-   // Py_TYPE(ob)  (((PyObject</em>)(ob))-&gt;ob_type) –notes by Jason Leaster
-   PyObject_INIT(v, &amp;PyInt_Type);
-   v-&gt;ob_ival = ival;
-   return (PyObject *) v;
-}</p>
-
-<p>```</p>
-
-<h3 id="time-for-hacking">Time for Hacking</h3>
-<p>Modify the <code>int_print</code> function in <code>Object/intobject.c</code>.
-Here is my modification:</p>
-
-<p>``` C++</p>
-
-<p>/*
- Programmer : Jason Leaster
- Date       : 2016.02.03</p>
-
-<p>Modify from Robert Chen’s code.
- */</p>
-
-<p>tatic int values[10];
-static int refcounts[10];</p>
-
-<p>static int
-int_print(PyIntObject <em>v, FILE *fp, int flags)
-         /</em> flags – not used but required by interface <em>/
-{
-        // «&lt; modified by Jason Leaster
-        PyIntObject</em> intObjectPtr = NULL;
-        PyIntBlock* p    = block_list;
-        PyIntBlock* last = NULL;</p>
-
-<pre><code>    int count = 0;
-    int i = 0;
-    while(p != NULL)
-    {
-        count++;
-        last = p;
-        p = p-&gt;next;
-    }
-    
-    intObjectPtr = last-&gt;objects;
-    intObjectPtr+= N_INTOBJECTS - 1;
-        
-    printf(" Address @%p\n", v);
-    
-    for(i = 0; i &lt; 10; i++, --intObjectPtr)
-    {
-        values[i] = intObjectPtr-&gt;ob_ival;
-        refcounts[i] = intObjectPtr-&gt;ob_refcnt;
-    }
-    
-    printf(" Values: ");
-    for(i = 0; i &lt; 10; i++)
-    {
-        printf("%d\t", values[i]);
-    }
-    printf("\n");
-
-    printf(" refcnt: ");
-    for(i = 0; i &lt; 10; i++)
-    {
-        printf("%d\t", refcounts[i]);
-    }
-    printf("\n");
-
-    printf(" block_list count: %d\n", count);
-    printf(" free_list : %p\n", free_list);
-
-    // &gt;&gt;&gt; Origianl
-    long int_val = v-&gt;ob_ival;
-    Py_BEGIN_ALLOW_THREADS
-    fprintf(fp, "%ld", int_val);
-    Py_END_ALLOW_THREADS
-    return 0; }
-</code></pre>
-
-<p>Tips for debugging:
-<code>getrefcount</code> in module <code>sys</code> is helpful to get the reference number of object.</p>
-
-<p>```</p>
-
-<p><img src="/images/img_for_2016_02_03/printout.png" alt="images" /></p>
-
-<hr />
-
-<p>Photo by Jason Leaster, in ChangeDe Hunan
-<img src="/images/img_for_2016_02_03/street.jpg" alt="images" /></p>
-
 ]]></content>
   </entry>
   

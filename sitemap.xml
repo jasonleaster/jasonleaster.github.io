@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://jasonleaster.github.io/blog/2016/02/21/architecture-of-python-virtual-machine/</loc>
+    <lastmod>2016-02-21T11:42:50+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://jasonleaster.github.io/blog/2016/02/19/web-crawler/</loc>
     <lastmod>2016-02-19T21:27:47+08:00</lastmod>
   </url>

@@ -1,0 +1,595 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Architecture of Python Virtual Machine - EOF</title>
+  <meta name="author" content="Jason Leaster">
+
+  
+  <meta name="description" content="Python virtual machine is the core part of this language. After compiling the original python code into Opcode(byte code), python VM will take the &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jasonleaster.github.io/blog/2016/02/21/architecture-of-python-virtual-machine/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="EOF" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">EOF</a></h1>
+  
+    <h2>Rebuilding The Tower Of Babel</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jasonleaster.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/todo">TODO</a></li>
+  <li><a href="/recommendation">Recommendation</a></li>
+  <li><a href="/about-me">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Architecture of Python Virtual Machine</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-02-21T11:42:50+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2016</span></span> <span class='time'>11:42 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Python virtual machine is the core part of this language. After compiling the original python code into <code>Opcode</code>(byte code), python VM will take the job left. Python will take every opcode from <code>PyCodeObject</code>.</p>
+
+<!-- more -->
+
+<h3 id="executing-environment-in-python-vm">Executing environment in Python VM</h3>
+
+<p>Actually, all the things that VM do is simulating what the OS do to excute a program.</p>
+
+<p><img src="/images/img_for_2016_02_21/stack.png" alt="images" /></p>
+
+<p>The figure over there show the representation of the model of stack-based machine.</p>
+
+<p>If you are fimilary with system programming in C, it’s easy to understand the meaning of that figure.</p>
+
+<p>But if you are an beginner with programming in C, you may try to finish the lab2( bomb ) in CSAPP. It will help beginner a lot to understand the mechanism of stack-based machine.</p>
+
+<p><strong>We know that all the static information about the program store in <code>PyCodeObject</code>. But what about the dynamic information when the program is running in the Python VM?</strong></p>
+
+<p><code>PyCodeObject</code> can’t include the dynamic information and the environment where program is running.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">number</span> <span class="o">=</span> <span class="mi">2016</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+</span><span class="line">    <span class="n">number</span> <span class="o">=</span> <span class="mi">42</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">number</span> <span class="c"># 42</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>You must know <code>number</code> in function <code>f()</code> and the variable which is not inside the block of function <code>f()</code> with the same name. That two variable are in different frame which means envrionment in running time.</p>
+
+<p>In Python, there is a class to describe the envrionment at running time – <code>PyFrameObject</code>. It’s a simulation of stack frame in x86 platform.</p>
+
+<p>You noticed that <code>PyFrameObject</code> is a size-variable Python Object class. Because this class maintain a <code>PyCodeObject</code> and stack in different block have different size. So <code>PyFrameObject</code> can’t be a size fixed class.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="C"><span class="line"><span class="p">[</span><span class="n">Inlcude</span><span class="o">/</span><span class="n">frameobject</span><span class="p">.</span><span class="n">h</span><span class="p">]</span>
+</span><span class="line">
+</span><span class="line"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_frame</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">PyObject_VAR_HEAD</span>
+</span><span class="line">    <span class="k">struct</span> <span class="n">_frame</span> <span class="o">*</span><span class="n">f_back</span><span class="p">;</span>  <span class="cm">/* previous frame, or NULL */</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">PyCodeObject</span> <span class="o">*</span><span class="n">f_code</span><span class="p">;</span>   <span class="cm">/* code segment */</span>
+</span><span class="line">    <span class="n">PyObject</span> <span class="o">*</span><span class="n">f_builtins</span><span class="p">;</span>   <span class="cm">/* builtin symbol table (PyDictObject) */</span>
+</span><span class="line">    <span class="n">PyObject</span> <span class="o">*</span><span class="n">f_globals</span><span class="p">;</span>    <span class="cm">/* global symbol table (PyDictObject) */</span>
+</span><span class="line">    <span class="n">PyObject</span> <span class="o">*</span><span class="n">f_locals</span><span class="p">;</span>     <span class="cm">/* local symbol table (any mapping) */</span>
+</span><span class="line">    <span class="n">PyObject</span> <span class="o">**</span><span class="n">f_valuestack</span><span class="p">;</span><span class="cm">/* points after the last local */</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/* Next free slot in f_valuestack.  </span>
+</span><span class="line"><span class="cm">    Frame creation sets to f_valuestack.</span>
+</span><span class="line"><span class="cm">    Frame evaluation usually NULLs it, but a frame that yields sets it</span>
+</span><span class="line"><span class="cm">    to the current stack top. */</span>
+</span><span class="line">    <span class="n">PyObject</span> <span class="o">**</span><span class="n">f_stacktop</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="p">...</span>
+</span><span class="line">
+</span><span class="line"><span class="p">}</span> <span class="n">PyFrameObject</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>This figure show the origanization of PyFrameObject like a single linked-list. <code>f_back</code> point to the previous frame. <code>f_valuestack</code> is something like <code>ebp</code> register in x86 and <code>f_stacktop</code> like the <code>esp</code> register.</p>
+
+<p><img src="/images/img_for_2016_02_21/frame.png" alt="images" /></p>
+
+<p>How to create a new PyFrameObject? The answer is function <code>PyFrame_New</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+</pre></td><td class="code"><pre><code class="C"><span class="line"><span class="p">[</span><span class="n">Object</span><span class="o">/</span><span class="n">frameobject</span><span class="p">.</span><span class="n">c</span><span class="p">]</span>
+</span><span class="line">
+</span><span class="line"><span class="n">PyFrameObject</span> <span class="o">*</span>
+</span><span class="line"><span class="n">PyFrame_New</span><span class="p">(</span><span class="n">PyThreadState</span> <span class="o">*</span><span class="n">tstate</span><span class="p">,</span> <span class="n">PyCodeObject</span> <span class="o">*</span><span class="n">code</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">globals</span><span class="p">,</span>
+</span><span class="line">                    <span class="n">PyObject</span> <span class="o">*</span><span class="n">locals</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">PyFrameObject</span> <span class="o">*</span><span class="n">back</span> <span class="o">=</span> <span class="n">tstate</span><span class="o">-&gt;</span><span class="n">frame</span><span class="p">;</span>
+</span><span class="line">    <span class="n">PyFrameObject</span> <span class="o">*</span><span class="n">f</span><span class="p">;</span> <span class="cm">/* New frame object */</span>
+</span><span class="line">    <span class="n">PyObject</span> <span class="o">*</span><span class="n">builtins</span><span class="p">;</span>
+</span><span class="line">    <span class="n">Py_ssize_t</span> <span class="n">i</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="p">...</span>
+</span><span class="line">    <span class="cm">/* Big block of code to set value of @builtins */</span>
+</span><span class="line">    <span class="p">...</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_stacktop</span> <span class="o">=</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_valuestack</span><span class="p">;</span>
+</span><span class="line">    <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_builtins</span> <span class="o">=</span> <span class="n">builtins</span><span class="p">;</span>
+</span><span class="line">    <span class="n">Py_XINCREF</span><span class="p">(</span><span class="n">back</span><span class="p">);</span>
+</span><span class="line">    <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_back</span> <span class="o">=</span> <span class="n">back</span><span class="p">;</span>
+</span><span class="line">    <span class="n">Py_INCREF</span><span class="p">(</span><span class="n">code</span><span class="p">);</span>
+</span><span class="line">    <span class="n">Py_INCREF</span><span class="p">(</span><span class="n">globals</span><span class="p">);</span>
+</span><span class="line">    <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_globals</span> <span class="o">=</span> <span class="n">globals</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="p">...</span>
+</span><span class="line">    <span class="cm">/* some details are ommited */</span>
+</span><span class="line">    <span class="p">...</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_locals</span> <span class="o">=</span> <span class="n">locals</span><span class="p">;</span>
+</span><span class="line">    <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_tstate</span> <span class="o">=</span> <span class="n">tstate</span><span class="p">;</span>
+</span><span class="line">    <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_lasti</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class="line">    <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_lineno</span> <span class="o">=</span> <span class="n">code</span><span class="o">-&gt;</span><span class="n">co_firstlineno</span><span class="p">;</span>
+</span><span class="line">    <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_iblock</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">_PyObject_GC_TRACK</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">f</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Luckly, we could access <code>PyFrameObject</code> in Python at running time.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">sys</span>
+</span><span class="line">
+</span><span class="line"><span class="n">value</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">g</span><span class="p">():</span>
+</span><span class="line">    <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">    _getframe([depth]) return a frame object from the call stack.</span>
+</span><span class="line"><span class="sd">    If that is deeper than the call stack, ValueError is raised.  The default</span>
+</span><span class="line"><span class="sd">    for depth is zero, returning the frame at the top of the call stack.</span>
+</span><span class="line"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span class="line">    <span class="n">frame</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span>
+</span><span class="line">    <span class="k">print</span> <span class="s">&quot;current function is : &quot;</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+</span><span class="line">    <span class="n">caller</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_back</span>
+</span><span class="line">    <span class="k">print</span> <span class="s">&quot;caller function is : &quot;</span><span class="p">,</span> <span class="n">caller</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+</span><span class="line">    <span class="k">print</span> <span class="s">&quot;caller&#39;s local namespace : &quot;</span><span class="p">,</span> <span class="n">caller</span><span class="o">.</span><span class="n">f_locals</span>
+</span><span class="line">    <span class="k">print</span> <span class="s">&quot;caller&#39;s global namespace : &quot;</span><span class="p">,</span> <span class="n">caller</span><span class="o">.</span><span class="n">f_globals</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+</span><span class="line">    <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class="line">    <span class="n">b</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span class="line">    <span class="n">g</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">show</span><span class="p">():</span>
+</span><span class="line">    <span class="n">f</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="n">show</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">the output of this program :</span>
+</span><span class="line"><span class="sd">jasonleaster@ubuntu:~/Code_by_Jason/Python_language$ python caller.py </span>
+</span><span class="line"><span class="sd">current function is :  g</span>
+</span><span class="line"><span class="sd">caller function is :  f</span>
+</span><span class="line"><span class="sd">caller&#39;s local namespace :  {&#39;a&#39;: 1, &#39;b&#39;: 2}</span>
+</span><span class="line"><span class="sd">caller&#39;s global namespace :  [&#39;g&#39;, &#39;f&#39;, &#39;__builtins__&#39;, &#39;__file__&#39;, &#39;show&#39;, &#39;value&#39;, &#39;__package__&#39;, &#39;sys&#39;, &#39;__name__&#39;, &#39;__doc__&#39;]</span>
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="name-scope-and-namespace">Name, Scope and Namespace</h3>
+
+<p>We have knew the three different namespace – locals, globals and builtins.
+In Python, there is a important basic structure – <code>module</code>.
+More generally, every <code>.py</code> file is a module in Python. This concept help Python to divide namespace and reuse the program which have been writed.</p>
+
+<p>Name is helpful to memory something which is not simple enough.</p>
+
+<p>Assignment expression in Python have two things in common:</p>
+
+<ul>
+  <li>Create a new object</li>
+  <li>build a connection between that new object and a name</li>
+</ul>
+
+<p>You may be familary with assignment like this <code>x = 1</code>. But expression like
+<code>def function():</code> and <code>class A():</code>, all these expression are also assignment expressions. What assignment to do is that build a connection between the object and name. It’s like a pair (name, object), (x, 1), (code, codeObject) and so on.</p>
+
+<p>A namespace is corresponding with unique scope.</p>
+
+<p>There is a comparasion between Python and C about namespace.</p>
+
+<p><img src="/images/img_for_2016_02_21/compare.png" alt="images" /></p>
+
+<p>Just guess what would happend if you run these two program ?</p>
+
+<p>The right side C program will run correctly but the left side Python program will run into exception for “local variable ‘a’ referenced before assignment”.</p>
+
+<p>The reason is that no matter where the variable are decalred in the scope, all things in that scope can see that variable. But what is interesting is that the assignment expression are after the first print expression. When program run into the first print expression, the assginment are unfinished, 
+<strong>which means the local object haven’t created yet.</strong></p>
+
+<p><code>global</code> keyword help programmer to declare a name which is in the global scope.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+</span><span class="line">    <span class="k">global</span> <span class="n">a</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">a</span>
+</span><span class="line">    <span class="n">a</span> <span class="o">=</span> <span class="mi">2016</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">a</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>But you should know that once you declare a variable with <code>global</code> keyword, all thing happen to the variable in the local scope will influence that object in the global scope and change it’s value. After function <code>f()</code> finished, the value of a in global scope changed into 2016.</p>
+
+<h3 id="runtime-architecture-of-python-vm">Runtime Architecture of Python VM</h3>
+
+<p>This function is the core part of virtual machine in Python. Once we get the opcode from <code>PyFrameObject</code>, the function <code>PyEval_EvalFrameEx</code> will process that opcode and run it.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+</pre></td><td class="code"><pre><code class="C"><span class="line"><span class="p">[</span><span class="n">Python</span><span class="o">/</span><span class="n">ceval</span><span class="p">.</span><span class="n">c</span><span class="p">]</span>
+</span><span class="line">
+</span><span class="line"><span class="p">...</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">/* Code access macros */</span>
+</span><span class="line">
+</span><span class="line"><span class="cp">#define INSTR_OFFSET()  ((int)(next_instr - first_instr))</span>
+</span><span class="line"><span class="cp">#define NEXTOP()        (*next_instr++)</span>
+</span><span class="line"><span class="cp">#define NEXTARG()       (next_instr += 2, (next_instr[-1]&lt;&lt;8) + next_instr[-2])</span>
+</span><span class="line"><span class="cp">#define PEEKARG()       ((next_instr[2]&lt;&lt;8) + next_instr[1])</span>
+</span><span class="line"><span class="cp">#define JUMPTO(x)       (next_instr = first_instr + (x))</span>
+</span><span class="line"><span class="cp">#define JUMPBY(x)       (next_instr += (x))</span>
+</span><span class="line">
+</span><span class="line"><span class="p">...</span>
+</span><span class="line">
+</span><span class="line"><span class="n">PyObject</span> <span class="o">*</span>
+</span><span class="line"><span class="n">PyEval_EvalFrameEx</span><span class="p">(</span><span class="n">PyFrameObject</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="kt">int</span> <span class="n">throwflag</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="p">...</span>
+</span><span class="line">    <span class="k">for</span><span class="p">(;;)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">            <span class="n">f</span><span class="o">-&gt;</span><span class="n">f_lasti</span> <span class="o">=</span> <span class="n">INSTR_OFFSET</span><span class="p">();</span><span class="c1">// get the opcode</span>
+</span><span class="line">            <span class="p">...</span>
+</span><span class="line">            <span class="n">opcode</span> <span class="o">=</span> <span class="n">NEXTOP</span><span class="p">();</span>
+</span><span class="line">
+</span><span class="line">            <span class="n">oparg</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">            <span class="cm">/* allows oparg to be stored in a register because</span>
+</span><span class="line"><span class="cm">               it doesn&#39;t have to be remembered across a full loop */</span>
+</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="n">HAS_ARG</span><span class="p">(</span><span class="n">opcode</span><span class="p">))</span>
+</span><span class="line">                <span class="n">oparg</span> <span class="o">=</span> <span class="n">NEXTARG</span><span class="p">();</span>
+</span><span class="line"><span class="nl">dispatch_opcode</span><span class="p">:</span>
+</span><span class="line">                                                                                    <span class="cm">/* Main switch on opcode */</span>
+</span><span class="line">                                                                                        <span class="n">READ_TIMESTAMP</span><span class="p">(</span><span class="n">inst0</span><span class="p">);</span>
+</span><span class="line">            <span class="k">switch</span> <span class="p">(</span><span class="n">opcode</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">                <span class="k">case</span> <span class="nl">NOP</span><span class="p">:</span>
+</span><span class="line">                    <span class="p">...</span>
+</span><span class="line">                <span class="k">case</span> <span class="nl">LOAD_FAST</span><span class="p">:</span>
+</span><span class="line">                    <span class="p">...</span>
+</span><span class="line">                <span class="k">case</span> <span class="nl">LOAD_CONST</span><span class="p">:</span>
+</span><span class="line">                    <span class="p">...</span>
+</span><span class="line">                    <span class="p">...</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="p">...</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<hr />
+
+<p>Photo by QianNan Qu. In XiangTan, HuNan, China.</p>
+
+<p><img src="/images/img_for_2016_02_21/me.jpg" alt="images" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason Leaster</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-02-21T11:42:50+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2016</span></span> <span class='time'>11:42 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/02/19/web-crawler/" title="Previous Post: Web Crawler">&laquo; Web Crawler</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/02/21/architecture-of-python-virtual-machine/">Architecture of Python Virtual Machine</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/19/web-crawler/">Web Crawler</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/06/brief-introduction-to-opcodes-in-python/">Brief Introduction to Opcodes in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/05/functional-programming-in-python/">Functional Programming in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/04/dict-object-in-python/">Dict Object in Python</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section> 
+  <h1>Categories</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/algorithm/'>algorithm (2)</a></li>
+<li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
+<li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
+<li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
+<li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (3)</a></li>
+<li class='category'><a href='/blog/categories/python/'>python (6)</a></li>
+ 
+  </ul> 
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Jason Leaster -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
