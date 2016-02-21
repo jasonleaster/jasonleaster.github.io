@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-21T22:30:06+08:00</updated>
+  <updated>2016-02-21T22:36:02+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -297,6 +297,8 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 <p>After I finish this web scrawler, I learn that. The most important thing to build a web scrawler is not the code but the inverse process. How to build your program like a web browser.</p>
 
 <p>Static web page is easy to get but how about a dynamic web page. Nowadays, more and more website use <code>ajax</code> to meet their bussiness requirement. If you just send a simple request to the server of that web site, you will find than the returned page is just only part of the total user page that you saw in the web browser.</p>
+
+<!-- more -->
 
 <p>Here is my demonstration.
 <a href="www.duitang.com">duitang.com</a> is a funny images web site. I love a cute virtual character who is named as Mr.zhangcao . There is a lot of images of that guy. So I want build a web crawler to get that images all.</p>
