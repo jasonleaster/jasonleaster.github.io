@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-23T15:38:10+08:00</updated>
+  <updated>2016-02-23T15:43:07+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -39,6 +39,8 @@
 </span><span class="line">
 </span><span class="line"><span class="k">print</span> <span class="s">&quot;get here&quot;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<!-- more -->
 
 <p>If you press down <code>ctrl + c</code>, there will trigger a interruption by keyboard. The inner infinite loop will stop and jump into the exception handler. There are another examples of exception and interruption in the computer. Programmer may also ask what’s the benefite to handle the exception …</p>
 
