@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-21T22:36:02+08:00</updated>
+  <updated>2016-02-23T15:38:10+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,330 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Exception Control in Python]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/02/22/exception-control-in-python/"/>
+    <updated>2016-02-22T11:31:34+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/02/22/exception-control-in-python</id>
+    <content type="html"><![CDATA[<p>Pythoner may be familiar with exception control like the demo beblow there:</p>
+
+<p>``` python</p>
+
+<p>try:
+    i = 0
+    while True:
+        i += 1</p>
+
+<p>except KeyboardInterrupt:
+    print “after abort:”, i</p>
+
+<p>print “get here”</p>
+
+<p>```</p>
+
+<p>If you press down <code>ctrl + c</code>, there will trigger a interruption by keyboard. The inner infinite loop will stop and jump into the exception handler. There are another examples of exception and interruption in the computer. Programmer may also ask what’s the benefite to handle the exception …</p>
+
+<p>What if there is something unpredictable and it will stop the program to run correctly?</p>
+
+<p>If you do 1 divide 0 in your program, the CPU don’t know how to compute that expression. In the level of operating system, OS will handle it as an exception and tell programmer that it doesn’t work. The program must be stopped or killed.</p>
+
+<p>``` python</p>
+
+<p>try:
+    1/0
+except:
+    print “Welcome Chapter 42 – Guideline to galaxy”</p>
+
+<p>```</p>
+
+<p>Although there trig a exception for diveding zero, but we catch it and handle it correctly. So, the program end correctly.</p>
+
+<p>The mechanism of exception handling come from operating system.</p>
+
+<p>Here is the definition of exception object in Python. (Don’t forget that everything in Python is object).</p>
+
+<p>``` C</p>
+
+<p>[Include/pyerrors.h]</p>
+
+<p>…</p>
+
+<p>typedef struct {
+    PyObject_HEAD
+    PyObject *dict;
+    PyObject *args;
+    PyObject *message;
+} PyBaseExceptionObject;</p>
+
+<p>…</p>
+
+<p>/* Predefined exceptions */</p>
+
+<p>PyAPI_DATA(PyObject *) PyExc_BaseException;
+PyAPI_DATA(PyObject *) PyExc_Exception;
+PyAPI_DATA(PyObject *) PyExc_StopIteration;
+…
+PyAPI_DATA(PyObject *) PyExc_ZeroDivisionError;
+PyAPI_DATA(PyObject *) PyExc_EOFError;</p>
+
+<p>…</p>
+
+<p>```</p>
+
+<p>Here is a example about how python deal with the exception.</p>
+
+<p>What would happen if there is a expression <code>1/0</code>.
+I use IPython interpreter do this demo.</p>
+
+<p>``` python</p>
+
+<p>In [18]: code = compile(“1/0”, “testscript”, mode= “exec”)</p>
+
+<p>In [19]: dis.disassemble(code)
+      1           0 LOAD_CONST               0 (1)
+                  3 LOAD_CONST               1 (0)
+                  6 BINARY_DIVIDE     <br />
+                  7 POP_TOP           <br />
+                  8 LOAD_CONST               2 (None)
+                 11 RETURN_VALUE</p>
+
+<p>```
+The assemble code (opcode) of expression <code>1/0</code> in Python is compiled into that opcode code. It isn’t difficult to understand what the <code>LOAD_CONST</code> do.</p>
+
+<p>Let’s dig into the detail of <code>BINARY_DIVIDE</code> in Python/ceval.c</p>
+
+<p>``` C</p>
+
+<p>[Python/ceval.c]
+    for(;;)// big for loop
+        …
+        TARGET_NOARG(BINARY_DIVIDE)
+            {
+                if (!_Py_QnewFlag) {
+                    w = POP();
+                    v = TOP();
+                    x = PyNumber_Divide(v, w); //
+                    Py_DECREF(v);
+                    Py_DECREF(w);
+                    SET_TOP(x);
+                    if (x != NULL) DISPATCH();
+                    break;
+                }
+            }
+        …</p>
+
+<pre><code>    /* 
+       set up the basic information for the reason 
+       why exception happened  -- notes by Jason Leaster
+     */
+    /* Quickly continue if no error occurred */
+
+    if (why == WHY_NOT) {
+        if (err == 0 &amp;&amp; x != NULL) {
+            READ_TIMESTAMP(loop1);
+            continue; /* Normal, fast path */
+        }
+        why = WHY_EXCEPTION;
+        x = Py_None;
+        err = 0;
+    }
+
+    ...
+
+    /* Log traceback info if this is a real exception */
+    if (why == WHY_EXCEPTION) {
+        PyTraceBack_Here(f);
+        ...
+    }
+    ...
+</code></pre>
+
+<p>[Objects/abstract.c]
+BINARY_FUNC(PyNumber_Subtract, nb_subtract, “-“)</p>
+
+<p>/* PyNumber_Divide is just the other name of function nb_divide 
+   and then you will find that the nb_divide is just a function pointer
+   in struct PyNumberMethods.</p>
+
+<p>The REAL implementation is function @int_classic_div in 
+   Objects/intobject.c. The @int_classic_div will call function
+   @i_divmod in Objects/intobject.c</p>
+
+<pre><code>                                -- notes by Jason Leaster  */ BINARY_FUNC(PyNumber_Divide, nb_divide, "/") 
+</code></pre>
+
+<p>BINARY_FUNC(PyNumber_Divmod, nb_divmod, “divmod()”)</p>
+
+<p>[Objects/intobject.c]
+i_divmod(register long x, register long y,
+           long *p_xdivy, long *p_xmody)
+{
+    long xdivy, xmody;</p>
+
+<pre><code>if (y == 0) {
+    /*
+     Keypoint!
+     Here is where Python setup a new exception for "divide zero"
+     problem.
+                                        -- notes by JasonLeaster
+     */
+    PyErr_SetString(PyExc_ZeroDivisionError,
+            "integer division or modulo by zero");
+    return DIVMOD_ERROR;
+}
+
+... ... }
+</code></pre>
+
+<p>```</p>
+
+<p>It’s the last mile to get the target place.
+<code>PyErr_SetString</code> finish the job about the initialization of <code>divide zero</code> exception.</p>
+
+<p>``` C</p>
+
+<p>[Python/errors.c]</p>
+
+<p>void
+PyErr_Restore(PyObject *type, PyObject *value, PyObject *traceback)
+{
+    PyThreadState *tstate = PyThreadState_GET();
+    PyObject *oldtype, *oldvalue, *oldtraceback;</p>
+
+<pre><code>... 
+
+/* Save these in locals to safeguard against recursive
+   invocation through Py_XDECREF */
+oldtype = tstate-&gt;curexc_type;
+oldvalue = tstate-&gt;curexc_value;
+oldtraceback = tstate-&gt;curexc_traceback;
+
+tstate-&gt;curexc_type = type;
+tstate-&gt;curexc_value = value;
+tstate-&gt;curexc_traceback = traceback;
+... }
+</code></pre>
+
+<p>void
+PyErr_SetObject(PyObject *exception, PyObject *value)
+{
+    …</p>
+
+<pre><code>/* log this exception message into thread state */
+PyErr_Restore(exception, value, (PyObject *)NULL); }
+</code></pre>
+
+<p>void
+PyErr_SetString(PyObject *exception, const char *string)
+{
+    PyObject *value = PyString_FromString(string);
+    PyErr_SetObject(exception, value);
+    Py_XDECREF(value);
+}</p>
+
+<p>```</p>
+
+<p>After the VM (ceval.c) know why there is a exception, the VM will take step
+into handling this exception. We have knew that the big <code>for switch loop</code> execute the opcode step by step. 
+Once there is something wrong with the opcode at runtime, the VM will setup
+ exception object by <code>PyErr_SetObject</code>. And then VM also will setup the traceback object of type <code>PyTracebackObject</code>.</p>
+
+<p>``` C</p>
+
+<p>/* Traceback interface */</p>
+
+<p>typedef struct _traceback {
+    PyObject_HEAD
+    struct _traceback *tb_next;
+    struct _frame *tb_frame;
+    int tb_lasti;
+    int tb_lineno;
+} PyTracebackObject;</p>
+
+<p>```</p>
+
+<p>You may notice that the <code>PyTracebackObject</code> is a single direction linked-list.</p>
+
+<p>``` C</p>
+
+<p>static PyTracebackObject *
+newtracebackobject(PyTracebackObject *next, PyFrameObject *frame)
+{
+    PyTracebackObject *tb;
+    if ((next != NULL &amp;&amp; !PyTraceBack_Check(next)) ||
+            frame == NULL || !PyFrame_Check(frame)) {
+        PyErr_BadInternalCall();
+        return NULL;
+    }
+    tb = PyObject_GC_New(PyTracebackObject, &amp;PyTraceBack_Type);
+    if (tb != NULL) {
+        Py_XINCREF(next);
+        tb-&gt;tb_next = next;
+        Py_XINCREF(frame);
+        tb-&gt;tb_frame = frame;
+        tb-&gt;tb_lasti = frame-&gt;f_lasti;
+        tb-&gt;tb_lineno = PyFrame_GetLineNumber(frame);
+        PyObject_GC_Track(tb);
+    }
+    return tb;
+}</p>
+
+<p>int
+PyTraceBack_Here(PyFrameObject *frame)
+{
+    PyThreadState *tstate = PyThreadState_GET();
+    PyTracebackObject *oldtb = (PyTracebackObject *) tstate-&gt;curexc_traceback;
+    PyTracebackObject *tb = newtracebackobject(oldtb, frame);
+    if (tb == NULL)
+        return -1;
+    tstate-&gt;curexc_traceback = (PyObject *)tb;
+    Py_XDECREF(oldtb);
+    return 0;
+}</p>
+
+<p>```</p>
+
+<p>``` python</p>
+
+<p>import sys</p>
+
+<p>def h():
+    print “in frame :”, sys._getframe()
+    print “in function :”, sys._getframe().f_code.co_name
+    1/0</p>
+
+<p>def g():
+    print “in frame :”, sys._getframe()
+    print “in function :”, sys._getframe().f_code.co_name
+    h()</p>
+
+<p>def f():
+    print “in frame :”, sys._getframe()
+    print “in function :”, sys._getframe().f_code.co_name
+    g()</p>
+
+<p>f()</p>
+
+<p>```</p>
+
+<p>This program will trig the exception at function h().
+Here is the output of that program.</p>
+
+<p><img src="/images/img_for_2016_02_22/traceback.png" alt="images" /></p>
+
+<p><img src="/images/img_for_2016_02_22/frameobjectlist.png" alt="images" /></p>
+
+<h3 id="hacker-time">Hacker Time</h3>
+
+<p><img src="/images/img_for_2016_02_22/hacktime0.png" alt="images" /></p>
+
+<hr />
+<p>Photo by Jason Leaster, ChangeDe, HuNan, China
+<img src="/images/img_for_2016_02_22/bridge.jpg" alt="images" /></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Architecture of Python Virtual Machine]]></title>
@@ -832,169 +1156,6 @@ Out[22]: 9</p>
 <p>What a big banana :)</p>
 
 <p><img src="/images/img_for_2016_02_06/banana.png" alt="images" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Dict Object in Python]]></title>
-    <link href="http://jasonleaster.github.io/blog/2016/02/04/dict-object-in-python/"/>
-    <updated>2016-02-04T12:54:11+08:00</updated>
-    <id>http://jasonleaster.github.io/blog/2016/02/04/dict-object-in-python</id>
-    <content type="html"><![CDATA[<p>Dictionary object type – mapping from hashable object to object</p>
-
-<p>In the implemenation, Python don’t choose <code>Red-Black Tree</code> as the basic data structure but Hash Table with a special technology – <code>Open Addressing</code>.</p>
-
-<p>About open addressing:</p>
-
-<blockquote>
-  <p>In computer science, lazy deletion refers to a method of deleting elements from a hash table that uses open addressing. In this method, deletions are done by marking an element as deleted, rather than erasing it entirely. Deleted locations are treated as empty when inserting and as occupied during a search. – Wikipedia</p>
-</blockquote>
-
-<!-- more -->
-
-<p>There three kinds of slots in the table:</p>
-
-<ol>
-  <li>
-    <p>Unused.  <code>me_key</code> == <code>me_value</code> == <code>NULL</code>
-Does not hold an active (key, value) pair now and never did.  Unused can transition to Active upon key insertion.  This is the only case in which <code>me_key</code> is NULL, and is each slot’s initial state.</p>
-  </li>
-  <li>
-    <p>Active.  <code>me_key</code> != NULL and <code>me_key</code> != dummy and <code>me_value</code> != NULL Holds an active (key, value) pair.  Active can transition to Dummy upon key deletion.  This is the only case in which <code>me_value</code> != NULL.</p>
-  </li>
-  <li>
-    <p>Dummy.  <code>me_key</code> == dummy and <code>me_value</code> == NULL
-Previously held an active (key, value) pair, but that was deleted and an active pair has not yet overwritten the slot.  Dummy can transition to Active upon key insertion. Dummy slots cannot be made Unused again (cannot have <code>me_key</code> set to NULL), else the probe sequence in case of collision would have no way to know they were once active.</p>
-  </li>
-</ol>
-
-<p>Here, Python define the entry data type of dict in python <code>PyDictObejct</code>. A entry is like a paire (key, value). To avoid calculating the hash value of <code>me_key</code>, <code>me_hash</code> used as a cached value for it.</p>
-
-<p>``` C</p>
-
-<p>[Include/dictobject.h]
-typedef struct {
-    Py_ssize_t me_hash;
-    PyObject *me_key;
-    PyObject *me_value;
-} PyDictEntry;</p>
-
-<p>```</p>
-
-<p>To ensure the lookup algorithm terminates, there must be at least one Unused slot (NULL key) in the table.</p>
-
-<p>The value <code>ma_fill</code> is the number of non-NULL keys (sum of Active and Dummy);
-   <code>ma_used</code> is the number of non-NULL, non-dummy keys (== the number of non-NULL values == the number of Active items).
-   To avoid slowing down lookups on a near-full table, we resize the table when it’s <font color="red">two-thirds</font> full.</p>
-
-<p>``` C</p>
-
-<p>[Include/dictobject.h]
-typedef struct _dictobject PyDictObject;
-struct _dictobject {
-    PyObject_HEAD
-    Py_ssize_t ma_fill;  /* # Active + # Dummy <em>/
-    Py_ssize_t ma_used;  /</em> # Active <em>/
-    /</em> The table contains ma_mask + 1 slots, and that’s a power of 2.
-     * We store the mask instead of the size because the mask is more
-     * frequently needed.
-     */
-    Py_ssize_t ma_mask;</p>
-
-<pre><code> */
-PyDictEntry *ma_table;
-PyDictEntry *(*ma_lookup)(PyDictObject *mp, PyObject *key, long hash);
-PyDictEntry ma_smalltable[PyDict_MINSIZE]; };
-</code></pre>
-
-<p>```</p>
-
-<p><code>PyDict_MINSIZE</code> is the minimum size of a dictionary.  This many slots are allocated directly in the dict object.
-(in the <code>ma_smalltable</code> member). 
-It must be a power of 2, and at least 4.  8 allows dicts with no more than 5 active entries to live in <code>ma_smalltable</code> (and so avoid an additional malloc); instrumentation suggested this suffices for the majority of dicts (consisting mostly of usually-small instance dicts and usually-small dicts created to pass keyword arguments).</p>
-
-<p>``` C</p>
-
-<h1 id="define-pydictminsize-8">define PyDict_MINSIZE 8</h1>
-
-<p>```</p>
-
-<p>Here defined a array <code>ma_smalltable</code> which store 8 <code>PyDictEntry</code>.
-<code>ma_table</code> points to <code>ma_smalltable</code> for small tables, else to 
-additional malloc’ed memory.  <code>ma_table</code> is never NULL!<br />
-This rule saves repeated runtime null-tests in the workhorse getitem and setitem calls.</p>
-
-<p>I draw a figure to make the idea easy to be understand.</p>
-
-<p><img src="/images/img_for_2016_02_04/dictTable.png" alt="images" /></p>
-
-<p>The question is coming. When Python will resize the diction table of that object?</p>
-
-<p>The answer is in function <code>dictresize</code> in file <code>Object/dictobject.c</code></p>
-
-<p>``` C
-[Object/dictobject.c]
-…</p>
-
-<p>// Recall the rule of 2/3 –notes by Jason Leaster
-if (!(mp-&gt;ma_used &gt; n_used &amp;&amp; mp-&gt;ma_fill<em>3 &gt;= (mp-&gt;ma_mask+1)</em>2)) 
-        return 0;</p>
-
-<pre><code>// Debug information add by Jason Leaster
-printf("Try to resize the old diction\n");
-printf("mp-&gt;ma_used  :%p \n", mp-&gt;ma_used);
-printf("mp-&gt;ma_fill  :%p \n", mp-&gt;ma_fill);
-                    
-return dictresize(mp, (mp-&gt;ma_used &gt; 50000 ? 2 : 4) * mp-&gt;ma_used); }   
-</code></pre>
-
-<p>```</p>
-
-<p>Attention, once <code>mp-ma_fill</code> bigger or equal to (2/3)<code>mp-&gt;ma_mask+1</code> and we have finished a insert operation(<code>mp-&gt;ma_used</code> &gt; <code>n_used</code>), <strong>we should resize the container(ma_table) of  the dictionary</strong>.</p>
-
-<p>Yes, we should resize the dictionary object if there have 6 or more object in the container but <strong>not</strong> 8.</p>
-
-<p>Here is the result of hacking.</p>
-
-<p><img src="/images/img_for_2016_02_04/testResizeDict.png" alt="images" /></p>
-
-<p>Actually, <code>dummy</code> PyDictObject is just a <code>PyStringObject</code> in Python. Initially, dummy is a pointer in C but it finally comes to a <code>PyStringObject</code> after initialization of <code>PyDictObject</code> first time.</p>
-
-<p>``` C</p>
-
-<p>/* Object used as dummy key to fill deleted entries <em>/
-static PyObject *dummy = NULL; /</em> Initialized by first call to newPyDictObject() */</p>
-
-<p>```</p>
-
-<h3 id="initialization-part">Initialization Part</h3>
-
-<p>There are two ways to create a dict:  <code>PyDict_New()</code> is the main C API function, 
-and the <code>tp_new</code> slot maps to <code>dict_new()</code>.  In the latter case we
-    can save a little time over what PyDict_New does because it’s guaranteed
-    that the PyDictObject struct is already zeroed out.
-    Everyone except dict_new() should use EMPTY_TO_MINSIZE (unless they have an excellent reason not to).</p>
-
-<p>``` C</p>
-
-<h1 id="define-initnonzerodictslotsmp-do--">define INIT_NONZERO_DICT_SLOTS(mp) do { \</h1>
-<pre><code>(mp)-&gt;ma_table = (mp)-&gt;ma_smalltable;\
-(mp)-&gt;ma_mask = PyDict_MINSIZE - 1; \ } while(0)
-</code></pre>
-
-<h1 id="define-emptytominsizemp-do----">define EMPTY_TO_MINSIZE(mp) do {   \</h1>
-<pre><code>memset((mp)-&gt;ma_smalltable, 0, sizeof((mp)-&gt;ma_smalltable))\
-(mp)-&gt;ma_used = (mp)-&gt;ma_fill = 0;\
-INIT_NONZERO_DICT_SLOTS(mp); \
-    } while(0)
-</code></pre>
-
-<p>```</p>
-
-<hr />
-<p>Photo By Jason Leaster</p>
-
-<p><img src="/images/img_for_2016_02_04/street.jpg" alt="images" /></p>
 ]]></content>
   </entry>
   
