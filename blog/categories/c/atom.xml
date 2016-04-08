@@ -4,7 +4,7 @@
   <title><![CDATA[Category: C | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/c/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-23T15:43:07+08:00</updated>
+  <updated>2016-04-06T10:27:50+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -194,6 +194,7 @@ INIT_NONZERO_DICT_SLOTS(mp); \
   <li><a href="#define-blocksize------1000-----1k-less-typical-malloc-overhead-" id="markdown-toc-define-blocksize------1000-----1k-less-typical-malloc-overhead-">define BLOCK_SIZE      1000    /* 1K less typical malloc overhead */</a>    <ul>
       <li><a href="#insert-and-delete" id="markdown-toc-insert-and-delete">Insert and Delete</a></li>
       <li><a href="#time-for-hacking" id="markdown-toc-time-for-hacking">Time for Hacking</a></li>
+      <li><a href="#extention-reading" id="markdown-toc-extention-reading">Extention reading</a></li>
     </ul>
   </li>
 </ul>
@@ -212,7 +213,7 @@ INIT_NONZERO_DICT_SLOTS(mp); \
 
 <p>Finally, just run <code>make &amp; make install</code></p>
 
-<p>Repeat myself again, the reason that I move all ‘Python’ into ‘pyLab’ is all for making a difference with the original instance which is official and shouldn’t be influence by any operation from us.</p>
+<p>Repeat myself again, the reason that I move all ‘Python’ into ‘pyLab’ is all for making a difference with the original instance which is official and it shouldn’t be influence by any operation from us.</p>
 
 <h3 id="rules-of-object-in-python">Rules of Object in Python.</h3>
 
@@ -397,7 +398,8 @@ Let’s do a lab.</p>
 
 <p><img src="/images/img_for_2016_02_03/different_address.png" alt="images" /></p>
 
-<p><code>id(object)</code> will returen the address of object in CPython.</p>
+<p><code>id(object)</code> will returen the address of object in CPython.(If you are interesting in the implementation 
+of built-in method id(object), you can jump to the end of this article and I presented how CPython implement this function.)</p>
 
 <p>Try to answer the following question.</p>
 
@@ -593,12 +595,52 @@ int_print(PyIntObject <em>v, FILE *fp, int flags)
     return 0; }
 </code></pre>
 
+<p>```</p>
+
 <p>Tips for debugging:
 <code>getrefcount</code> in module <code>sys</code> is helpful to get the reference number of object.</p>
 
+<p><img src="/images/img_for_2016_02_03/printout.png" alt="images" /></p>
+
+<h3 id="extention-reading">Extention reading</h3>
+
+<p>There are lots of built-in methods in Python. id(Object) is one of them.</p>
+
+<p>According to the build-in doc for function id(Object).</p>
+
+<blockquote>
+  <p>In [1]: print id.__doc__<br />
+id(object) -&gt; integer<br />
+Return the identity of an object.  This is guaranteed to be unique among
+simultaneously existing objects.  (Hint: it’s the object’s memory address.)</p>
+</blockquote>
+
+<p>There is a hint and say the return value of built-in function id(object) is the object’s memory address.</p>
+
+<p>All the function do is just 5-line codes in the implementation of CPython.</p>
+
+<p>``` Python</p>
+
+<p>[Python/bltinmodule.c]
+static PyObject *
+builtin_id(PyObject *self, PyObject *v)
+{
+        return PyLong_FromVoidPtr(v);
+}</p>
+
+<p>…</p>
+
+<p>static PyMethodDef builtin_methods[] = {
+    …
+    {“id”,              builtin_id,         METH_O, id_doc}, // id_doc is just the value of id.<strong>doc</strong>
+    {“isinstance”,  builtin_isinstance, METH_VARARGS, isinstance_doc},
+    {“len”,             builtin_len,        METH_O, len_doc},
+    …
+}</p>
+
 <p>```</p>
 
-<p><img src="/images/img_for_2016_02_03/printout.png" alt="images" /></p>
+<p>That’s all about the built-in method id(Object)</p>
 
 <hr />
 

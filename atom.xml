@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-02-23T15:43:07+08:00</updated>
+  <updated>2016-04-06T10:27:50+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -1982,6 +1982,7 @@ and the <code>tp_new</code> slot maps to <code>dict_new()</code>.  In the latter
   <li><a href="#initialization-of-pyintobject" id="markdown-toc-initialization-of-pyintobject">Initialization of PyIntObject</a></li>
   <li><a href="#insert-and-delete" id="markdown-toc-insert-and-delete">Insert and Delete</a></li>
   <li><a href="#time-for-hacking" id="markdown-toc-time-for-hacking">Time for Hacking</a></li>
+  <li><a href="#extention-reading" id="markdown-toc-extention-reading">Extention reading</a></li>
 </ul>
 
 <h3 id="preparation">Preparation</h3>
@@ -1998,7 +1999,7 @@ and the <code>tp_new</code> slot maps to <code>dict_new()</code>.  In the latter
 
 <p>Finally, just run <code>make &amp; make install</code></p>
 
-<p>Repeat myself again, the reason that I move all ‘Python’ into ‘pyLab’ is all for making a difference with the original instance which is official and shouldn’t be influence by any operation from us.</p>
+<p>Repeat myself again, the reason that I move all ‘Python’ into ‘pyLab’ is all for making a difference with the original instance which is official and it shouldn’t be influence by any operation from us.</p>
 
 <h3 id="rules-of-object-in-python">Rules of Object in Python.</h3>
 
@@ -2256,7 +2257,8 @@ Let’s do a lab.</p>
 
 <p><img src="http://jasonleaster.github.io/images/img_for_2016_02_03/different_address.png" alt="images" /></p>
 
-<p><code>id(object)</code> will returen the address of object in CPython.</p>
+<p><code>id(object)</code> will returen the address of object in CPython.(If you are interesting in the implementation 
+of built-in method id(object), you can jump to the end of this article and I presented how CPython implement this function.)</p>
 
 <p>Try to answer the following question.</p>
 
@@ -2512,9 +2514,6 @@ Here is my modification:</p>
 <span class="line-number">61</span>
 <span class="line-number">62</span>
 <span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
 </pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*</span>
 </span><span class="line"><span class="cm"> Programmer : Jason Leaster</span>
 </span><span class="line"><span class="cm"> Date       : 2016.02.03</span>
@@ -2578,12 +2577,65 @@ Here is my modification:</p>
 </span><span class="line">        <span class="n">Py_END_ALLOW_THREADS</span>
 </span><span class="line">        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Tips</span> <span class="k">for</span> <span class="nl">debugging</span><span class="p">:</span>
-</span><span class="line"><span class="err">`</span><span class="n">getrefcount</span><span class="err">`</span> <span class="n">in</span> <span class="n">module</span> <span class="err">`</span><span class="n">sys</span><span class="err">`</span> <span class="n">is</span> <span class="n">helpful</span> <span class="n">to</span> <span class="n">get</span> <span class="n">the</span> <span class="n">reference</span> <span class="n">number</span> <span class="n">of</span> <span class="n">object</span><span class="p">.</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<p>Tips for debugging:
+<code>getrefcount</code> in module <code>sys</code> is helpful to get the reference number of object.</p>
+
 <p><img src="http://jasonleaster.github.io/images/img_for_2016_02_03/printout.png" alt="images" /></p>
+
+<h3 id="extention-reading">Extention reading</h3>
+
+<p>There are lots of built-in methods in Python. id(Object) is one of them.</p>
+
+<p>According to the build-in doc for function id(Object).</p>
+
+<blockquote>
+  <p>In [1]: print id.__doc__<br />
+id(object) -&gt; integer<br />
+Return the identity of an object.  This is guaranteed to be unique among
+simultaneously existing objects.  (Hint: it’s the object’s memory address.)</p>
+</blockquote>
+
+<p>There is a hint and say the return value of built-in function id(object) is the object’s memory address.</p>
+
+<p>All the function do is just 5-line codes in the implementation of CPython.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="Python"><span class="line"><span class="p">[</span><span class="n">Python</span><span class="o">/</span><span class="n">bltinmodule</span><span class="o">.</span><span class="n">c</span><span class="p">]</span>
+</span><span class="line"><span class="n">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+</span><span class="line"><span class="n">builtin_id</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="bp">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">v</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">PyLong_FromVoidPtr</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">...</span>
+</span><span class="line">
+</span><span class="line"><span class="n">static</span> <span class="n">PyMethodDef</span> <span class="n">builtin_methods</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">,</span>              <span class="n">builtin_id</span><span class="p">,</span>         <span class="n">METH_O</span><span class="p">,</span> <span class="n">id_doc</span><span class="p">},</span> <span class="o">//</span> <span class="n">id_doc</span> <span class="ow">is</span> <span class="n">just</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="nb">id</span><span class="o">.</span><span class="n">__doc__</span>
+</span><span class="line">    <span class="p">{</span><span class="s">&quot;isinstance&quot;</span><span class="p">,</span>  <span class="n">builtin_isinstance</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">isinstance_doc</span><span class="p">},</span>
+</span><span class="line">    <span class="p">{</span><span class="s">&quot;len&quot;</span><span class="p">,</span>             <span class="n">builtin_len</span><span class="p">,</span>        <span class="n">METH_O</span><span class="p">,</span> <span class="n">len_doc</span><span class="p">},</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>That’s all about the built-in method id(Object)</p>
 
 <hr />
 
