@@ -9,16 +9,7 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="Pythoner may be familiar with exception control like the demo beblow there: 1
-2
-3
-4
-5
-6
-7
-8
-9
-try: i = 0 while True: i += 1 except KeyboardInterrupt &hellip;">
+  <meta name="description" content="Platform: Linux/Ubuntu Preparation: You may have to prepare two different types of images for training a Binary Classifier Model, the positive &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +68,287 @@ try: i = 0 while True: i += 1 except KeyboardInterrupt &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-05-19T15:45:42+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:45 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Platform: Linux/Ubuntu</p>
+
+<p>Preparation:</p>
+
+<p>You may have to prepare two different types of images for training a <code>Binary Classifier Model</code>, the positive samples and the negative samples.</p>
+
+<p>Here, we gona to use image database from <strong>UIUC Image Database for Car Detection</strong> to demonstrate how to use OpenCV to detection cars in a image.</p>
+
+<p>User should put all positive samples which have the same size into a directory.</p>
+
+<pre><code>ls ./pos &gt; ./pos_list.info
+ls ./neg &gt; ./neg_list.info
+</code></pre>
+
+<p>Open <code>pos_list.info</code> and you will see the path of images have been written into the info file.</p>
+
+<p><img src="/images/img_for_2016_05_19/files.png" alt="images" /></p>
+
+<p>But it isn’t enough. To train the cascade with OpenCV, you should supply with the information where is the object in the image. In this demo, what we want to detect is a car. The information that OpenCV need like this: <code>image_path num x y w h</code>, which should be append at the end of the path of a image.</p>
+
+<p><code>x y w h</code> describe a rectangle which identify where is the object that we want to find. <code>num</code> describe how many objects in the rectangle.</p>
+
+<p>So, I write a script in Python and this script will help to finish that job.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="p">[</span><span class="n">trans_pos_location</span><span class="o">.</span><span class="n">py</span><span class="p">]</span>
+</span><span class="line"><span class="n">fileObj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./pos_list.info&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="n">newFile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./pos_list_new.info&quot;</span><span class="p">,</span> <span class="s">&quot;a+&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileObj</span><span class="p">:</span>
+</span><span class="line">    <span class="n">newFile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;./pos/&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot; 1 0 0 100 40</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">fileObj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class="line"><span class="n">newFile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="p">[</span><span class="n">trans_neg_location</span><span class="o">.</span><span class="n">py</span><span class="p">]</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">os</span>
+</span><span class="line">
+</span><span class="line"><span class="n">fileObj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./neg_list.info&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="n">newFile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./neg_list_new.info&quot;</span><span class="p">,</span> <span class="s">&quot;a+&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileObj</span><span class="p">:</span>
+</span><span class="line">    <span class="n">newFile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;/neg/&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">fileObj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class="line"><span class="n">newFile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Run the following comand:</p>
+
+<pre><code>opencv_createsamples -info pos_list_new.info -num 550 -w 48 -h 24 -vec cars.vec
+
+opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -numNeg 500 -numStages 2 -w 48 -h 24
+</code></pre>
+
+<p><code>opencv_createsamples</code> and <code>opencv_traincascade</code> are two tool program with OpenCV. The original positive samples for training are images with 100x40 pixels. For the training process, it will cost a lot of memory, so we resize it into smaller one. With that command, <code>-w 48 -h 24</code>, positive images are resized into smaller images which’s width is 48 pixels and the height of that is 24 pixels.</p>
+
+<p>Here, we can use this script to test the model that we get.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">cv2</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">numpy</span>
+</span><span class="line"><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">image</span>
+</span><span class="line">
+</span><span class="line"><span class="n">car_cascade</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CascadeClassifier</span><span class="p">(</span><span class="s">&quot;/home/jasonleaster/Desktop/CarData/TrainImages/data/cascade.xml&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">gray</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">&quot;/home/jasonleaster/Desktop/CarData/TestImages_Scale/test-1.pgm&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="n">faces</span> <span class="o">=</span> <span class="n">car_cascade</span><span class="o">.</span><span class="n">detectMultiScale</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span>
+</span><span class="line">                                    <span class="n">scaleFactor</span> <span class="o">=</span> <span class="mf">1.3</span><span class="p">,</span>
+</span><span class="line">                                    <span class="n">minNeighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+</span><span class="line">                                    <span class="n">minSize</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span>
+</span><span class="line">                                    <span class="n">flags</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cv</span><span class="o">.</span><span class="n">CV_HAAR_SCALE_IMAGE</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="n">img</span> <span class="o">=</span> <span class="n">gray</span>
+</span><span class="line">
+</span><span class="line"><span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
+</span><span class="line">    <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">w</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">h</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">pylab</span>
+</span><span class="line"><span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s">&quot;gray&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="n">pylab</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Result:</p>
+
+<p><img src="/images/img_for_2016_05_19/detected_car1.png" alt="images" /></p>
+
+<p>Reference:
+1. http://blog.csdn.net/wuxiaoyao12/article/details/39227189
+2. www.youtube.com/watch?v=WEzm7L5zoZE</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/04/09/iterater-and-generator-in-python/">Iterater and Generator in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-04-09T13:54:30+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:54 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Try to answer the following question?</p>
+
+<ol>
+  <li>
+    <p>How do generators save memory?</p>
+  </li>
+  <li>
+    <p>When is the best time to use a generator?</p>
+  </li>
+  <li>
+    <p>How can I use itertools to create complex generator workflows?</p>
+  </li>
+  <li>
+    <p>When is lazy evaluation beneficial, and when is it not?</p>
+  </li>
+</ol>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/04/09/iterater-and-generator-in-python/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/04/09/tuple-and-list-in-python/">Tuple and List in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-04-09T08:52:51+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>8:52 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Try to answer the following question.</p>
+
+<p>What are lists andd tuples good for?</p>
+
+<p>What is the complexity of a lookup in a list/tuple?</p>
+
+<p>How is that complexity achieved?</p>
+
+<p>What are the differences between lists and tuples?</p>
+
+<p>How does appending to a list work?</p>
+
+<p>When should I use lists and tuples?</p>
+
+<p>Lists and tuples are a class of data structure called arrays. An array is simply a flat list of data with some intrinsic ordering.
+This demarcates another line between lists and tuples: <strong>lists are dynamic arrays while tuples are static arrays.</strong></p>
+
+<h3 id="lists-versus-tuples">Lists Versus Tuples</h3>
+
+<p>Differences between lists and tuple</p>
+
+<ol>
+  <li>
+    <p>lists are dynamic arrays; they are mutable and allow for resizing(changing the number of elements that are held).</p>
+  </li>
+  <li>
+    <p>Tuples are static arrays; they are immutable, and the data within them cannot be changed once they have been created.</p>
+  </li>
+  <li>
+    <p>Tuples are cached by the Python runtime, which means that we don’t need to talk to the kernel to reserve memory every time we want to use one.</p>
+  </li>
+</ol>
+
+<p>These differences outline the philosophical difference between the two: tuples are for describing multiple properties of one unchanging thing, and list can be used to store collections of data about completely disparate objects.</p>
+
+<p><img src="/images/img_for_2016_04_09/tuple_list_construction_speed.png" alt="images" /></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -358,15 +630,25 @@ Think of “y = f(x)” or “h = f * g”</p>
   </header>
 
 
-  <div class="entry-content"><p>Dictionary object type – mapping from hashable object to object</p>
+  <div class="entry-content"><p>Try to answer these question.</p>
 
-<p>In the implemenation, Python don’t choose <code>Red-Black Tree</code> as the basic data structure but Hash Table with a special technology – <code>Open Addressing</code>.</p>
-
-<p>About open addressing:</p>
-
-<blockquote>
-  <p>In computer science, lazy deletion refers to a method of deleting elements from a hash table that uses open addressing. In this method, deletions are done by marking an element as deleted, rather than erasing it entirely. Deleted locations are treated as empty when inserting and as occupied during a search. – Wikipedia</p>
-</blockquote>
+<ol>
+  <li>
+    <p>Whatare dictionaries and sets good for?</p>
+  </li>
+  <li>
+    <p>How are dictionaries and set the same?</p>
+  </li>
+  <li>
+    <p>What is the overhead when using a dictionary?</p>
+  </li>
+  <li>
+    <p>How can I optimize the performance of a dictionary?</p>
+  </li>
+  <li>
+    <p>How does Python use dictionaries to keep track of namespace?</p>
+  </li>
+</ol>
 
 </div>
   
@@ -444,289 +726,6 @@ Think of “y = f(x)” or “h = f * g”</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/12/30/machine-learning-with-k-means/">Machine Learning With K-Means</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-12-30T16:03:13+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:03 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>K-Means is a classical unsupervised clustering Learning Algorithm. The detail of the theory about K-Means that you can find it in Wikipedia. Now I introduce to implement this algorithm by myself.</p>
-
-<p>If you are interesting in the implementation and change it into a better version, you could find it in my github repository and give me some advices. I will be appreciated.</p>
-
-<hr />
-
-<p>So consider about if I want to classify the data into three different cluster. How could I make it?</p>
-
-<p><img src="/images/img_for_2015_12_30/original.png" alt="images" /></p>
-
-<p>Here is the result:</p>
-
-<p><img src="/images/img_for_2015_12_30/result.png" alt="images" /></p>
-
-<p>With the mean values:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">Means</span> <span class="o">=</span>
-</span><span class="line"><span class="p">[[</span><span class="mf">3.5</span>       <span class="mi">1</span>       <span class="mi">6</span><span class="p">]</span>
-</span><span class="line"> <span class="p">[</span><span class="mf">1.66666</span>   <span class="mi">6</span>       <span class="mi">6</span><span class="p">]]</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/12/30/machine-learning-with-k-means/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/12/25/labs-of-mit-6-dot-034/">Labs of MIT 6.034</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-12-25T23:30:06+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:30 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Two month ago, I decide to do a project about machine learning. So, I get start to learn machine learning and implemment some algorithms of ML.
-I find that there is a course in MIT – 6.034 Artificial Intelligence which contain a lot of funny labs. That will help me to learn ML.</p>
-
-<p>I don’t want to write a lot of analysis article about this course like what I have done in 6.008 . So, I just push my solution which also is incompletement onto github. If anyone interesting in this lab, you could touch me and I would like to communicate with you about these labs if I’m not busy.</p>
-
-<p>What you should know is that the version of this labs is updated in 2015.</p>
-
-<p>Here is the link you could get my solution:
-<a href="https://github.com/jasonleaster/MIT_6.034_2015">My Solution of MIT 6.034</a></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/12/25/labs-of-mit-6-dot-034/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/12/13/machine-learning-with-boosting/">Machine Learning With Boosting</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-12-13T17:00:47+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:00 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This blog will talk about the theory and implementation about famouse
-concept in machine learning – <code>Boosting</code>.</p>
-
-<p>All algorithms are implemented in Python.</p>
-
-<p>There are two main tasks which people want to finish with Machine Learning.</p>
-
-<ul>
-  <li>Classification</li>
-  <li>Regression</li>
-</ul>
-
-<p>There are a lot of other ways to do it but now we focus on <code>boosting</code> algorithm. You know that it’s a fantastic way to make our work done.</p>
-
-<h3 id="adaboost-for-classification">Adaboost for classification</h3>
-
-<p>If you never hear about adaboost, I recommend you to finish the 7-th lab in MIT 6.034. It will help you a lot to understand what I’m taking about. But this lab didn’t build adaboost completely. So, I implement it individually.</p>
-
-<p>Give the input training samples which have tag with it.</p>
-
-<p><img src="/images/img_for_2015_12_13/equation.png" alt="images" /></p>
-
-<p>where x[i] is the feature of the i-th sample point and y[i] is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
-
-<p>In this algorithm, there are only two different label of samples {-1, +1}.</p>
-
-<p>Some classifier like decision tree also can work correctly about classification. But it’s also easy to overfitting. So, we can’t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which’s depth is only one. So we call it as <code>decision stump</code>.</p>
-
-<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting. It combine some weaker classifier into a stronger classifier to avoid overfitting.</p>
-
-<p>Test case:</p>
-
-<p>There are training points with two different label. What if we input a point which’s type is unkown, what the result will be?</p>
-
-<p><img src="/images/img_for_2015_12_13/samples.png" alt="images" /></p>
-
-<p>The test result is below there:</p>
-
-<p><img src="/images/img_for_2015_12_13/result.png" alt="images" /></p>
-
-<p>Just create a object of class <code>Adaboost</code> with your training samples with label. like this:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">adaboost</span>
-</span><span class="line"><span class="n">a</span> <span class="o">=</span> <span class="n">AdaBoost</span><span class="p">(</span><span class="n">Original_Data</span><span class="p">,</span> <span class="n">Tag</span><span class="p">)</span>
-</span><span class="line"><span class="c"># The up bound of training time to avoid the algorithm won&#39;t stop for not meeting the training accuracy.</span>
-</span><span class="line"><span class="n">times</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span class="line">
-</span><span class="line"><span class="n">a</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="n">a</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">UnkownPoints</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>API <code>prediction()</code> of class AdaBoost will return the result of prediction according to the model. All job done.</p>
-
-<p>You could find other test case in my repository in github.</p>
-
-<p><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Adaboost">Implementation of Adaboost in Python</a></p>
-
-<p>You can check the validity of my implementation by the accuracy.</p>
-
-<p><img src="/images/img_for_2015_12_13/samples2.png" alt="images" /></p>
-
-<p>The data used to train the weaker classifier and get that accuracy is showed below there :</p>
-
-<p><img src="/images/img_for_2015_12_13/accuracy.png" alt="images" /></p>
-
-<h3 id="boosting-tree">Boosting Tree</h3>
-
-<p>We have knew to use <code>AdaBoost</code> to do classification. <code>Boosting Tree</code> will help us to do regression.</p>
-
-<p>We also use decision stump as the weak classifier. But implementation of decision stump in this algorithm is not the same as that in AdaBoost.</p>
-
-<p>There are ten samples in my test module:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">Original_Data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">4</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">5</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">6</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">7</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">8</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">9</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">10</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</span><span class="line">        <span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-</span><span class="line">
-</span><span class="line"><span class="n">ExpVal</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">5.70</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">5.91</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">6.40</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">6.80</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">7.05</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">8.90</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">8.70</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">9.00</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">9.05</span><span class="p">],</span>
-</span><span class="line">        <span class="p">[</span><span class="mf">5.56</span><span class="p">]</span>
-</span><span class="line">        <span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>The expected value of Original_Data[i] is ExpVal[i]. The input is from 1 to 10. How about to predict the output when the input is 1 or 11?</p>
-
-<p>Let’s test it. Here is the result:
-<img src="/images/img_for_2015_12_13/output_of_boosting_tree.png" alt="images" /></p>
-
-<p>Just used 11 weak classifier to construct a stronger classifier to do the regressio. The output is reasonable.</p>
-
-<p>Here is my implementation of <code>Boosting Tree</code>
-<a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Boosting_Tree">Implementation of Boosting Tree in Python</a></p>
-
-<p>Reference:</p>
-
-<ol>
-  <li>MIT-6.034, Artificial Intelligence. Lab-7</li>
-  <li>« The statistic methods » by HangLi.</li>
-  <li><a href="https://en.wikipedia.org/wiki/AdaBoost">Wikipedia</a></li>
-</ol>
-
-<hr />
-
-<p>Photo by Jason Leaster</p>
-
-<p><img src="/images/img_for_2015_12_13/street.png" alt="images" /></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -748,23 +747,23 @@ Hello, world
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/09/iterater-and-generator-in-python/">Iterater and Generator in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/09/tuple-and-list-in-python/">Tuple and List in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/02/22/exception-control-in-python/">Exception Control in Python</a>
       </li>
     
       <li class="post">
         <a href="/blog/2016/02/21/architecture-of-python-virtual-machine/">Architecture of Python Virtual Machine</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/02/19/web-crawler/">Web Crawler</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/02/06/brief-introduction-to-opcodes-in-python/">Brief Introduction to Opcodes in Python</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/02/05/functional-programming-in-python/">Functional Programming in Python</a>
       </li>
     
   </ul>
@@ -778,9 +777,11 @@ Hello, world
 <li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
 <li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
 <li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
+<li class='category'><a href='/blog/categories/imageprocessing/'>imageprocessing (1)</a></li>
 <li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
-<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (3)</a></li>
-<li class='category'><a href='/blog/categories/python/'>python (7)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (4)</a></li>
+<li class='category'><a href='/blog/categories/opencv/'>opencv (1)</a></li>
+<li class='category'><a href='/blog/categories/python/'>python (9)</a></li>
  
   </ul> 
 </section>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: C | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/c/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-04-06T10:27:50+08:00</updated>
+  <updated>2016-05-19T23:16:08+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -18,7 +18,29 @@
     <link href="http://jasonleaster.github.io/blog/2016/02/04/dict-object-in-python/"/>
     <updated>2016-02-04T12:54:11+08:00</updated>
     <id>http://jasonleaster.github.io/blog/2016/02/04/dict-object-in-python</id>
-    <content type="html"><![CDATA[<p>Dictionary object type – mapping from hashable object to object</p>
+    <content type="html"><![CDATA[<p>Try to answer these question.</p>
+
+<ol>
+  <li>
+    <p>Whatare dictionaries and sets good for?</p>
+  </li>
+  <li>
+    <p>How are dictionaries and set the same?</p>
+  </li>
+  <li>
+    <p>What is the overhead when using a dictionary?</p>
+  </li>
+  <li>
+    <p>How can I optimize the performance of a dictionary?</p>
+  </li>
+  <li>
+    <p>How does Python use dictionaries to keep track of namespace?</p>
+  </li>
+</ol>
+
+<!-- more -->
+
+<p>Dictionary object type – mapping from hashable object to object</p>
 
 <p>In the implemenation, Python don’t choose <code>Red-Black Tree</code> as the basic data structure but Hash Table with a special technology – <code>Open Addressing</code>.</p>
 
@@ -27,8 +49,6 @@
 <blockquote>
   <p>In computer science, lazy deletion refers to a method of deleting elements from a hash table that uses open addressing. In this method, deletions are done by marking an element as deleted, rather than erasing it entirely. Deleted locations are treated as empty when inserting and as occupied during a search. – Wikipedia</p>
 </blockquote>
-
-<!-- more -->
 
 <p>There three kinds of slots in the table:</p>
 
@@ -137,6 +157,8 @@ return dictresize(mp, (mp-&gt;ma_used &gt; 50000 ? 2 : 4) * mp-&gt;ma_used); }
 <p><img src="/images/img_for_2016_02_04/testResizeDict.png" alt="images" /></p>
 
 <p>Actually, <code>dummy</code> PyDictObject is just a <code>PyStringObject</code> in Python. Initially, dummy is a pointer in C but it finally comes to a <code>PyStringObject</code> after initialization of <code>PyDictObject</code> first time.</p>
+
+<p><strong>It’s important to note that resizing can happen to make a hash table larger or smaller. This is , if sufficiently many element of a hash table are deleted, the table can be scaled down in size. However, resizing only happens during an insert.</strong></p>
 
 <p>``` C</p>
 

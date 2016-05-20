@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Training Cascade With OpenCV - EOF</title>
+  <meta name="author" content="Jason Leaster">
+
+  
+  <meta name="description" content="Platform: Linux/Ubuntu Preparation: You may have to prepare two different types of images for training a Binary Classifier Model, the positive &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jasonleaster.github.io/blog/2016/05/19/training-cascade-with-opencv/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="EOF" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">EOF</a></h1>
+  
+    <h2>Rebuilding The Tower Of Babel</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jasonleaster.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/todo">TODO</a></li>
+  <li><a href="/recommendation">Recommendation</a></li>
+  <li><a href="/about-me">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Training Cascade With OpenCV</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-05-19T15:45:42+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:45 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Platform: Linux/Ubuntu</p>
+
+<p>Preparation:</p>
+
+<p>You may have to prepare two different types of images for training a <code>Binary Classifier Model</code>, the positive samples and the negative samples.</p>
+
+<p>Here, we gona to use image database from <strong>UIUC Image Database for Car Detection</strong> to demonstrate how to use OpenCV to detection cars in a image.</p>
+
+<p>User should put all positive samples which have the same size into a directory.</p>
+
+<pre><code>ls ./pos &gt; ./pos_list.info
+ls ./neg &gt; ./neg_list.info
+</code></pre>
+
+<p>Open <code>pos_list.info</code> and you will see the path of images have been written into the info file.</p>
+
+<p><img src="/images/img_for_2016_05_19/files.png" alt="images" /></p>
+
+<p>But it isn’t enough. To train the cascade with OpenCV, you should supply with the information where is the object in the image. In this demo, what we want to detect is a car. The information that OpenCV need like this: <code>image_path num x y w h</code>, which should be append at the end of the path of a image.</p>
+
+<p><code>x y w h</code> describe a rectangle which identify where is the object that we want to find. <code>num</code> describe how many objects in the rectangle.</p>
+
+<p>So, I write a script in Python and this script will help to finish that job.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="p">[</span><span class="n">trans_pos_location</span><span class="o">.</span><span class="n">py</span><span class="p">]</span>
+</span><span class="line"><span class="n">fileObj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./pos_list.info&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="n">newFile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./pos_list_new.info&quot;</span><span class="p">,</span> <span class="s">&quot;a+&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileObj</span><span class="p">:</span>
+</span><span class="line">    <span class="n">newFile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;./pos/&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot; 1 0 0 100 40</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">fileObj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class="line"><span class="n">newFile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="p">[</span><span class="n">trans_neg_location</span><span class="o">.</span><span class="n">py</span><span class="p">]</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">os</span>
+</span><span class="line">
+</span><span class="line"><span class="n">fileObj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./neg_list.info&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="n">newFile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./neg_list_new.info&quot;</span><span class="p">,</span> <span class="s">&quot;a+&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileObj</span><span class="p">:</span>
+</span><span class="line">    <span class="n">newFile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;/neg/&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">fileObj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class="line"><span class="n">newFile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Run the following comand:</p>
+
+<pre><code>opencv_createsamples -info pos_list_new.info -num 550 -w 48 -h 24 -vec cars.vec
+
+opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -numNeg 500 -numStages 2 -w 48 -h 24
+</code></pre>
+
+<p><code>opencv_createsamples</code> and <code>opencv_traincascade</code> are two tool program with OpenCV. The original positive samples for training are images with 100x40 pixels. For the training process, it will cost a lot of memory, so we resize it into smaller one. With that command, <code>-w 48 -h 24</code>, positive images are resized into smaller images which’s width is 48 pixels and the height of that is 24 pixels.</p>
+
+<p>Here, we can use this script to test the model that we get.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">cv2</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">numpy</span>
+</span><span class="line"><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">image</span>
+</span><span class="line">
+</span><span class="line"><span class="n">car_cascade</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CascadeClassifier</span><span class="p">(</span><span class="s">&quot;/home/jasonleaster/Desktop/CarData/TrainImages/data/cascade.xml&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">gray</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">&quot;/home/jasonleaster/Desktop/CarData/TestImages_Scale/test-1.pgm&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="n">faces</span> <span class="o">=</span> <span class="n">car_cascade</span><span class="o">.</span><span class="n">detectMultiScale</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span>
+</span><span class="line">                                    <span class="n">scaleFactor</span> <span class="o">=</span> <span class="mf">1.3</span><span class="p">,</span>
+</span><span class="line">                                    <span class="n">minNeighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+</span><span class="line">                                    <span class="n">minSize</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span>
+</span><span class="line">                                    <span class="n">flags</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cv</span><span class="o">.</span><span class="n">CV_HAAR_SCALE_IMAGE</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="n">img</span> <span class="o">=</span> <span class="n">gray</span>
+</span><span class="line">
+</span><span class="line"><span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
+</span><span class="line">    <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">w</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">h</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">pylab</span>
+</span><span class="line"><span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s">&quot;gray&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="n">pylab</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Result:</p>
+
+<p><img src="/images/img_for_2016_05_19/detected_car1.png" alt="images" /></p>
+
+<p>Reference:
+1. http://blog.csdn.net/wuxiaoyao12/article/details/39227189
+2. www.youtube.com/watch?v=WEzm7L5zoZE</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason Leaster</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-05-19T15:45:42+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:45 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/imageprocessing/'>imageprocessing</a>, <a class='category' href='/blog/categories/machinelearning/'>machinelearning</a>, <a class='category' href='/blog/categories/opencv/'>opencv</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/04/09/iterater-and-generator-in-python/" title="Previous Post: Iterater and generator in Python">&laquo; Iterater and generator in Python</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/09/iterater-and-generator-in-python/">Iterater and Generator in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/09/tuple-and-list-in-python/">Tuple and List in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/22/exception-control-in-python/">Exception Control in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/21/architecture-of-python-virtual-machine/">Architecture of Python Virtual Machine</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section> 
+  <h1>Categories</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/algorithm/'>algorithm (2)</a></li>
+<li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
+<li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
+<li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
+<li class='category'><a href='/blog/categories/imageprocessing/'>imageprocessing (1)</a></li>
+<li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (4)</a></li>
+<li class='category'><a href='/blog/categories/opencv/'>opencv (1)</a></li>
+<li class='category'><a href='/blog/categories/python/'>python (9)</a></li>
+ 
+  </ul> 
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Jason Leaster -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

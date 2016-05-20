@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-04-06T10:27:50+08:00</updated>
+  <updated>2016-05-19T23:16:08+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,96 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Iterater and Generator in Python]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/04/09/iterater-and-generator-in-python/"/>
+    <updated>2016-04-09T13:54:30+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/04/09/iterater-and-generator-in-python</id>
+    <content type="html"><![CDATA[<p>Try to answer the following question?</p>
+
+<ol>
+  <li>
+    <p>How do generators save memory?</p>
+  </li>
+  <li>
+    <p>When is the best time to use a generator?</p>
+  </li>
+  <li>
+    <p>How can I use itertools to create complex generator workflows?</p>
+  </li>
+  <li>
+    <p>When is lazy evaluation beneficial, and when is it not?</p>
+  </li>
+</ol>
+
+<!-- more -->
+
+<p>Programmer who is familiar with another language start learning Python, they are taken aback by the difference in <strong>for</strong> loop notation.</p>
+
+<p>With the influence from others language, they may try to finish iteration job by this code:</p>
+
+<p>``` Python</p>
+
+<p>for i in range(N):
+    do_work(i)</p>
+
+<p>```</p>
+
+<p>What the beginner don’t know the implemenation of function range in Python(2.7). The first thing the <strong>range()</strong> function must precreate the list of all numbers within the range.</p>
+
+<p>In Python2.7, range() produce a list but xrange() return a iterator.( In Python 3, the range() is replaced with the xrange() and there is no xrange() function anymore. From this modification, programmer can know that the develop team of Python aware that it’s neccessary to force the user to use a generator when they want to iteration job.)</p>
+
+<p>Here is a test for the differences between the range() and xrange() in memory allocation.</p>
+
+<p><img src="/images/img_for_2016_04_09/range_xrange_time.png" alt="images" />
+<img src="/images/img_for_2016_04_09/range_xrange_mem.png" alt="images" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Tuple and List in Python]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/04/09/tuple-and-list-in-python/"/>
+    <updated>2016-04-09T08:52:51+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/04/09/tuple-and-list-in-python</id>
+    <content type="html"><![CDATA[<p>Try to answer the following question.</p>
+
+<p>What are lists andd tuples good for?</p>
+
+<p>What is the complexity of a lookup in a list/tuple?</p>
+
+<p>How is that complexity achieved?</p>
+
+<p>What are the differences between lists and tuples?</p>
+
+<p>How does appending to a list work?</p>
+
+<p>When should I use lists and tuples?</p>
+
+<p>Lists and tuples are a class of data structure called arrays. An array is simply a flat list of data with some intrinsic ordering.
+This demarcates another line between lists and tuples: <strong>lists are dynamic arrays while tuples are static arrays.</strong></p>
+
+<h3 id="lists-versus-tuples">Lists Versus Tuples</h3>
+
+<p>Differences between lists and tuple</p>
+
+<ol>
+  <li>
+    <p>lists are dynamic arrays; they are mutable and allow for resizing(changing the number of elements that are held).</p>
+  </li>
+  <li>
+    <p>Tuples are static arrays; they are immutable, and the data within them cannot be changed once they have been created.</p>
+  </li>
+  <li>
+    <p>Tuples are cached by the Python runtime, which means that we don’t need to talk to the kernel to reserve memory every time we want to use one.</p>
+  </li>
+</ol>
+
+<p>These differences outline the philosophical difference between the two: tuples are for describing multiple properties of one unchanging thing, and list can be used to store collections of data about completely disparate objects.</p>
+
+<p><img src="/images/img_for_2016_04_09/tuple_list_construction_speed.png" alt="images" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Exception Control in Python]]></title>
@@ -773,391 +863,6 @@ if url is not None:
 <hr />
 <p>Photo by Jason Leaster. LiuYe Lake in ChangDe, HuNan, China.
 <img src="/images/img_for_2016_02_19/liuyehu.jpg" alt="images" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Brief Introduction to Opcodes in Python]]></title>
-    <link href="http://jasonleaster.github.io/blog/2016/02/06/brief-introduction-to-opcodes-in-python/"/>
-    <updated>2016-02-06T18:39:50+08:00</updated>
-    <id>http://jasonleaster.github.io/blog/2016/02/06/brief-introduction-to-opcodes-in-python</id>
-    <content type="html"><![CDATA[<p>Python program is compiled down to bytecode which is sort of like assembly for the python virtual machine. The interpreter executes each of these bytecodes one by one.</p>
-
-<p>Let’s look the following code. It’s easy to understand what it is doing without my explanation.</p>
-
-<p>``` python</p>
-
-<p>[demo.py]</p>
-
-<p>x = 1
-y = 2
-z = x + y
-print “x, y, z”, x, y, z</p>
-
-<p>```
-<!-- more --></p>
-
-<p>Programmer can use python module <code>dis</code> to transform that code into the assemble program of Python.</p>
-
-<p>``` python</p>
-
-<p>python -m dis “./demo.py”
-#line number 
-#in the       #assemble code           # object name in the source code
-#source code
-1           0 LOAD_CONST               0 (1)
-            3 STORE_NAME               0 (x)</p>
-
-<p>2           6 LOAD_CONST               1 (2)
-            9 STORE_NAME               1 (y)</p>
-
-<p>3          12 LOAD_NAME                0 (x)
-           15 LOAD_NAME                1 (y)
-           18 BINARY_ADD
-           19 STORE_NAME               2 (z)</p>
-
-<p>4          22 LOAD_NAME                0 (x)
-           25 PRINT_ITEM
-           26 LOAD_NAME                1 (y)
-           29 PRINT_ITEM
-           30 LOAD_NAME                2 (z)
-           33 PRINT_ITEM
-           34 PRINT_NEWLINE
-           35 LOAD_CONST               2 (None)
-           38 RETURN_VALUE</p>
-
-<h6 id="section">#</h6>
-
-<p>”””
-In the interpreter of Python, programmer also can call
-the built-in function @compile and import module @dis
-to do the same thing.
-“””</p>
-
-<p>In [5]: source = open(“./hello.py”).read()</p>
-
-<p>In [6]: code = compile(source, “demo”, “exec”)</p>
-
-<p>In [7]: import dis</p>
-
-<p>In [8]: dis.dis(code)</p>
-
-<p>```</p>
-
-<p>It’s not hard to understand the <code>opcode</code>. In implementation of CPython, all opcode defined as Macro in the header file <code>Include/opcode.h</code>.</p>
-
-<p>``` C</p>
-
-<p>[Include/opcode.h]
-…
-#define LOAD_CONST  100 /* Index in const list <em>/
-#define LOAD_NAME   101 /</em> Index in name list */
-…</p>
-
-<p>```</p>
-
-<p>The evaluation machine of Python is a stack-based machine.
-If you find the detail of <code>18 BINARY_ADD</code>, you will find that this opcode 
-will pop the two object on the stack and then add them together.</p>
-
-<p>``` C</p>
-
-<p>[Python/ceval.c]
-…</p>
-
-<p>/* Stack manipulation macros */</p>
-
-<p>/* The stack can grow at most MAXINT deep, as co_nlocals and
-      co_stacksize are ints. */</p>
-
-<h1 id="define-stacklevel-----intstackpointer---f-fvaluestack">define STACK_LEVEL()     ((int)(stack_pointer - f-&gt;f_valuestack))</h1>
-<p>#define EMPTY()           (STACK_LEVEL() == 0)
-#define TOP()             (stack_pointer[-1])
-#define SECOND()          (stack_pointer[-2])
-#define THIRD()           (stack_pointer[-3])
-#define FOURTH()          (stack_pointer[-4])
-#define PEEK(n)           (stack_pointer[-(n)])
-#define SET_TOP(v)        (stack_pointer[-1] = (v))
-#define SET_SECOND(v)     (stack_pointer[-2] = (v))
-#define SET_THIRD(v)      (stack_pointer[-3] = (v))
-#define SET_FOURTH(v)     (stack_pointer[-4] = (v))
-#define SET_VALUE(n, v)   (stack_pointer[-(n)] = (v))
-#define BASIC_STACKADJ(n) (stack_pointer += n)
-#define BASIC_PUSH(v)     (<em>stack_pointer++ = (v))
-#define BASIC_POP()       (</em>–stack_pointer)
-…</p>
-
-<p>```</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Functional Programming in Python]]></title>
-    <link href="http://jasonleaster.github.io/blog/2016/02/05/functional-programming-in-python/"/>
-    <updated>2016-02-05T02:37:57+08:00</updated>
-    <id>http://jasonleaster.github.io/blog/2016/02/05/functional-programming-in-python</id>
-    <content type="html"><![CDATA[<p>Functional programming is not only use functions.
-Think of “y = f(x)” or “h = f * g”</p>
-
-<p>For comparasion, there are different paradigms in programming.</p>
-
-<ul>
-  <li>Structured/Procedural – Functions, loops, conditions</li>
-  <li>Object-Oriented Programming (OOP) – Classes, objects, methods</li>
-  <li>Functional Programming – Decorators, comprehensions, and generators</li>
-  <li>Logic Programming</li>
-</ul>
-
-<p>Functions in Python are <code>first class value</code>. It can take functions as arguments and return functions like a value.</p>
-
-<p>``` python</p>
-
-<p>”””
-function @calc take @f as an argument and use it as a function.
-Something like function pointer in C.
-“””
-def calc(f, x, y):
-    return f(x, y)</p>
-
-<p>def add(x, y):
-    return x + y</p>
-
-<p>def sub(x, y):
-    return x - y</p>
-
-<p>calc(add, 10, 20)</p>
-
-<p>```</p>
-
-<!-- more -->
-
-<p>In Python, there have anonymous functions which is called <code>Lambda Expression</code> which’s body is limited to one expression.</p>
-
-<p>``` python</p>
-
-<p>def calc(f, x, y):
-    return f(x, y)</p>
-
-<p>calc(lambda x, y: x + y, 10, 20)</p>
-
-<p>```</p>
-
-<p>Here, lambda expression used as a argument which is passed into function <code>calc</code>. Function like <code>add</code> and <code>sub</code>, they are too short and don’t need a special name to be identified. So, Python support a mechanism – anonymous function which is called <code>Lambda Expression</code>.</p>
-
-<p>There is a another demo. We will change the code from procedure oriented into functional style.</p>
-
-<p>``` python</p>
-
-<p>”””
-In a procedure way.
-“””
-def incr(x):
-    return x + 1</p>
-
-<p>def increment_each(elements):
-    results = []
-    for elem in elements:
-        results.append(incr(elem))
-    return results</p>
-
-<p>increment_each([1, 2, 3])
-# -&gt; [2, 3, 4]</p>
-
-<p>”””
-In a functional way.
-“””
-map(incr, [1, 2, 3])
-# or
-map(lambda x: x + 1, [1, 2, 3])</p>
-
-<h1 id="if-we-want-to-get-the-length-of-each-element-in-a-iterable-object">if we want to get the length of each element in a iterable object</h1>
-<p>map(len, iterable_object)</p>
-
-<p>```</p>
-
-<p><code>filter</code> is a related idea in functional tools like map.
-<code>filter</code> return a new sequence where values are taken from the given sequence if they return True when passed to a given function.</p>
-
-<p>``` python</p>
-
-<p>filter(lambda x: x % 2 == 0, [1, 2, 3, 4])
-# -&gt; [2, 4]</p>
-
-<p>```</p>
-
-<p><code>reduce</code> will accumulate and return a single result, given a sequence
-and passing each value to a function along with the current result.</p>
-
-<p>``` python</p>
-
-<p>from functools import reduce
-reduce(lambda accum, current: accum + current, [1, 2, 3], 0)
-# -&gt; 6</p>
-
-<p>```</p>
-
-<h3 id="decorator">Decorator</h3>
-
-<p>In Python, function is first-class value and can be used as returned value.
-So, programmer can define nested functions in Python like this:</p>
-
-<p>``` python</p>
-
-<p>”””
-Nested function
-“””
-def outer():
-    def inner():
-        print “I am the inner function”</p>
-
-<pre><code>return inner
-</code></pre>
-
-<p>func = outer()</p>
-
-<p>func()
-# -&gt; I am the inner function</p>
-
-<p>”””
-Closure
-“””
-def outer(var = 10):</p>
-
-<pre><code>"Local scope of function @outer"
-
- def inner(number):
-     print "I am the inner function!"
-     """
-     You can't change value of variable once the
-     @outer function finished. You will get error
-     if you modify variable which is not in scope
-     of function @inner. You can't modify @var
-     like this: var += 1 (You will get exception
-     information like "UnboundLocalError")
-     """
-     return var + number
-
-return inner
-</code></pre>
-
-<p>func = outer(10)</p>
-
-<p>func(90)
-# -&gt; 100</p>
-
-<p>```</p>
-
-<p>Look the demo below there.</p>
-
-<p>``` python</p>
-
-<p>def wrapper(func):
-    def cheker(arguments_of_func):
-        “””
-            @checker receive the same arguments as @func
-            and do something that @func didn’t do.
-        “””
-        return new_retVal</p>
-
-<pre><code>return checker
-</code></pre>
-
-<p>```</p>
-
-<p>Actually, the reture value of <code>wrapper</code> is a function just little different from the original function passed into <code>wrapper</code> – <code>func</code>. Function <code>wrapper</code> like a shell on the original function and return with a more powerful function. That’s decorator. <code>wrapper</code> is a decorator.</p>
-
-<p><strong>Decorator: A decorator is any callable Python object that is used to modify a function, method or class definition. A decorator is passed th original object being defined and returns a modified object, which is then bound to the name in the definition. Python decorators were inspired in part by Java annotations, and have a similar syntax; teh decorator syntax is pure syntactic sugar, using @ as the keyword               – Wikipedia</strong></p>
-
-<p>Here is a more generic decorators</p>
-
-<p>``` python</p>
-
-<p>def wrapper(func):
-    def inner(<em>args, **kwargs)
-        print “Show arguments: %s, %s” % (args, kwargs)
-        return func(</em>args, **kwargs)
-    return inner</p>
-
-<p>@wrapper
-def adder(x, y)
-    return x + y</p>
-
-<p>print adder(10, 90)</p>
-
-<h1 id="show-arguments-10-90-">-&gt; Show arguments: (10, 90), {}</h1>
-<p>#   100</p>
-
-<p>```</p>
-
-<p>A better and more detailed explaination reader could read the blog
-<a href="http://www.simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/">Understanding Python Decoratos in 12 Easy Steps!</a>
-which is written by <code>simeon franklin</code>.</p>
-
-<h3 id="generator">Generator</h3>
-
-<p>A <code>generator</code> is a special type of iterator(not vice versa!). 
-Generator is a factory that lazily produces values.</p>
-
-<p>There are two types of generators in Python: generator functions and generator expression.</p>
-
-<p>``` python</p>
-
-<p>”””
-Demo for generator
-“””</p>
-
-<p>def fib():
-    prev, curr = 0, 1
-    while True:
-        “””
-            There is no @return keyword in generator,
-        but there must be a @yield with a return object 
-        if there is a  generator function.
-        “””
-        yield curr 
-        prev, curr = curr, prev + curr</p>
-
-<p>f = fib()
-f.next()</p>
-
-<h6 id="section">#</h6>
-
-<p>”””
-Generator Expression
-“””
-numbers = [1, 2, 3, 4, 5, 6]</p>
-
-<p>lazy_square = ( x * x for x in numbers)
-“””
-Type:        generator
-String form: &lt;generator object <genexpr> at 0x7fd3bc119fa0&gt;
-Docstring:   <no docstring="">
-"""</no></genexpr></p>
-
-<p>In [18]: lazy_square == list
-Out[18]: False</p>
-
-<p>In [19]: lazy_square
-Out[19]: &lt;generator object <genexpr> at 0x7fd3bc0da410&gt;</genexpr></p>
-
-<p>In [20]: lazy_square.next()
-Out[20]: 1</p>
-
-<p>In [21]: lazy_square.next()
-Out[21]: 4</p>
-
-<p>In [22]: lazy_square.next()
-Out[22]: 9</p>
-
-<p>```</p>
-
-<hr />
-<p>Photo by Jason Leaster in ChangDe, HuNan, China.</p>
-
-<p>What a big banana :)</p>
-
-<p><img src="/images/img_for_2016_02_06/banana.png" alt="images" /></p>
 ]]></content>
   </entry>
   

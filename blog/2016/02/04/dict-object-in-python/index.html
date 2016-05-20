@@ -9,7 +9,7 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="Dictionary object type – mapping from hashable object to object In the implemenation, Python don’t choose Red-Black Tree as the basic data structure &hellip;">
+  <meta name="description" content="Try to answer these question. Whatare dictionaries and sets good for? How are dictionaries and set the same? What is the overhead when using a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -87,7 +87,29 @@
   </header>
 
 
-<div class="entry-content"><p>Dictionary object type – mapping from hashable object to object</p>
+<div class="entry-content"><p>Try to answer these question.</p>
+
+<ol>
+  <li>
+    <p>Whatare dictionaries and sets good for?</p>
+  </li>
+  <li>
+    <p>How are dictionaries and set the same?</p>
+  </li>
+  <li>
+    <p>What is the overhead when using a dictionary?</p>
+  </li>
+  <li>
+    <p>How can I optimize the performance of a dictionary?</p>
+  </li>
+  <li>
+    <p>How does Python use dictionaries to keep track of namespace?</p>
+  </li>
+</ol>
+
+<!-- more -->
+
+<p>Dictionary object type – mapping from hashable object to object</p>
 
 <p>In the implemenation, Python don’t choose <code>Red-Black Tree</code> as the basic data structure but Hash Table with a special technology – <code>Open Addressing</code>.</p>
 
@@ -96,8 +118,6 @@
 <blockquote>
   <p>In computer science, lazy deletion refers to a method of deleting elements from a hash table that uses open addressing. In this method, deletions are done by marking an element as deleted, rather than erasing it entirely. Deleted locations are treated as empty when inserting and as occupied during a search. – Wikipedia</p>
 </blockquote>
-
-<!-- more -->
 
 <p>There three kinds of slots in the table:</p>
 
@@ -234,6 +254,8 @@ This rule saves repeated runtime null-tests in the workhorse getitem and setitem
 
 <p>Actually, <code>dummy</code> PyDictObject is just a <code>PyStringObject</code> in Python. Initially, dummy is a pointer in C but it finally comes to a <code>PyStringObject</code> after initialization of <code>PyDictObject</code> first time.</p>
 
+<p><strong>It’s important to note that resizing can happen to make a hash table larger or smaller. This is , if sufficiently many element of a hash table are deleted, the table can be scaled down in size. However, resizing only happens during an insert.</strong></p>
+
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 </pre></td><td class="code"><pre><code class="C"><span class="line"><span class="cm">/* Object used as dummy key to fill deleted entries */</span>
@@ -328,23 +350,23 @@ and the <code>tp_new</code> slot maps to <code>dict_new()</code>.  In the latter
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/09/iterater-and-generator-in-python/">Iterater and Generator in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/09/tuple-and-list-in-python/">Tuple and List in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/02/22/exception-control-in-python/">Exception Control in Python</a>
       </li>
     
       <li class="post">
         <a href="/blog/2016/02/21/architecture-of-python-virtual-machine/">Architecture of Python Virtual Machine</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/02/19/web-crawler/">Web Crawler</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/02/06/brief-introduction-to-opcodes-in-python/">Brief Introduction to Opcodes in Python</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/02/05/functional-programming-in-python/">Functional Programming in Python</a>
       </li>
     
   </ul>
@@ -358,9 +380,11 @@ and the <code>tp_new</code> slot maps to <code>dict_new()</code>.  In the latter
 <li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
 <li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
 <li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
+<li class='category'><a href='/blog/categories/imageprocessing/'>imageprocessing (1)</a></li>
 <li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
-<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (3)</a></li>
-<li class='category'><a href='/blog/categories/python/'>python (7)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (4)</a></li>
+<li class='category'><a href='/blog/categories/opencv/'>opencv (1)</a></li>
+<li class='category'><a href='/blog/categories/python/'>python (9)</a></li>
  
   </ul> 
 </section>
