@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Great Ideas in Object Oriented Programming - EOF</title>
+  <meta name="author" content="Jason Leaster">
+
+  
+  <meta name="description" content="Encapsulation Composition, inheritance, and delegation Warning of using inheritance Polymophsim OOP Design Object-oriented programming (OOP) is a &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jasonleaster.github.io/blog/2016/06/14/great-ideas-in-object-oriented-programming/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="EOF" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">EOF</a></h1>
+  
+    <h2>Rebuilding The Tower Of Babel</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jasonleaster.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/todo">TODO</a></li>
+  <li><a href="/recommendation">Recommendation</a></li>
+  <li><a href="/about-me">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Great Ideas in Object Oriented Programming</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-06-14T12:49:00+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:49 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#encapsulation" id="markdown-toc-encapsulation">Encapsulation</a></li>
+  <li><a href="#composition-inheritance-and-delegation" id="markdown-toc-composition-inheritance-and-delegation">Composition, inheritance, and delegation</a>    <ul>
+      <li><a href="#warning-of-using-inheritance" id="markdown-toc-warning-of-using-inheritance">Warning of using inheritance</a></li>
+    </ul>
+  </li>
+  <li><a href="#polymophsim" id="markdown-toc-polymophsim">Polymophsim</a></li>
+  <li><a href="#oop-design" id="markdown-toc-oop-design">OOP Design</a></li>
+</ul>
+
+<blockquote>
+  <p>Object-oriented programming (OOP) is a programming paradigm based on the concept of “objects”, which may contain data, in the form of fields, often known as attributes; and code, in the form of procedures, often known as methods. – <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">Wikipedia</a></p>
+</blockquote>
+
+<p>OOP is just a programming paradigm and it helps programmer to build more robust and implement more abstract concept which are needed in their project.OOP isn’t the treasure which only belongs to a special programming language. It offer a way to make the problem more easy to be understood and to be solved.</p>
+
+<p>There are three gread ideas in OOP.</p>
+
+<ul>
+  <li>Encapsulation</li>
+  <li>Composition, inheritance, and delegation</li>
+  <li>Polymophsim</li>
+</ul>
+
+<!-- more -->
+
+<h3 id="encapsulation">Encapsulation</h3>
+
+<p>The most basic idea in OOP is that each object encapsulates some data and code. The object takes requests from other client object. The object alone is responsible for its own state, exposing public message for clients, and declaring private the variables and the methods. The client depends on the simple public interface, and does not known about or depend on the details of the implementation.</p>
+
+<p><strong>Encapsulation remind us to put details and complexity into a black box. The outside people(user) don’t need to care about how this box was built but just use it with the instructions which the box suppled.</strong></p>
+
+<p>Q: What if we want to implement a abstract concept in mathematic – Point.</p>
+
+<p>Point, the most basic presentation of point is two coordinates in Descartes coordinate system(x, y). How to implement it with program ?</p>
+
+<p>Consider the following implementation in java.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="o">[</span><span class="n">MyPoint1</span><span class="o">.</span><span class="na">java</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyPoint1</span> <span class="o">{</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>   <span class="c1">// x and y are public</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">MyPoint1</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// Client Code</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">MyPoint1</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MyPoint1</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="cm">/**</span>
+</span><span class="line"><span class="cm">         * Bad style to try to use the detail information of a class.</span>
+</span><span class="line"><span class="cm">         * Here, client programmer should not use data member of the class directly.</span>
+</span><span class="line"><span class="cm">         * With the software iteration and release the library which implement the</span>
+</span><span class="line"><span class="cm">         * class which have used in your project. You may have to rewrite all your</span>
+</span><span class="line"><span class="cm">         * client program. Because the author of that library may change the implementation</span>
+</span><span class="line"><span class="cm">         * of that class and your code can&#39;t be used with the new library.</span>
+</span><span class="line"><span class="cm">         */</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">x</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="na">y</span><span class="o">;</span><span class="c1">// !! Bad style.</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">z</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Here all information is public, this is the most convenient for end users, but limits our ability to change things later in development. What would happend if you build a software and you find something should be changed with the implementation of <code>MyPoint1</code>. You may want to add more attributes into this class. You may also want to rewrite your code and change it into another coordinate system but not descartes coordinate system.</p>
+
+<p>If the others module depends on your implementation of <code>MyPoints1</code> and use the data member of that class directly, you may have to rewrite your whole project and it will cost your a lot of time. It will be nightmare for programmer to be told “Hey, buddy. There is something changed with requirement, you have to rewrite your whole project. Just put the code into garbage collector. It can’t be modified to satisfy the new requirement.”</p>
+
+<p><img src="/images/img_for_2016_06_14/wth.png" alt="images" /></p>
+
+<p>Here is a bettern one solution. In <code>MyPoint2</code>, the detail of this class are setted as private which means that the client(user) can’t use the information about the implementation directly. The only way that the user can use the information which they need is to use the interface that the class supply with. In this example, the interface which public can access is <em>getX()</em>  and <em>getY()</em> .</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="o">[</span><span class="n">MyPoint2</span><span class="o">.</span><span class="na">java</span><span class="o">]</span>
+</span><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyPoint2</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>  <span class="c1">// x and y are private</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">MyPoint2</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getX</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getY</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// Client Code</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+</span><span class="line">        <span class="n">MyPoint2</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MyPoint2</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="na">getY</span><span class="o">();</span> <span class="c1">// Good Style :)</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">z</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The advantage of accessing control and encapsulation is that we can replace the current implementation into another better one and make sure the client don’t need to be modified for this changes in the original class(MyPoint2).</p>
+
+<p>Here, we implement Point with polar coordinate system. All the interface that set as public in <code>MyPoint2</code> are unchanged. This make sure that the client which use <code>getX()</code> and <code>getY()</code> don’t need to be modified for changes with the implementation of Point.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="o">[</span><span class="n">MyPoint3</span><span class="o">.</span><span class="na">java</span><span class="o">]</span>
+</span><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyPoint3</span> <span class="o">{</span>
+</span><span class="line">    <span class="kd">private</span> <span class="kt">double</span> <span class="n">r</span><span class="o">;</span>
+</span><span class="line">    <span class="kd">private</span> <span class="kt">double</span> <span class="n">theta</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">MyPoint3</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">r</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="o">);</span>
+</span><span class="line">        <span class="n">theta</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">atan</span><span class="o">(</span> <span class="o">(</span><span class="kt">double</span><span class="o">)</span> <span class="n">y</span> <span class="o">/</span> <span class="n">x</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getX</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">cos</span><span class="o">(</span><span class="n">theta</span><span class="o">));</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getY</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">sin</span><span class="o">(</span><span class="n">theta</span><span class="o">));</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * Client Code don&#39;t need to be modified after the implemetation of Point changed</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+</span><span class="line">        <span class="n">MyPoint2</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MyPoint2</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="na">getY</span><span class="o">();</span> <span class="c1">// Good Style :)</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">z</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="composition-inheritance-and-delegation">Composition, inheritance, and delegation</h3>
+
+<p>In object-oriented programming, inheritance is when an object or class is based on another object (prototypal inheritance) or class (class-based inheritance), using the same implementation (inheriting from an object or class) specifying implementation to maintain the same behavior (realizing an interface; inheriting behavior). In this ariticle, we only talk about the class-based inheritance.</p>
+
+<p>What’s the adavantages of inheritance ?</p>
+
+<ul>
+  <li>Overriding</li>
+  <li>Code Reuse</li>
+</ul>
+
+<p>Many OOP programming language permit to replace the implementation of one or more method that it inherited from the base class. We call this feature as <strong>Overriding</strong>. There are two way to help us to reuse code. The one way is composition and the other way is inheritance.</p>
+
+<p>You reuse code by creating new classes, but instead of creating them from scratch, you use existing classes that someone has already built and debugged.</p>
+
+<p>In Java and Python (I don’t know the implementation of C++), you always doing inheritance when you create an object.</p>
+
+<blockquote>
+  <p>Class Object is the root of the class hierarchy. Every class has Object as a superclass. All objects, including arrays, implement the methods of this class.            Since: JDK1.0   – <a href="https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html">Java Doc notes</a></p>
+</blockquote>
+
+<p>You could also read my article about <a href="http://jasonleaster.github.io/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus/">Moemory Model of Object in C++</a> and <a href="http://jasonleaster.github.io/blog/2016/02/03/memory-model-of-int-object-in-python/">In Object In Python</a>. If you are interesting in the implementation of inheritance, just read all about it.</p>
+
+<h4 id="warning-of-using-inheritance">Warning of using inheritance</h4>
+
+<p>In heritance is a clever and appealing techonology, it is best applied in somewhat rare circumstances where you have several deeply similar classes. It’s a common error for beginning OOP programmers to try to use inheritance for everything. In constrat, application of modularity and encapsulation and API design may be less flashy, but they are incredibly common and powerful.</p>
+
+<h3 id="polymophsim">Polymophsim</h3>
+
+<h3 id="oop-design">OOP Design</h3>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason Leaster</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-06-14T12:49:00+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:49 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/05/19/training-cascade-with-opencv/" title="Previous Post: Training Cascade with OpenCV">&laquo; Training Cascade with OpenCV</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/06/14/great-ideas-in-object-oriented-programming/">Great Ideas in Object Oriented Programming</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/09/iterater-and-generator-in-python/">Iterater and Generator in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/09/tuple-and-list-in-python/">Tuple and List in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/22/exception-control-in-python/">Exception Control in Python</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section> 
+  <h1>Categories</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/algorithm/'>algorithm (2)</a></li>
+<li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
+<li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
+<li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
+<li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (4)</a></li>
+<li class='category'><a href='/blog/categories/opencv/'>opencv (1)</a></li>
+<li class='category'><a href='/blog/categories/python/'>python (9)</a></li>
+ 
+  </ul> 
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Jason Leaster -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

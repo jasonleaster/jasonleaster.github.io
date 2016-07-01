@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Java | EOF]]></title>
+  <link href="http://jasonleaster.github.io/blog/categories/java/atom.xml" rel="self"/>
+  <link href="http://jasonleaster.github.io/"/>
+  <updated>2016-07-01T13:07:56+08:00</updated>
+  <id>http://jasonleaster.github.io/</id>
+  <author>
+    <name><![CDATA[Jason Leaster]]></name>
+    <email><![CDATA[jasonleaster@163.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Great Ideas in Object Oriented Programming]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/06/14/great-ideas-in-object-oriented-programming/"/>
+    <updated>2016-06-14T12:49:00+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/06/14/great-ideas-in-object-oriented-programming</id>
+    <content type="html"><![CDATA[<ul id="markdown-toc">
+  <li><a href="#encapsulation" id="markdown-toc-encapsulation">Encapsulation</a></li>
+  <li><a href="#composition-inheritance-and-delegation" id="markdown-toc-composition-inheritance-and-delegation">Composition, inheritance, and delegation</a>    <ul>
+      <li><a href="#warning-of-using-inheritance" id="markdown-toc-warning-of-using-inheritance">Warning of using inheritance</a></li>
+    </ul>
+  </li>
+  <li><a href="#polymophsim" id="markdown-toc-polymophsim">Polymophsim</a></li>
+  <li><a href="#oop-design" id="markdown-toc-oop-design">OOP Design</a></li>
+</ul>
+
+<blockquote>
+  <p>Object-oriented programming (OOP) is a programming paradigm based on the concept of “objects”, which may contain data, in the form of fields, often known as attributes; and code, in the form of procedures, often known as methods. – <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">Wikipedia</a></p>
+</blockquote>
+
+<p>OOP is just a programming paradigm and it helps programmer to build more robust and implement more abstract concept which are needed in their project.OOP isn’t the treasure which only belongs to a special programming language. It offer a way to make the problem more easy to be understood and to be solved.</p>
+
+<p>There are three gread ideas in OOP.</p>
+
+<ul>
+  <li>Encapsulation</li>
+  <li>Composition, inheritance, and delegation</li>
+  <li>Polymophsim</li>
+</ul>
+
+<!-- more -->
+
+<h3 id="encapsulation">Encapsulation</h3>
+
+<p>The most basic idea in OOP is that each object encapsulates some data and code. The object takes requests from other client object. The object alone is responsible for its own state, exposing public message for clients, and declaring private the variables and the methods. The client depends on the simple public interface, and does not known about or depend on the details of the implementation.</p>
+
+<p><strong>Encapsulation remind us to put details and complexity into a black box. The outside people(user) don’t need to care about how this box was built but just use it with the instructions which the box suppled.</strong></p>
+
+<p>Q: What if we want to implement a abstract concept in mathematic – Point.</p>
+
+<p>Point, the most basic presentation of point is two coordinates in Descartes coordinate system(x, y). How to implement it with program ?</p>
+
+<p>Consider the following implementation in java.</p>
+
+<p>``` java</p>
+
+<p>[MyPoint1.java]</p>
+
+<p>public class MyPoint1 {
+    public int x;   // x and y are public
+    public int y;</p>
+
+<pre><code>public MyPoint1(int x,int y) {
+    this.x = x;
+    this.y = y;
+}
+
+// Client Code
+public static void main(String[] args){
+
+    MyPoint1 p = new MyPoint1(1, 2);
+
+    /**
+     * Bad style to try to use the detail information of a class.
+     * Here, client programmer should not use data member of the class directly.
+     * With the software iteration and release the library which implement the
+     * class which have used in your project. You may have to rewrite all your
+     * client program. Because the author of that library may change the implementation
+     * of that class and your code can't be used with the new library.
+     */
+    int z = p.x + p.y;// !! Bad style.
+
+    System.out.print(z);
+} }
+</code></pre>
+
+<p>```</p>
+
+<p>Here all information is public, this is the most convenient for end users, but limits our ability to change things later in development. What would happend if you build a software and you find something should be changed with the implementation of <code>MyPoint1</code>. You may want to add more attributes into this class. You may also want to rewrite your code and change it into another coordinate system but not descartes coordinate system.</p>
+
+<p>If the others module depends on your implementation of <code>MyPoints1</code> and use the data member of that class directly, you may have to rewrite your whole project and it will cost your a lot of time. It will be nightmare for programmer to be told “Hey, buddy. There is something changed with requirement, you have to rewrite your whole project. Just put the code into garbage collector. It can’t be modified to satisfy the new requirement.”</p>
+
+<p><img src="/images/img_for_2016_06_14/wth.png" alt="images" /></p>
+
+<p>Here is a bettern one solution. In <code>MyPoint2</code>, the detail of this class are setted as private which means that the client(user) can’t use the information about the implementation directly. The only way that the user can use the information which they need is to use the interface that the class supply with. In this example, the interface which public can access is <em>getX()</em>  and <em>getY()</em> .</p>
+
+<p>``` java</p>
+
+<p>[MyPoint2.java]
+public class MyPoint2 {</p>
+
+<pre><code>private int x;  // x and y are private
+
+private int y;
+            
+public MyPoint2(int x,int y) {
+    this.x = x;
+    this.y = y;
+}
+
+public int getX() {
+    return x;
+}
+
+public int getY() {
+    return y;
+}
+
+// Client Code
+public static void main(String[] args){
+    MyPoint2 p = new MyPoint2(1, 2);
+    int z = p.getX() + p.getY(); // Good Style :)
+    System.out.print(z);
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>The advantage of accessing control and encapsulation is that we can replace the current implementation into another better one and make sure the client don’t need to be modified for this changes in the original class(MyPoint2).</p>
+
+<p>Here, we implement Point with polar coordinate system. All the interface that set as public in <code>MyPoint2</code> are unchanged. This make sure that the client which use <code>getX()</code> and <code>getY()</code> don’t need to be modified for changes with the implementation of Point.</p>
+
+<p>``` java</p>
+
+<p>[MyPoint3.java]
+public class MyPoint3 {
+    private double r;
+    private double theta;</p>
+
+<pre><code>public MyPoint3(int x,int y) {
+    this.r = Math.sqrt(x * x + y * y);
+    theta = Math.atan( (double) y / x);
+}
+                
+public long getX() {
+    return Math.round(r * Math.cos(theta));
+}
+                    
+public long getY() {
+    return Math.round(r * Math.sin(theta));
+}
+
+/**
+ * Client Code don't need to be modified after the implemetation of Point changed
+ */
+public static void main(String[] args){
+    MyPoint2 p = new MyPoint2(1, 2);
+    int z = p.getX() + p.getY(); // Good Style :)
+    System.out.print(z);
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<h3 id="composition-inheritance-and-delegation">Composition, inheritance, and delegation</h3>
+
+<p>In object-oriented programming, inheritance is when an object or class is based on another object (prototypal inheritance) or class (class-based inheritance), using the same implementation (inheriting from an object or class) specifying implementation to maintain the same behavior (realizing an interface; inheriting behavior). In this ariticle, we only talk about the class-based inheritance.</p>
+
+<p>What’s the adavantages of inheritance ?</p>
+
+<ul>
+  <li>Overriding</li>
+  <li>Code Reuse</li>
+</ul>
+
+<p>Many OOP programming language permit to replace the implementation of one or more method that it inherited from the base class. We call this feature as <strong>Overriding</strong>. There are two way to help us to reuse code. The one way is composition and the other way is inheritance.</p>
+
+<p>You reuse code by creating new classes, but instead of creating them from scratch, you use existing classes that someone has already built and debugged.</p>
+
+<p>In Java and Python (I don’t know the implementation of C++), you always doing inheritance when you create an object.</p>
+
+<blockquote>
+  <p>Class Object is the root of the class hierarchy. Every class has Object as a superclass. All objects, including arrays, implement the methods of this class.            Since: JDK1.0   – <a href="https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html">Java Doc notes</a></p>
+</blockquote>
+
+<p>You could also read my article about <a href="http://jasonleaster.github.io/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus/">Moemory Model of Object in C++</a> and <a href="http://jasonleaster.github.io/blog/2016/02/03/memory-model-of-int-object-in-python/">In Object In Python</a>. If you are interesting in the implementation of inheritance, just read all about it.</p>
+
+<h4 id="warning-of-using-inheritance">Warning of using inheritance</h4>
+
+<p>In heritance is a clever and appealing techonology, it is best applied in somewhat rare circumstances where you have several deeply similar classes. It’s a common error for beginning OOP programmers to try to use inheritance for everything. In constrat, application of modularity and encapsulation and API design may be less flashy, but they are incredibly common and powerful.</p>
+
+<h3 id="polymophsim">Polymophsim</h3>
+
+<h3 id="oop-design">OOP Design</h3>
+]]></content>
+  </entry>
+  
+</feed>

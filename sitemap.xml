@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://jasonleaster.github.io/blog/2016/06/14/great-ideas-in-object-oriented-programming/</loc>
+    <lastmod>2016-06-14T12:49:00+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://jasonleaster.github.io/blog/2016/05/19/training-cascade-with-opencv/</loc>
     <lastmod>2016-05-19T15:45:42+08:00</lastmod>
   </url>
@@ -136,7 +140,7 @@
     <loc>http://jasonleaster.github.io/blog/categories/opencv/</loc>
   </url>
   <url>
-    <loc>http://jasonleaster.github.io/blog/categories/imageprocessing/</loc>
+    <loc>http://jasonleaster.github.io/blog/categories/java/</loc>
   </url>
   <url>
     <loc>http://jasonleaster.github.io/posts/2/</loc>

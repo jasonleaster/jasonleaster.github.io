@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-05-19T23:16:08+08:00</updated>
+  <updated>2016-07-01T13:07:56+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,270 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Great Ideas in Object Oriented Programming]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/06/14/great-ideas-in-object-oriented-programming/"/>
+    <updated>2016-06-14T12:49:00+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/06/14/great-ideas-in-object-oriented-programming</id>
+    <content type="html"><![CDATA[<ul id="markdown-toc">
+  <li><a href="#encapsulation" id="markdown-toc-encapsulation">Encapsulation</a></li>
+  <li><a href="#composition-inheritance-and-delegation" id="markdown-toc-composition-inheritance-and-delegation">Composition, inheritance, and delegation</a>    <ul>
+      <li><a href="#warning-of-using-inheritance" id="markdown-toc-warning-of-using-inheritance">Warning of using inheritance</a></li>
+    </ul>
+  </li>
+  <li><a href="#polymophsim" id="markdown-toc-polymophsim">Polymophsim</a></li>
+  <li><a href="#oop-design" id="markdown-toc-oop-design">OOP Design</a></li>
+</ul>
+
+<blockquote>
+  <p>Object-oriented programming (OOP) is a programming paradigm based on the concept of “objects”, which may contain data, in the form of fields, often known as attributes; and code, in the form of procedures, often known as methods. – <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">Wikipedia</a></p>
+</blockquote>
+
+<p>OOP is just a programming paradigm and it helps programmer to build more robust and implement more abstract concept which are needed in their project.OOP isn’t the treasure which only belongs to a special programming language. It offer a way to make the problem more easy to be understood and to be solved.</p>
+
+<p>There are three gread ideas in OOP.</p>
+
+<ul>
+  <li>Encapsulation</li>
+  <li>Composition, inheritance, and delegation</li>
+  <li>Polymophsim</li>
+</ul>
+
+<!-- more -->
+
+<h3 id="encapsulation">Encapsulation</h3>
+
+<p>The most basic idea in OOP is that each object encapsulates some data and code. The object takes requests from other client object. The object alone is responsible for its own state, exposing public message for clients, and declaring private the variables and the methods. The client depends on the simple public interface, and does not known about or depend on the details of the implementation.</p>
+
+<p><strong>Encapsulation remind us to put details and complexity into a black box. The outside people(user) don’t need to care about how this box was built but just use it with the instructions which the box suppled.</strong></p>
+
+<p>Q: What if we want to implement a abstract concept in mathematic – Point.</p>
+
+<p>Point, the most basic presentation of point is two coordinates in Descartes coordinate system(x, y). How to implement it with program ?</p>
+
+<p>Consider the following implementation in java.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="o">[</span><span class="n">MyPoint1</span><span class="o">.</span><span class="na">java</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyPoint1</span> <span class="o">{</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>   <span class="c1">// x and y are public</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">MyPoint1</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// Client Code</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">MyPoint1</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MyPoint1</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="cm">/**</span>
+</span><span class="line"><span class="cm">         * Bad style to try to use the detail information of a class.</span>
+</span><span class="line"><span class="cm">         * Here, client programmer should not use data member of the class directly.</span>
+</span><span class="line"><span class="cm">         * With the software iteration and release the library which implement the</span>
+</span><span class="line"><span class="cm">         * class which have used in your project. You may have to rewrite all your</span>
+</span><span class="line"><span class="cm">         * client program. Because the author of that library may change the implementation</span>
+</span><span class="line"><span class="cm">         * of that class and your code can&#39;t be used with the new library.</span>
+</span><span class="line"><span class="cm">         */</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">x</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="na">y</span><span class="o">;</span><span class="c1">// !! Bad style.</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">z</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Here all information is public, this is the most convenient for end users, but limits our ability to change things later in development. What would happend if you build a software and you find something should be changed with the implementation of <code>MyPoint1</code>. You may want to add more attributes into this class. You may also want to rewrite your code and change it into another coordinate system but not descartes coordinate system.</p>
+
+<p>If the others module depends on your implementation of <code>MyPoints1</code> and use the data member of that class directly, you may have to rewrite your whole project and it will cost your a lot of time. It will be nightmare for programmer to be told “Hey, buddy. There is something changed with requirement, you have to rewrite your whole project. Just put the code into garbage collector. It can’t be modified to satisfy the new requirement.”</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_06_14/wth.png" alt="images" /></p>
+
+<p>Here is a bettern one solution. In <code>MyPoint2</code>, the detail of this class are setted as private which means that the client(user) can’t use the information about the implementation directly. The only way that the user can use the information which they need is to use the interface that the class supply with. In this example, the interface which public can access is <em>getX()</em>  and <em>getY()</em> .</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="o">[</span><span class="n">MyPoint2</span><span class="o">.</span><span class="na">java</span><span class="o">]</span>
+</span><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyPoint2</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>  <span class="c1">// x and y are private</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">MyPoint2</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getX</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getY</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">y</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// Client Code</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+</span><span class="line">        <span class="n">MyPoint2</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MyPoint2</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="na">getY</span><span class="o">();</span> <span class="c1">// Good Style :)</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">z</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The advantage of accessing control and encapsulation is that we can replace the current implementation into another better one and make sure the client don’t need to be modified for this changes in the original class(MyPoint2).</p>
+
+<p>Here, we implement Point with polar coordinate system. All the interface that set as public in <code>MyPoint2</code> are unchanged. This make sure that the client which use <code>getX()</code> and <code>getY()</code> don’t need to be modified for changes with the implementation of Point.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="o">[</span><span class="n">MyPoint3</span><span class="o">.</span><span class="na">java</span><span class="o">]</span>
+</span><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyPoint3</span> <span class="o">{</span>
+</span><span class="line">    <span class="kd">private</span> <span class="kt">double</span> <span class="n">r</span><span class="o">;</span>
+</span><span class="line">    <span class="kd">private</span> <span class="kt">double</span> <span class="n">theta</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">MyPoint3</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">r</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="o">);</span>
+</span><span class="line">        <span class="n">theta</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">atan</span><span class="o">(</span> <span class="o">(</span><span class="kt">double</span><span class="o">)</span> <span class="n">y</span> <span class="o">/</span> <span class="n">x</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getX</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">cos</span><span class="o">(</span><span class="n">theta</span><span class="o">));</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getY</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">sin</span><span class="o">(</span><span class="n">theta</span><span class="o">));</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * Client Code don&#39;t need to be modified after the implemetation of Point changed</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+</span><span class="line">        <span class="n">MyPoint2</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MyPoint2</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="na">getY</span><span class="o">();</span> <span class="c1">// Good Style :)</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">z</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="composition-inheritance-and-delegation">Composition, inheritance, and delegation</h3>
+
+<p>In object-oriented programming, inheritance is when an object or class is based on another object (prototypal inheritance) or class (class-based inheritance), using the same implementation (inheriting from an object or class) specifying implementation to maintain the same behavior (realizing an interface; inheriting behavior). In this ariticle, we only talk about the class-based inheritance.</p>
+
+<p>What’s the adavantages of inheritance ?</p>
+
+<ul>
+  <li>Overriding</li>
+  <li>Code Reuse</li>
+</ul>
+
+<p>Many OOP programming language permit to replace the implementation of one or more method that it inherited from the base class. We call this feature as <strong>Overriding</strong>. There are two way to help us to reuse code. The one way is composition and the other way is inheritance.</p>
+
+<p>You reuse code by creating new classes, but instead of creating them from scratch, you use existing classes that someone has already built and debugged.</p>
+
+<p>In Java and Python (I don’t know the implementation of C++), you always doing inheritance when you create an object.</p>
+
+<blockquote>
+  <p>Class Object is the root of the class hierarchy. Every class has Object as a superclass. All objects, including arrays, implement the methods of this class.            Since: JDK1.0   – <a href="https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html">Java Doc notes</a></p>
+</blockquote>
+
+<p>You could also read my article about <a href="http://jasonleaster.github.io/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus/">Moemory Model of Object in C++</a> and <a href="http://jasonleaster.github.io/blog/2016/02/03/memory-model-of-int-object-in-python/">In Object In Python</a>. If you are interesting in the implementation of inheritance, just read all about it.</p>
+
+<h4 id="warning-of-using-inheritance">Warning of using inheritance</h4>
+
+<p>In heritance is a clever and appealing techonology, it is best applied in somewhat rare circumstances where you have several deeply similar classes. It’s a common error for beginning OOP programmers to try to use inheritance for everything. In constrat, application of modularity and encapsulation and API design may be less flashy, but they are incredibly common and powerful.</p>
+
+<h3 id="polymophsim">Polymophsim</h3>
+
+<h3 id="oop-design">OOP Design</h3>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Training Cascade With OpenCV]]></title>
@@ -25,6 +289,8 @@
 <p>You may have to prepare two different types of images for training a <code>Binary Classifier Model</code>, the positive samples and the negative samples.</p>
 
 <p>Here, we gona to use image database from <strong>UIUC Image Database for Car Detection</strong> to demonstrate how to use OpenCV to detection cars in a image.</p>
+
+<!-- more -->
 
 <p>User should put all positive samples which have the same size into a directory.</p>
 
@@ -3084,7 +3350,7 @@ concept in machine learning – <code>Boosting</code>.</p>
 
 <p>Give the input training samples which have tag with it.</p>
 
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/equation.png" alt="images" /></p>
+<div style="text-align:center"><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/equation.png" align="middle" /> </div>
 
 <p>where x[i] is the feature of the i-th sample point and y[i] is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
 
@@ -3092,7 +3358,13 @@ concept in machine learning – <code>Boosting</code>.</p>
 
 <p>Some classifier like decision tree also can work correctly about classification. But it’s also easy to overfitting. So, we can’t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which’s depth is only one. So we call it as <code>decision stump</code>.</p>
 
-<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting. It combine some weaker classifier into a stronger classifier to avoid overfitting.</p>
+<div style="text-align:center"><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/stump.png" align="middle" /> </div>
+
+<div style="text-align:center"><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/weakClassifier.png" align="middle" /> </div>
+
+<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting.</p>
+
+<div style="text-align:center"><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/AdaBoost.png" align="middle" /> </div>
 
 <p>Test case:</p>
 
@@ -3130,13 +3402,35 @@ concept in machine learning – <code>Boosting</code>.</p>
 
 <p><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Adaboost">Implementation of Adaboost in Python</a></p>
 
-<p>You can check the validity of my implementation by the accuracy.</p>
+<p>There is an <a href="http://cs229.stanford.edu/extra-notes/boosting.pdf">assignment</a> about AdaBoost in Stanford CS 229, which will ask student to implement stump booster. But I don’t really understand the skeleton of that source code. I think there must be something worng with that matlab script <code>stump_booster.m</code>. The week classifier can’t lost the direction information.</p>
 
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/samples2.png" alt="images" /></p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="matlab"><span class="line"><span class="c">%%% !!! Don&#39;t forget the important variable -- direction</span>
+</span><span class="line">
+</span><span class="line"><span class="n">API</span> <span class="n">given</span> <span class="n">by</span> <span class="n">the</span> <span class="n">course</span> <span class="n">materials</span><span class="p">:</span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[ind, thresh] <span class="p">=</span><span class="w"> </span><span class="nf">find_best_threshold</span><span class="p">(</span>X, y, p_dist<span class="p">)</span><span class="w"></span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[theta, feature_inds, thresholds] <span class="p">=</span><span class="w"> </span><span class="nf">stump_booster</span><span class="p">(</span>X, y, T<span class="p">)</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="n">API</span> <span class="n">of</span> <span class="n">my</span> <span class="n">solution</span><span class="p">:</span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[ind, thresh, direction] <span class="p">=</span><span class="w"> </span><span class="nf">find_best_threshold</span><span class="p">(</span>X, y, p_dist<span class="p">)</span><span class="w"></span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[theta, feature_inds, thresholds, directions] <span class="p">=</span><span class="w"> </span><span class="nf">stump_booster</span><span class="p">(</span>X, y, T<span class="p">)</span><span class="w"></span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>The data used to train the weaker classifier and get that accuracy is showed below there :</p>
+<p>Run <code>boost_example.m</code>, you will see the <strong>classifier line</strong> with different iteration.</p>
 
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/accuracy.png" alt="images" /></p>
+<div style="text-align:center"><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/iter2.jpg" width="400" height="400" align="middle" /> </div>
+
+<div style="text-align:center"><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/iter5.jpg" width="400" height="400" align="middle" /> </div>
+
+<div style="text-align:center"><img src="http://jasonleaster.github.io/images/img_for_2015_12_13/iter10.jpg" width="400" height="400" align="middle" /> </div>
 
 <h3 id="boosting-tree">Boosting Tree</h3>
 
@@ -6862,770 +7156,6 @@ For example:</p>
 <p>Photo by YanZixin in Changde, China</p>
 
 <p><img src="http://jasonleaster.github.io/images/img_for_2015_05_24/tree.png" alt="images" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[An Example for OOP in C++]]></title>
-    <link href="http://jasonleaster.github.io/blog/2015/05/19/an-example-for-oop-in-c-plus-plus/"/>
-    <updated>2015-05-19T23:13:08+08:00</updated>
-    <id>http://jasonleaster.github.io/blog/2015/05/19/an-example-for-oop-in-c-plus-plus</id>
-    <content type="html"><![CDATA[<p>Generally, OOP( Object Oriented Progarmming) have three important elements:</p>
-
-<ul>
-  <li>Abstraction of data</li>
-  <li>Inheritance</li>
-  <li>Dynamic Binding</li>
-</ul>
-
-<p>Now, there is a demo for how to build an arithmetic expression-tree.</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_19/exp_tree.png" alt="images" /></p>
-
-<!-- more -->
-
-<p>We want to build a node-tree like the tree in that picture to print a correct arithmetic expression.</p>
-
-<p>Here you could see the relationship between the classes we used in our demo.</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_19/class_relationship.png" alt="images" /></p>
-
-<p>You know that the three classes <code>Int_node</code>, <code>Unary_node</code> and <code>Binary_node</code> are all inherit from the base class <code>Expr_node</code>.</p>
-
-<p>Let’s look at the simple unary arithmetic expression <code>(-5)</code>. In this expression, there is only one operand <code>-</code> and one integer <code>5</code>. In expression <code>( 3 + 4)</code>, there are two integer and one operand.</p>
-
-<p>We could find that there are only three different expression in representation of arithmetic expression. They are:</p>
-
-<ul>
-  <li>Integer Expression</li>
-  <li>Unary Expression</li>
-  <li>Binary Expression</li>
-</ul>
-
-<p>So, we find the common attributes on the three different types of expression and use a base-class <code>Expr_node</code> to represent this attribute.</p>
-
-<p>If you have background in class handle, you may notice that <code>class Expr</code> is the handle for <code>Expr_node</code>.</p>
-
-<p>We don’t need real objects of <code>class Expr_node</code>. What we need is the classes which inherit from that base-class. The meaning of the base-class is to provide the public interface.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-<span class="line-number">130</span>
-<span class="line-number">131</span>
-<span class="line-number">132</span>
-<span class="line-number">133</span>
-<span class="line-number">134</span>
-<span class="line-number">135</span>
-<span class="line-number">136</span>
-<span class="line-number">137</span>
-<span class="line-number">138</span>
-<span class="line-number">139</span>
-<span class="line-number">140</span>
-<span class="line-number">141</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">    Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">    Date        :   2015.05.19</span>
-</span><span class="line"><span class="cm">    File        :   exp_node.cpp</span>
-</span><span class="line"><span class="cm">    E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;string&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   This @Expr_node is the base-class.</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">Expr_node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr_node</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Expr</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">int</span> <span class="n">use</span><span class="p">;</span><span class="c1">// @use is a counter to avoid copying objects.</span>
-</span><span class="line">
-</span><span class="line">    <span class="c1">//protected:</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Expr_node</span><span class="p">()</span><span class="o">:</span> <span class="n">use</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="o">~</span><span class="n">Expr_node</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Expr</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="n">Expr_node</span><span class="o">*</span> <span class="n">p</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">()</span><span class="o">:</span><span class="n">p</span><span class="p">(</span><span class="nb">NULL</span><span class="p">){}</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Expr</span><span class="p">);</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="n">Expr</span><span class="p">);</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span> <span class="n">p</span> <span class="o">=</span> <span class="n">t</span><span class="p">.</span><span class="n">p</span><span class="p">;</span> <span class="o">++</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span><span class="p">;</span> <span class="p">};</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Expr</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">        <span class="o">~</span><span class="n">Expr</span><span class="p">()</span> <span class="p">{</span> <span class="k">if</span><span class="p">(</span><span class="o">--</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">delete</span> <span class="n">p</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="n">ostream</span><span class="o">&amp;</span>
-</span><span class="line"><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr_node</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">e</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">o</span><span class="p">);</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">o</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Expr</span><span class="o">&amp;</span>
-</span><span class="line"><span class="n">Expr</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">rhs</span><span class="p">.</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span><span class="o">++</span><span class="p">;</span>
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="o">--</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">delete</span> <span class="n">p</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
-</span><span class="line">    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">ostream</span><span class="o">&amp;</span>
-</span><span class="line"><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">t</span><span class="p">.</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">print</span><span class="p">(</span><span class="n">o</span><span class="p">);</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">o</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Int_node</span><span class="o">:</span> <span class="k">public</span> <span class="n">Expr_node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Expr</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">Int_node</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="p">)</span><span class="o">:</span> <span class="n">n</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="n">n</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Unary_node</span><span class="o">:</span> <span class="k">public</span> <span class="n">Expr_node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Expr</span><span class="p">;</span>
-</span><span class="line">    <span class="n">string</span> <span class="n">op</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Expr</span> <span class="n">opnd</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Unary_node</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">opnd</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;(&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">op</span> <span class="o">&lt;&lt;</span> <span class="n">opnd</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;)&quot;</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Binary_node</span><span class="o">:</span> <span class="k">public</span> <span class="n">Expr_node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Expr</span><span class="p">;</span>
-</span><span class="line">    <span class="n">string</span> <span class="n">op</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">Expr</span> <span class="n">left</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Expr</span> <span class="n">right</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">Binary_node</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">b</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">c</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">left</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">right</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;(&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">left</span> <span class="o">&lt;&lt;</span> <span class="n">op</span> <span class="o">&lt;&lt;</span> <span class="n">right</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;)&quot;</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Expr</span><span class="o">::</span><span class="n">Expr</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Int_node</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Expr</span><span class="o">::</span><span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">op</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">t</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Unary_node</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Expr</span><span class="o">::</span><span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">op</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">left</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">right</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Binary_node</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Expr</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Expr</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span> <span class="n">Expr</span><span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">Expr</span><span class="p">(</span><span class="s">&quot;+&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">t</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">t</span> <span class="o">=</span> <span class="n">Expr</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">t</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>You could run this program and will get the output like this one.</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_19/output1.png" alt="images" /></p>
-
-<h3 id="more-opeartion">More Opeartion</h3>
-
-<p>We could evaluate the expression and add more types of node.</p>
-
-<p>Here is the implementation. That’s cool!</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-<span class="line-number">130</span>
-<span class="line-number">131</span>
-<span class="line-number">132</span>
-<span class="line-number">133</span>
-<span class="line-number">134</span>
-<span class="line-number">135</span>
-<span class="line-number">136</span>
-<span class="line-number">137</span>
-<span class="line-number">138</span>
-<span class="line-number">139</span>
-<span class="line-number">140</span>
-<span class="line-number">141</span>
-<span class="line-number">142</span>
-<span class="line-number">143</span>
-<span class="line-number">144</span>
-<span class="line-number">145</span>
-<span class="line-number">146</span>
-<span class="line-number">147</span>
-<span class="line-number">148</span>
-<span class="line-number">149</span>
-<span class="line-number">150</span>
-<span class="line-number">151</span>
-<span class="line-number">152</span>
-<span class="line-number">153</span>
-<span class="line-number">154</span>
-<span class="line-number">155</span>
-<span class="line-number">156</span>
-<span class="line-number">157</span>
-<span class="line-number">158</span>
-<span class="line-number">159</span>
-<span class="line-number">160</span>
-<span class="line-number">161</span>
-<span class="line-number">162</span>
-<span class="line-number">163</span>
-<span class="line-number">164</span>
-<span class="line-number">165</span>
-<span class="line-number">166</span>
-<span class="line-number">167</span>
-<span class="line-number">168</span>
-<span class="line-number">169</span>
-<span class="line-number">170</span>
-<span class="line-number">171</span>
-<span class="line-number">172</span>
-<span class="line-number">173</span>
-<span class="line-number">174</span>
-<span class="line-number">175</span>
-<span class="line-number">176</span>
-<span class="line-number">177</span>
-<span class="line-number">178</span>
-<span class="line-number">179</span>
-<span class="line-number">180</span>
-<span class="line-number">181</span>
-<span class="line-number">182</span>
-<span class="line-number">183</span>
-<span class="line-number">184</span>
-<span class="line-number">185</span>
-<span class="line-number">186</span>
-<span class="line-number">187</span>
-<span class="line-number">188</span>
-<span class="line-number">189</span>
-<span class="line-number">190</span>
-<span class="line-number">191</span>
-<span class="line-number">192</span>
-<span class="line-number">193</span>
-<span class="line-number">194</span>
-<span class="line-number">195</span>
-<span class="line-number">196</span>
-<span class="line-number">197</span>
-<span class="line-number">198</span>
-<span class="line-number">199</span>
-<span class="line-number">200</span>
-<span class="line-number">201</span>
-<span class="line-number">202</span>
-<span class="line-number">203</span>
-<span class="line-number">204</span>
-<span class="line-number">205</span>
-<span class="line-number">206</span>
-<span class="line-number">207</span>
-<span class="line-number">208</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">    Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">    Date        :   2015.05.19</span>
-</span><span class="line"><span class="cm">    File        :   8.5.cpp</span>
-</span><span class="line"><span class="cm">    E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;string&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   This @Expr_node is the base-class.</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">Expr_node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr_node</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Expr</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">int</span> <span class="n">use</span><span class="p">;</span><span class="c1">// @use is a counter to avoid copying objects.</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">protected</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Expr_node</span><span class="p">()</span><span class="o">:</span> <span class="n">use</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="o">~</span><span class="n">Expr_node</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">int</span> <span class="n">eval</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Expr</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="n">Expr_node</span><span class="o">*</span> <span class="n">p</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">()</span><span class="o">:</span><span class="n">p</span><span class="p">(</span><span class="nb">NULL</span><span class="p">){}</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Expr</span><span class="p">);</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="n">Expr</span><span class="p">);</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="n">Expr</span><span class="p">);</span>
-</span><span class="line">        <span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span> <span class="n">p</span> <span class="o">=</span> <span class="n">t</span><span class="p">.</span><span class="n">p</span><span class="p">;</span> <span class="o">++</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span><span class="p">;</span> <span class="p">};</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Expr</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">        <span class="o">~</span><span class="n">Expr</span><span class="p">()</span> <span class="p">{</span> <span class="k">if</span><span class="p">(</span><span class="o">--</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">delete</span> <span class="n">p</span><span class="p">;}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">eval</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span><span class="k">return</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="n">ostream</span><span class="o">&amp;</span>
-</span><span class="line"><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr_node</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">e</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">o</span><span class="p">);</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">o</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Expr</span><span class="o">&amp;</span>
-</span><span class="line"><span class="n">Expr</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">rhs</span><span class="p">.</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span><span class="o">++</span><span class="p">;</span>
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="o">--</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">delete</span> <span class="n">p</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
-</span><span class="line">    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">ostream</span><span class="o">&amp;</span>
-</span><span class="line"><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">.</span><span class="n">p</span><span class="p">);</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">o</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Int_node</span><span class="o">:</span> <span class="k">public</span> <span class="n">Expr_node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Expr</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">Int_node</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="p">)</span><span class="o">:</span> <span class="n">n</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="n">n</span><span class="p">;}</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">eval</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">n</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Unary_node</span><span class="o">:</span> <span class="k">public</span> <span class="n">Expr_node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Expr</span><span class="p">;</span>
-</span><span class="line">    <span class="n">string</span> <span class="n">op</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Expr</span> <span class="n">opnd</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Unary_node</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">opnd</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;(&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">op</span> <span class="o">&lt;&lt;</span> <span class="n">opnd</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;)&quot;</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">int</span> <span class="n">eval</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="s">&quot;-&quot;</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="k">return</span> <span class="o">-</span><span class="n">opnd</span><span class="p">.</span><span class="n">eval</span><span class="p">();</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">throw</span> <span class="s">&quot;error, bad op&quot;</span> <span class="o">+</span> <span class="n">op</span> <span class="o">+</span> <span class="s">&quot;int UnaryNode&quot;</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Binary_node</span><span class="o">:</span> <span class="k">public</span> <span class="n">Expr_node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Expr</span><span class="p">;</span>
-</span><span class="line">    <span class="n">string</span> <span class="n">op</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">Expr</span> <span class="n">left</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Expr</span> <span class="n">right</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">Binary_node</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">b</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">c</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">left</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">right</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;(&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">left</span> <span class="o">&lt;&lt;</span> <span class="n">op</span> <span class="o">&lt;&lt;</span> <span class="n">right</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;)&quot;</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">int</span> <span class="n">eval</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">op1</span> <span class="o">=</span> <span class="n">left</span><span class="p">.</span><span class="n">eval</span><span class="p">();</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">op2</span> <span class="o">=</span> <span class="n">right</span><span class="p">.</span><span class="n">eval</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="s">&quot;-&quot;</span><span class="p">)</span> <span class="k">return</span> <span class="n">op1</span> <span class="o">-</span> <span class="n">op2</span><span class="p">;</span>
-</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="s">&quot;+&quot;</span><span class="p">)</span> <span class="k">return</span> <span class="n">op1</span> <span class="o">+</span> <span class="n">op2</span><span class="p">;</span>
-</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="s">&quot;*&quot;</span><span class="p">)</span> <span class="k">return</span> <span class="n">op1</span> <span class="o">*</span> <span class="n">op2</span><span class="p">;</span>
-</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="s">&quot;/&quot;</span><span class="p">)</span> <span class="k">return</span> <span class="n">op1</span> <span class="o">/</span> <span class="n">op2</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="s">&quot;/&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">op2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="n">op1</span><span class="o">/</span> <span class="n">op2</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">throw</span> <span class="s">&quot;error, bad op&quot;</span> <span class="o">+</span> <span class="n">op</span> <span class="o">+</span> <span class="s">&quot;int BinaryNode&quot;</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Ternary_node</span><span class="o">:</span><span class="k">public</span> <span class="n">Expr_node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Expr</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">string</span> <span class="n">op</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Expr</span> <span class="n">left</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Expr</span> <span class="n">middle</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Expr</span> <span class="n">right</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">Ternary_node</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">b</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">c</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">d</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">left</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">middle</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">right</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">eval</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Ternary_node</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;(&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">left</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; ? &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">middle</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;:&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">right</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;)&quot;</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">Ternary_node</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">left</span><span class="p">.</span><span class="n">eval</span><span class="p">())</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">return</span> <span class="n">middle</span><span class="p">.</span><span class="n">eval</span><span class="p">();</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="k">else</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">return</span> <span class="n">right</span><span class="p">.</span><span class="n">eval</span><span class="p">();</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Expr</span><span class="o">::</span><span class="n">Expr</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Int_node</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Expr</span><span class="o">::</span><span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">op</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">t</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Unary_node</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Expr</span><span class="o">::</span><span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">op</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">left</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">right</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Binary_node</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Expr</span><span class="o">::</span><span class="n">Expr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">op</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">left</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">middle</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">right</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Ternary_node</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">middle</span><span class="p">,</span> <span class="n">right</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Expr</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Expr</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span> <span class="n">Expr</span><span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">Expr</span><span class="p">(</span><span class="s">&quot;+&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">t</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">t</span><span class="p">.</span><span class="n">eval</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">t</span> <span class="o">=</span> <span class="n">Expr</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">t</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">t</span><span class="p">.</span><span class="n">eval</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">t</span> <span class="o">=</span> <span class="n">Expr</span><span class="p">(</span><span class="s">&quot;?&quot;</span><span class="p">,</span><span class="n">Expr</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">Expr</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">Expr</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">t</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">t</span><span class="p">.</span><span class="n">eval</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_19/output2.png" alt="images" /></p>
-
-<hr />
-<p>Photo by Zhouyin in ShangHai, China</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_19/me.png" alt="images" /></p>
 ]]></content>
   </entry>
   

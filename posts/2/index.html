@@ -9,7 +9,7 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="K-Means is a classical unsupervised clustering Learning Algorithm. The detail of the theory about K-Means that you can find it in Wikipedia. Now I &hellip;">
+  <meta name="description" content="Preparation Rules of Object in Python. Firt glance at the implementation. Initialization of PyIntObject Insert and Delete Time for Hacking Extention &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +68,71 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/02/03/memory-model-of-int-object-in-python/">Int Object in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-02-03T00:56:31+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>12:56 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#preparation" id="markdown-toc-preparation">Preparation</a></li>
+  <li><a href="#rules-of-object-in-python" id="markdown-toc-rules-of-object-in-python">Rules of Object in Python.</a></li>
+  <li><a href="#firt-glance-at-the-implementation" id="markdown-toc-firt-glance-at-the-implementation">Firt glance at the implementation.</a></li>
+  <li><a href="#initialization-of-pyintobject" id="markdown-toc-initialization-of-pyintobject">Initialization of PyIntObject</a></li>
+  <li><a href="#insert-and-delete" id="markdown-toc-insert-and-delete">Insert and Delete</a></li>
+  <li><a href="#time-for-hacking" id="markdown-toc-time-for-hacking">Time for Hacking</a></li>
+  <li><a href="#extention-reading" id="markdown-toc-extention-reading">Extention reading</a></li>
+</ul>
+
+<h3 id="preparation">Preparation</h3>
+
+<p>Here, we are goint to analysis how Python deal with <code>Int Object</code> in itself.</p>
+
+<p>First of all, we should have a environment which help us to explore the detail of the implementation in <code>Python 2.7</code>. At the same time, our operation shouldn’t influence the origianl Python in your workstation, if you have install Python before.</p>
+
+<p>You can get the source code from offical website of Python. And you will find that there have a file <code>configure</code> in the directory of the source.</p>
+
+<p><em>In the file configure, you can replace all string ‘Python’ with ‘pyLab’. And then move all file prefix with <code>Python</code> into <code>pyLab</code>(mainly in directory Misc/ and Modules)</em></p>
+
+<p>Don’t forget to run the configuration file – configure with the option <code>--prefix=Location where you want the Python which is for lab to install </code></p>
+
+<p>Finally, just run <code>make &amp; make install</code></p>
+
+<p>Repeat myself again, the reason that I move all ‘Python’ into ‘pyLab’ is all for making a difference with the original instance which is official and it shouldn’t be influence by any operation from us.</p>
+
+<h3 id="rules-of-object-in-python">Rules of Object in Python.</h3>
+
+<ul>
+  <li>Objects are structures allocated on the heap.</li>
+  <li>Objects are never allocated statically or on the stack; they must be accessed through special macros and functions only.</li>
+</ul>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/02/03/memory-model-of-int-object-in-python/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -208,7 +273,7 @@ concept in machine learning – <code>Boosting</code>.</p>
 
 <p>Give the input training samples which have tag with it.</p>
 
-<p><img src="/images/img_for_2015_12_13/equation.png" alt="images" /></p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/equation.png" align="middle" /> </div>
 
 <p>where x[i] is the feature of the i-th sample point and y[i] is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
 
@@ -216,7 +281,13 @@ concept in machine learning – <code>Boosting</code>.</p>
 
 <p>Some classifier like decision tree also can work correctly about classification. But it’s also easy to overfitting. So, we can’t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which’s depth is only one. So we call it as <code>decision stump</code>.</p>
 
-<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting. It combine some weaker classifier into a stronger classifier to avoid overfitting.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/stump.png" align="middle" /> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/weakClassifier.png" align="middle" /> </div>
+
+<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting.</p>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/AdaBoost.png" align="middle" /> </div>
 
 <p>Test case:</p>
 
@@ -254,13 +325,35 @@ concept in machine learning – <code>Boosting</code>.</p>
 
 <p><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Adaboost">Implementation of Adaboost in Python</a></p>
 
-<p>You can check the validity of my implementation by the accuracy.</p>
+<p>There is an <a href="http://cs229.stanford.edu/extra-notes/boosting.pdf">assignment</a> about AdaBoost in Stanford CS 229, which will ask student to implement stump booster. But I don’t really understand the skeleton of that source code. I think there must be something worng with that matlab script <code>stump_booster.m</code>. The week classifier can’t lost the direction information.</p>
 
-<p><img src="/images/img_for_2015_12_13/samples2.png" alt="images" /></p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="matlab"><span class="line"><span class="c">%%% !!! Don&#39;t forget the important variable -- direction</span>
+</span><span class="line">
+</span><span class="line"><span class="n">API</span> <span class="n">given</span> <span class="n">by</span> <span class="n">the</span> <span class="n">course</span> <span class="n">materials</span><span class="p">:</span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[ind, thresh] <span class="p">=</span><span class="w"> </span><span class="nf">find_best_threshold</span><span class="p">(</span>X, y, p_dist<span class="p">)</span><span class="w"></span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[theta, feature_inds, thresholds] <span class="p">=</span><span class="w"> </span><span class="nf">stump_booster</span><span class="p">(</span>X, y, T<span class="p">)</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="n">API</span> <span class="n">of</span> <span class="n">my</span> <span class="n">solution</span><span class="p">:</span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[ind, thresh, direction] <span class="p">=</span><span class="w"> </span><span class="nf">find_best_threshold</span><span class="p">(</span>X, y, p_dist<span class="p">)</span><span class="w"></span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[theta, feature_inds, thresholds, directions] <span class="p">=</span><span class="w"> </span><span class="nf">stump_booster</span><span class="p">(</span>X, y, T<span class="p">)</span><span class="w"></span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>The data used to train the weaker classifier and get that accuracy is showed below there :</p>
+<p>Run <code>boost_example.m</code>, you will see the <strong>classifier line</strong> with different iteration.</p>
 
-<p><img src="/images/img_for_2015_12_13/accuracy.png" alt="images" /></p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter2.jpg" width="400" height="400" align="middle" /> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter5.jpg" width="400" height="400" align="middle" /> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter10.jpg" width="400" height="400" align="middle" /> </div>
 
 <h3 id="boosting-tree">Boosting Tree</h3>
 
@@ -617,50 +710,6 @@ concept in machine learning – <code>Boosting</code>.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/05/19/an-example-for-oop-in-c-plus-plus/">An Example for OOP in C++</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-05-19T23:13:08+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:13 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Generally, OOP( Object Oriented Progarmming) have three important elements:</p>
-
-<ul>
-  <li>Abstraction of data</li>
-  <li>Inheritance</li>
-  <li>Dynamic Binding</li>
-</ul>
-
-<p>Now, there is a demo for how to build an arithmetic expression-tree.</p>
-
-<p><img src="/images/img_for_2015_05_19/exp_tree.png" alt="images" /></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/05/19/an-example-for-oop-in-c-plus-plus/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -684,6 +733,10 @@ Hello, world
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/06/14/great-ideas-in-object-oriented-programming/">Great Ideas in Object Oriented Programming</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a>
       </li>
     
@@ -699,10 +752,6 @@ Hello, world
         <a href="/blog/2016/02/22/exception-control-in-python/">Exception Control in Python</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/02/21/architecture-of-python-virtual-machine/">Architecture of Python Virtual Machine</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -714,7 +763,7 @@ Hello, world
 <li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
 <li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
 <li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
-<li class='category'><a href='/blog/categories/imageprocessing/'>imageprocessing (1)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
 <li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
 <li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (4)</a></li>
 <li class='category'><a href='/blog/categories/opencv/'>opencv (1)</a></li>

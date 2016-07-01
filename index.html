@@ -9,7 +9,7 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="Platform: Linux/Ubuntu Preparation: You may have to prepare two different types of images for training a Binary Classifier Model, the positive &hellip;">
+  <meta name="description" content="Encapsulation Composition, inheritance, and delegation Warning of using inheritance Polymophsim OOP Design Object-oriented programming (OOP) is a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,6 +74,62 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2016/06/14/great-ideas-in-object-oriented-programming/">Great Ideas in Object Oriented Programming</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-06-14T12:49:00+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:49 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#encapsulation" id="markdown-toc-encapsulation">Encapsulation</a></li>
+  <li><a href="#composition-inheritance-and-delegation" id="markdown-toc-composition-inheritance-and-delegation">Composition, inheritance, and delegation</a>    <ul>
+      <li><a href="#warning-of-using-inheritance" id="markdown-toc-warning-of-using-inheritance">Warning of using inheritance</a></li>
+    </ul>
+  </li>
+  <li><a href="#polymophsim" id="markdown-toc-polymophsim">Polymophsim</a></li>
+  <li><a href="#oop-design" id="markdown-toc-oop-design">OOP Design</a></li>
+</ul>
+
+<blockquote>
+  <p>Object-oriented programming (OOP) is a programming paradigm based on the concept of “objects”, which may contain data, in the form of fields, often known as attributes; and code, in the form of procedures, often known as methods. – <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">Wikipedia</a></p>
+</blockquote>
+
+<p>OOP is just a programming paradigm and it helps programmer to build more robust and implement more abstract concept which are needed in their project.OOP isn’t the treasure which only belongs to a special programming language. It offer a way to make the problem more easy to be understood and to be solved.</p>
+
+<p>There are three gread ideas in OOP.</p>
+
+<ul>
+  <li>Encapsulation</li>
+  <li>Composition, inheritance, and delegation</li>
+  <li>Polymophsim</li>
+</ul>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/06/14/great-ideas-in-object-oriented-programming/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a></h1>
     
     
@@ -98,140 +154,12 @@
 
 <p>Here, we gona to use image database from <strong>UIUC Image Database for Car Detection</strong> to demonstrate how to use OpenCV to detection cars in a image.</p>
 
-<p>User should put all positive samples which have the same size into a directory.</p>
-
-<pre><code>ls ./pos &gt; ./pos_list.info
-ls ./neg &gt; ./neg_list.info
-</code></pre>
-
-<p>Open <code>pos_list.info</code> and you will see the path of images have been written into the info file.</p>
-
-<p><img src="/images/img_for_2016_05_19/files.png" alt="images" /></p>
-
-<p>But it isn’t enough. To train the cascade with OpenCV, you should supply with the information where is the object in the image. In this demo, what we want to detect is a car. The information that OpenCV need like this: <code>image_path num x y w h</code>, which should be append at the end of the path of a image.</p>
-
-<p><code>x y w h</code> describe a rectangle which identify where is the object that we want to find. <code>num</code> describe how many objects in the rectangle.</p>
-
-<p>So, I write a script in Python and this script will help to finish that job.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="p">[</span><span class="n">trans_pos_location</span><span class="o">.</span><span class="n">py</span><span class="p">]</span>
-</span><span class="line"><span class="n">fileObj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./pos_list.info&quot;</span><span class="p">)</span>
-</span><span class="line"><span class="n">newFile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./pos_list_new.info&quot;</span><span class="p">,</span> <span class="s">&quot;a+&quot;</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileObj</span><span class="p">:</span>
-</span><span class="line">    <span class="n">newFile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;./pos/&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot; 1 0 0 100 40</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="n">fileObj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class="line"><span class="n">newFile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class="line">
-</span><span class="line"><span class="p">[</span><span class="n">trans_neg_location</span><span class="o">.</span><span class="n">py</span><span class="p">]</span>
-</span><span class="line"><span class="kn">import</span> <span class="nn">os</span>
-</span><span class="line">
-</span><span class="line"><span class="n">fileObj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./neg_list.info&quot;</span><span class="p">)</span>
-</span><span class="line"><span class="n">newFile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./neg_list_new.info&quot;</span><span class="p">,</span> <span class="s">&quot;a+&quot;</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileObj</span><span class="p">:</span>
-</span><span class="line">    <span class="n">newFile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;/neg/&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="n">fileObj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class="line"><span class="n">newFile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Run the following comand:</p>
-
-<pre><code>opencv_createsamples -info pos_list_new.info -num 550 -w 48 -h 24 -vec cars.vec
-
-opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -numNeg 500 -numStages 2 -w 48 -h 24
-</code></pre>
-
-<p><code>opencv_createsamples</code> and <code>opencv_traincascade</code> are two tool program with OpenCV. The original positive samples for training are images with 100x40 pixels. For the training process, it will cost a lot of memory, so we resize it into smaller one. With that command, <code>-w 48 -h 24</code>, positive images are resized into smaller images which’s width is 48 pixels and the height of that is 24 pixels.</p>
-
-<p>Here, we can use this script to test the model that we get.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">cv2</span>
-</span><span class="line"><span class="kn">import</span> <span class="nn">numpy</span>
-</span><span class="line"><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">image</span>
-</span><span class="line">
-</span><span class="line"><span class="n">car_cascade</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CascadeClassifier</span><span class="p">(</span><span class="s">&quot;/home/jasonleaster/Desktop/CarData/TrainImages/data/cascade.xml&quot;</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="n">gray</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">&quot;/home/jasonleaster/Desktop/CarData/TestImages_Scale/test-1.pgm&quot;</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="n">faces</span> <span class="o">=</span> <span class="n">car_cascade</span><span class="o">.</span><span class="n">detectMultiScale</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span>
-</span><span class="line">                                    <span class="n">scaleFactor</span> <span class="o">=</span> <span class="mf">1.3</span><span class="p">,</span>
-</span><span class="line">                                    <span class="n">minNeighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-</span><span class="line">                                    <span class="n">minSize</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span>
-</span><span class="line">                                    <span class="n">flags</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cv</span><span class="o">.</span><span class="n">CV_HAAR_SCALE_IMAGE</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="n">img</span> <span class="o">=</span> <span class="n">gray</span>
-</span><span class="line">
-</span><span class="line"><span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
-</span><span class="line">    <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">w</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">h</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
-</span><span class="line"><span class="kn">import</span> <span class="nn">pylab</span>
-</span><span class="line"><span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s">&quot;gray&quot;</span><span class="p">)</span>
-</span><span class="line"><span class="n">pylab</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Result:</p>
-
-<p><img src="/images/img_for_2016_05_19/detected_car1.png" alt="images" /></p>
-
-<p>Reference:
-1. http://blog.csdn.net/wuxiaoyao12/article/details/39227189
-2. www.youtube.com/watch?v=WEzm7L5zoZE</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/05/19/training-cascade-with-opencv/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -661,71 +589,6 @@ Think of “y = f(x)” or “h = f * g”</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/02/03/memory-model-of-int-object-in-python/">Int Object in Python</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-02-03T00:56:31+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>12:56 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul id="markdown-toc">
-  <li><a href="#preparation" id="markdown-toc-preparation">Preparation</a></li>
-  <li><a href="#rules-of-object-in-python" id="markdown-toc-rules-of-object-in-python">Rules of Object in Python.</a></li>
-  <li><a href="#firt-glance-at-the-implementation" id="markdown-toc-firt-glance-at-the-implementation">Firt glance at the implementation.</a></li>
-  <li><a href="#initialization-of-pyintobject" id="markdown-toc-initialization-of-pyintobject">Initialization of PyIntObject</a></li>
-  <li><a href="#insert-and-delete" id="markdown-toc-insert-and-delete">Insert and Delete</a></li>
-  <li><a href="#time-for-hacking" id="markdown-toc-time-for-hacking">Time for Hacking</a></li>
-  <li><a href="#extention-reading" id="markdown-toc-extention-reading">Extention reading</a></li>
-</ul>
-
-<h3 id="preparation">Preparation</h3>
-
-<p>Here, we are goint to analysis how Python deal with <code>Int Object</code> in itself.</p>
-
-<p>First of all, we should have a environment which help us to explore the detail of the implementation in <code>Python 2.7</code>. At the same time, our operation shouldn’t influence the origianl Python in your workstation, if you have install Python before.</p>
-
-<p>You can get the source code from offical website of Python. And you will find that there have a file <code>configure</code> in the directory of the source.</p>
-
-<p><em>In the file configure, you can replace all string ‘Python’ with ‘pyLab’. And then move all file prefix with <code>Python</code> into <code>pyLab</code>(mainly in directory Misc/ and Modules)</em></p>
-
-<p>Don’t forget to run the configuration file – configure with the option <code>--prefix=Location where you want the Python which is for lab to install </code></p>
-
-<p>Finally, just run <code>make &amp; make install</code></p>
-
-<p>Repeat myself again, the reason that I move all ‘Python’ into ‘pyLab’ is all for making a difference with the original instance which is official and it shouldn’t be influence by any operation from us.</p>
-
-<h3 id="rules-of-object-in-python">Rules of Object in Python.</h3>
-
-<ul>
-  <li>Objects are structures allocated on the heap.</li>
-  <li>Objects are never allocated statically or on the stack; they must be accessed through special macros and functions only.</li>
-</ul>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/02/03/memory-model-of-int-object-in-python/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -747,6 +610,10 @@ Hello, world
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/06/14/great-ideas-in-object-oriented-programming/">Great Ideas in Object Oriented Programming</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a>
       </li>
     
@@ -762,10 +629,6 @@ Hello, world
         <a href="/blog/2016/02/22/exception-control-in-python/">Exception Control in Python</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/02/21/architecture-of-python-virtual-machine/">Architecture of Python Virtual Machine</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -777,7 +640,7 @@ Hello, world
 <li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
 <li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
 <li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
-<li class='category'><a href='/blog/categories/imageprocessing/'>imageprocessing (1)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
 <li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
 <li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (4)</a></li>
 <li class='category'><a href='/blog/categories/opencv/'>opencv (1)</a></li>

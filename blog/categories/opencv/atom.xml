@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Opencv | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/opencv/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-05-19T23:16:08+08:00</updated>
+  <updated>2016-07-01T13:07:56+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -25,6 +25,8 @@
 <p>You may have to prepare two different types of images for training a <code>Binary Classifier Model</code>, the positive samples and the negative samples.</p>
 
 <p>Here, we gona to use image database from <strong>UIUC Image Database for Car Detection</strong> to demonstrate how to use OpenCV to detection cars in a image.</p>
+
+<!-- more -->
 
 <p>User should put all positive samples which have the same size into a directory.</p>
 

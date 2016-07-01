@@ -108,7 +108,7 @@ concept in machine learning – <code>Boosting</code>.</p>
 
 <p>Give the input training samples which have tag with it.</p>
 
-<p><img src="/images/img_for_2015_12_13/equation.png" alt="images" /></p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/equation.png" align="middle" /> </div>
 
 <p>where x[i] is the feature of the i-th sample point and y[i] is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
 
@@ -116,7 +116,13 @@ concept in machine learning – <code>Boosting</code>.</p>
 
 <p>Some classifier like decision tree also can work correctly about classification. But it’s also easy to overfitting. So, we can’t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which’s depth is only one. So we call it as <code>decision stump</code>.</p>
 
-<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting. It combine some weaker classifier into a stronger classifier to avoid overfitting.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/stump.png" align="middle" /> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/weakClassifier.png" align="middle" /> </div>
+
+<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting.</p>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/AdaBoost.png" align="middle" /> </div>
 
 <p>Test case:</p>
 
@@ -154,13 +160,35 @@ concept in machine learning – <code>Boosting</code>.</p>
 
 <p><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Adaboost">Implementation of Adaboost in Python</a></p>
 
-<p>You can check the validity of my implementation by the accuracy.</p>
+<p>There is an <a href="http://cs229.stanford.edu/extra-notes/boosting.pdf">assignment</a> about AdaBoost in Stanford CS 229, which will ask student to implement stump booster. But I don’t really understand the skeleton of that source code. I think there must be something worng with that matlab script <code>stump_booster.m</code>. The week classifier can’t lost the direction information.</p>
 
-<p><img src="/images/img_for_2015_12_13/samples2.png" alt="images" /></p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="matlab"><span class="line"><span class="c">%%% !!! Don&#39;t forget the important variable -- direction</span>
+</span><span class="line">
+</span><span class="line"><span class="n">API</span> <span class="n">given</span> <span class="n">by</span> <span class="n">the</span> <span class="n">course</span> <span class="n">materials</span><span class="p">:</span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[ind, thresh] <span class="p">=</span><span class="w"> </span><span class="nf">find_best_threshold</span><span class="p">(</span>X, y, p_dist<span class="p">)</span><span class="w"></span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[theta, feature_inds, thresholds] <span class="p">=</span><span class="w"> </span><span class="nf">stump_booster</span><span class="p">(</span>X, y, T<span class="p">)</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="n">API</span> <span class="n">of</span> <span class="n">my</span> <span class="n">solution</span><span class="p">:</span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[ind, thresh, direction] <span class="p">=</span><span class="w"> </span><span class="nf">find_best_threshold</span><span class="p">(</span>X, y, p_dist<span class="p">)</span><span class="w"></span>
+</span><span class="line"><span class="k">function</span><span class="w"> </span>[theta, feature_inds, thresholds, directions] <span class="p">=</span><span class="w"> </span><span class="nf">stump_booster</span><span class="p">(</span>X, y, T<span class="p">)</span><span class="w"></span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>The data used to train the weaker classifier and get that accuracy is showed below there :</p>
+<p>Run <code>boost_example.m</code>, you will see the <strong>classifier line</strong> with different iteration.</p>
 
-<p><img src="/images/img_for_2015_12_13/accuracy.png" alt="images" /></p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter2.jpg" width="400" height="400" align="middle" /> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter5.jpg" width="400" height="400" align="middle" /> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter10.jpg" width="400" height="400" align="middle" /> </div>
 
 <h3 id="boosting-tree">Boosting Tree</h3>
 
@@ -299,6 +327,10 @@ concept in machine learning – <code>Boosting</code>.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/06/14/great-ideas-in-object-oriented-programming/">Great Ideas in Object Oriented Programming</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a>
       </li>
     
@@ -314,10 +346,6 @@ concept in machine learning – <code>Boosting</code>.</p>
         <a href="/blog/2016/02/22/exception-control-in-python/">Exception Control in Python</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/02/21/architecture-of-python-virtual-machine/">Architecture of Python Virtual Machine</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -329,7 +357,7 @@ concept in machine learning – <code>Boosting</code>.</p>
 <li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
 <li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
 <li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
-<li class='category'><a href='/blog/categories/imageprocessing/'>imageprocessing (1)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
 <li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
 <li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (4)</a></li>
 <li class='category'><a href='/blog/categories/opencv/'>opencv (1)</a></li>
