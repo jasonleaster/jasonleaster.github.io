@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithm | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-08-13T16:55:58+08:00</updated>
+  <updated>2016-08-25T00:18:15+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,187 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Search Algorithm in Graph]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/08/24/search-algorithm-in-graph/"/>
+    <updated>2016-08-24T20:46:43+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/08/24/search-algorithm-in-graph</id>
+    <content type="html"><![CDATA[<p>Searching in a graph is the one of the most popular topic in CS.</p>
+
+<p>In this article, I would like to make a summary about what algorithms for searching in graphes.</p>
+
+<h3 id="presentation-of-graph">1. Presentation of Graph</h3>
+
+<ul>
+  <li>Adjacency Matrix</li>
+  <li>Adjacency List</li>
+</ul>
+
+<p>What is better, adjacency lists or adjacency matrices for graph problem ?</p>
+
+<p>It depends on the problem.</p>
+
+<p>An adjacency matrix uses <code>O(n*n)</code> memory. It has fast lookups to check for presence or absence of a specific edge, but slow to iterate over all edges.</p>
+
+<p>Adjacency lists use memory in proportion to the number edges, which might save a lot of memory if the adjacency matrix is sparse. It is fast to iterate over all edges, but finding the presence or absence specific edge is slightly slower than with the matrix.</p>
+
+<p><strong>In this article, I would like to use adjacency matrix to represent the graph in our problems. I want to express the essential idea in algorithms but not the programming language grammer. So all implementation of algorithm will be written in Python.</strong></p>
+
+<p>We will try to use different ways to solve the demo problem. Here is the graph which we will use in this article.</p>
+
+<p><img src="/images/img_for_2016_08/graph.jpg" alt="images" /></p>
+
+<p>The corresponding adjacency matrix:</p>
+
+<p>``` python</p>
+
+<p>INF = float(‘inf’)
+graph = [
+[INF,   7,   9, INF, INF,  14],
+[  7, INF,  10,  15, INF, INF],
+[  9,  19, INF,  11, INF,   2],
+[INF,  15,  11, INF,   6, INF],
+[INF, INF, INF,   6, INF,   9],
+[ 14, INF,   2, INF,   9, INF]
+]</p>
+
+<p>```</p>
+
+<h3 id="bfs-breadth-first-search">2. BFS Breadth First Search</h3>
+
+<p>Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. It starts at the tree root (or some arbitrary node of a graph, sometimes referred to as a ‘search key’) and explores the neighbor nodes first, before moving to the next level neighbors.</p>
+
+<p>``` python</p>
+
+<p>def BFS(matrix, start, end):
+    size = len(matrix)
+    visited = [start]
+    Q = [ [start] ]
+    path = [] # possible solution, @path is a nested list [[] …]</p>
+
+<pre><code>while len(Q) != 0:
+    path = Q.pop(0)
+    curNode = path[-1]
+
+    if curNode == end:
+        return path # the solution
+
+    neighbors = []
+    for i in xrange(size):
+        if matrix[curNode][i] != INF:
+        neighbors.append(i)
+
+    # to find the neighbors who are unvisited
+    i = 0
+    while i &lt; len(neighbors):
+        if neighbors[i] in visited:
+            neighbors.remove(neighbors[i])
+        else:
+            i += 1
+
+    #add unvisited neighbor into visited line.
+    for i in neighbors:
+        visited.append(i)
+        Q.append(path + [i])
+
+return None
+</code></pre>
+
+<p>```</p>
+
+<h3 id="dfs-depth-first-search">DFS Depth First Search</h3>
+
+<p>Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. One starts at the root (selecting some arbitrary node as the root in the case of a graph) and explores as far as possible along each branch before backtracking.</p>
+
+<p><img src="/images/img_for_2016_08/pathForDFS.jpg" alt="images" /></p>
+
+<p>```</p>
+
+<h6 id="pesudo-code">###############  Pesudo Code</h6>
+<p>Input: A graph G and a vertex v of G</p>
+
+<p>Output: All vertices reachable from v labeled as discovered</p>
+
+<hr />
+<p>A recursive implementation of DFS:
+———————————————————–
+procedure DFS(G,v):</p>
+
+<pre><code>label v as discovered
+for all edges from v to w in G.adjacentEdges(v) do
+    if vertex w is not labeled as discovered then
+        recursively call DFS(G,w)
+</code></pre>
+
+<hr />
+<p>A non-recursive implementation of DFS:
+————————————————————</p>
+
+<p>procedure DFS-iterative(G,v):
+    let S be a stack
+    S.push(v)
+    while S is not empty
+        v = S.pop()
+        if v is not labeled as discovered:
+            label v as discovered
+            for all edges from v to w in G.adjacentEdges(v) do
+                 S.push(w)</p>
+
+<p>```</p>
+
+<h3 id="foly">Foly</h3>
+
+<h3 id="shortest-path-search-dijkastra">Shortest Path Search (Dijkastra)</h3>
+
+<p><img src="/images/img_for_2016_08/pathForDijkastra.jpg" alt="images" /></p>
+
+<p>```</p>
+
+<h6 id="pesudo-code-1">###############  Pesudo Code</h6>
+
+<p>function Dijkstra(Graph, source):</p>
+
+<pre><code>  create vertex set Q
+
+  for each vertex v in Graph:             // Initialization
+      dist[v] ← INFINITY                  // Unknown distance from source to v
+      prev[v] ← UNDEFINED                 // Previous node in optimal path from source
+      add v to Q                          // All nodes initially in Q (unvisited nodes)
+
+  dist[source] ← 0                        // Distance from source to source
+  
+  while Q is not empty:
+      u ← vertex in Q with min dist[u]    // Source node will be selected first
+      remove u from Q 
+      
+      for each neighbor v of u:           // where v is still in Q.
+          alt ← dist[u] + length(u, v)
+          if alt &lt; dist[v]:               // A shorter path to v has been found
+              dist[v] ← alt 
+              prev[v] ← u 
+
+  return dist[], prev[]
+</code></pre>
+
+<p>```</p>
+
+<p>Extention:</p>
+
+<p>I will recommend you to finish the lab2 in 6.034</p>
+
+<p>https://github.com/jasonleaster/MIT_6.034_2015/tree/master/lab2</p>
+
+<p>This article does not finished and will be update these days :)</p>
+
+<p>You can get my implementation on <a href="https://github.com/jasonleaster/Algorithm/blob/master/Graph/Dijkstra/Python/Dijkastra.py">github</a></p>
+
+<hr />
+<p>Photo by Annabella in ChongQin, China
+<img src="/images/img_for_2016_08/zhuanyunlou.png" alt="images" /></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Binary Search Tree]]></title>

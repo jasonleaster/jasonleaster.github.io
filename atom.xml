@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-08-13T16:55:58+08:00</updated>
+  <updated>2016-08-25T00:15:57+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,265 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Search Algorithm in Graph]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/08/24/search-algorithm-in-graph/"/>
+    <updated>2016-08-24T20:46:43+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/08/24/search-algorithm-in-graph</id>
+    <content type="html"><![CDATA[<p>Searching in a graph is the one of the most popular topic in CS.</p>
+
+<p>In this article, I would like to make a summary about what algorithms for searching in graphes.</p>
+
+<h3 id="presentation-of-graph">1. Presentation of Graph</h3>
+
+<ul>
+  <li>Adjacency Matrix</li>
+  <li>Adjacency List</li>
+</ul>
+
+<p>What is better, adjacency lists or adjacency matrices for graph problem ?</p>
+
+<p>It depends on the problem.</p>
+
+<p>An adjacency matrix uses <code>O(n*n)</code> memory. It has fast lookups to check for presence or absence of a specific edge, but slow to iterate over all edges.</p>
+
+<p>Adjacency lists use memory in proportion to the number edges, which might save a lot of memory if the adjacency matrix is sparse. It is fast to iterate over all edges, but finding the presence or absence specific edge is slightly slower than with the matrix.</p>
+
+<p><strong>In this article, I would like to use adjacency matrix to represent the graph in our problems. I want to express the essential idea in algorithms but not the programming language grammer. So all implementation of algorithm will be written in Python.</strong></p>
+
+<p>We will try to use different ways to solve the demo problem. Here is the graph which we will use in this article.</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_08/graph.jpg" alt="images" /></p>
+
+<p>The corresponding adjacency matrix:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">INF</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s">&#39;inf&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">graph</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class="line"><span class="p">[</span><span class="n">INF</span><span class="p">,</span>   <span class="mi">7</span><span class="p">,</span>   <span class="mi">9</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span>  <span class="mi">14</span><span class="p">],</span>
+</span><span class="line"><span class="p">[</span>  <span class="mi">7</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span>  <span class="mi">10</span><span class="p">,</span>  <span class="mi">15</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span> <span class="n">INF</span><span class="p">],</span>
+</span><span class="line"><span class="p">[</span>  <span class="mi">9</span><span class="p">,</span>  <span class="mi">19</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span>  <span class="mi">11</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span>   <span class="mi">2</span><span class="p">],</span>
+</span><span class="line"><span class="p">[</span><span class="n">INF</span><span class="p">,</span>  <span class="mi">15</span><span class="p">,</span>  <span class="mi">11</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span>   <span class="mi">6</span><span class="p">,</span> <span class="n">INF</span><span class="p">],</span>
+</span><span class="line"><span class="p">[</span><span class="n">INF</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span>   <span class="mi">6</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span>   <span class="mi">9</span><span class="p">],</span>
+</span><span class="line"><span class="p">[</span> <span class="mi">14</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span>   <span class="mi">2</span><span class="p">,</span> <span class="n">INF</span><span class="p">,</span>   <span class="mi">9</span><span class="p">,</span> <span class="n">INF</span><span class="p">]</span>
+</span><span class="line"><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="bfs-breadth-first-search">2. BFS Breadth First Search</h3>
+
+<p>Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. It starts at the tree root (or some arbitrary node of a graph, sometimes referred to as a ‘search key’) and explores the neighbor nodes first, before moving to the next level neighbors.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">BFS</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+</span><span class="line">    <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+</span><span class="line">    <span class="n">visited</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span><span class="p">]</span>
+</span><span class="line">    <span class="n">Q</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="p">]</span>
+</span><span class="line">    <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span> <span class="c"># possible solution, @path is a nested list [[] ...]</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class="line">        <span class="n">path</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">        <span class="n">curNode</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="n">curNode</span> <span class="o">==</span> <span class="n">end</span><span class="p">:</span>
+</span><span class="line">            <span class="k">return</span> <span class="n">path</span> <span class="c"># the solution</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">neighbors</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+</span><span class="line">            <span class="k">if</span> <span class="n">matrix</span><span class="p">[</span><span class="n">curNode</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">INF</span><span class="p">:</span>
+</span><span class="line">            <span class="n">neighbors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">        <span class="c"># to find the neighbors who are unvisited</span>
+</span><span class="line">        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbors</span><span class="p">):</span>
+</span><span class="line">            <span class="k">if</span> <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+</span><span class="line">                <span class="n">neighbors</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class="line">            <span class="k">else</span><span class="p">:</span>
+</span><span class="line">                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line">
+</span><span class="line">        <span class="c">#add unvisited neighbor into visited line.</span>
+</span><span class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">:</span>
+</span><span class="line">            <span class="n">visited</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class="line">            <span class="n">Q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="bp">None</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="dfs-depth-first-search">DFS Depth First Search</h3>
+
+<p>Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. One starts at the root (selecting some arbitrary node as the root in the case of a graph) and explores as far as possible along each branch before backtracking.</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_08/pathForDFS.jpg" alt="images" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="c">#####################  Pesudo Code ########################</span>
+</span><span class="line"><span class="n">Input</span><span class="p">:</span> <span class="n">A</span> <span class="n">graph</span> <span class="n">G</span> <span class="ow">and</span> <span class="n">a</span> <span class="n">vertex</span> <span class="n">v</span> <span class="n">of</span> <span class="n">G</span>
+</span><span class="line">
+</span><span class="line"><span class="n">Output</span><span class="p">:</span> <span class="n">All</span> <span class="n">vertices</span> <span class="n">reachable</span> <span class="kn">from</span> <span class="nn">v</span> <span class="nn">labeled</span> <span class="nn">as</span> <span class="nn">discovered</span>
+</span><span class="line">
+</span><span class="line"><span class="o">-----------------------------------------------------------</span>
+</span><span class="line"><span class="n">A</span> <span class="n">recursive</span> <span class="n">implementation</span> <span class="n">of</span> <span class="n">DFS</span><span class="p">:</span>
+</span><span class="line"><span class="o">-----------------------------------------------------------</span>
+</span><span class="line"><span class="n">procedure</span> <span class="n">DFS</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">label</span> <span class="n">v</span> <span class="k">as</span> <span class="n">discovered</span>
+</span><span class="line">    <span class="k">for</span> <span class="nb">all</span> <span class="n">edges</span> <span class="kn">from</span> <span class="nn">v</span> <span class="nn">to</span> <span class="nn">w</span> <span class="nn">in</span> <span class="nn">G.adjacentEdges</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="n">do</span>
+</span><span class="line">        <span class="k">if</span> <span class="n">vertex</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">labeled</span> <span class="k">as</span> <span class="n">discovered</span> <span class="n">then</span>
+</span><span class="line">            <span class="n">recursively</span> <span class="n">call</span> <span class="n">DFS</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="o">------------------------------------------------------------</span>
+</span><span class="line"><span class="n">A</span> <span class="n">non</span><span class="o">-</span><span class="n">recursive</span> <span class="n">implementation</span> <span class="n">of</span> <span class="n">DFS</span><span class="p">:</span>
+</span><span class="line"><span class="o">------------------------------------------------------------</span>
+</span><span class="line">
+</span><span class="line"><span class="n">procedure</span> <span class="n">DFS</span><span class="o">-</span><span class="n">iterative</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+</span><span class="line">    <span class="n">let</span> <span class="n">S</span> <span class="n">be</span> <span class="n">a</span> <span class="n">stack</span>
+</span><span class="line">    <span class="n">S</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</span><span class="line">    <span class="k">while</span> <span class="n">S</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">empty</span>
+</span><span class="line">        <span class="n">v</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+</span><span class="line">        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">labeled</span> <span class="k">as</span> <span class="n">discovered</span><span class="p">:</span>
+</span><span class="line">            <span class="n">label</span> <span class="n">v</span> <span class="k">as</span> <span class="n">discovered</span>
+</span><span class="line">            <span class="k">for</span> <span class="nb">all</span> <span class="n">edges</span> <span class="kn">from</span> <span class="nn">v</span> <span class="nn">to</span> <span class="nn">w</span> <span class="nn">in</span> <span class="nn">G.adjacentEdges</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="n">do</span>
+</span><span class="line">                 <span class="n">S</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="foly">Foly</h3>
+
+<h3 id="shortest-path-search-dijkastra">Shortest Path Search (Dijkastra)</h3>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_08/pathForDijkastra.jpg" alt="images" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="c">#####################  Pesudo Code ########################</span>
+</span><span class="line">
+</span><span class="line"><span class="n">function</span> <span class="n">Dijkstra</span><span class="p">(</span><span class="n">Graph</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+</span><span class="line">
+</span><span class="line">      <span class="n">create</span> <span class="n">vertex</span> <span class="nb">set</span> <span class="n">Q</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">for</span> <span class="n">each</span> <span class="n">vertex</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">Graph</span><span class="p">:</span>             <span class="o">//</span> <span class="n">Initialization</span>
+</span><span class="line">          <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="err">←</span> <span class="n">INFINITY</span>                  <span class="o">//</span> <span class="n">Unknown</span> <span class="n">distance</span> <span class="kn">from</span> <span class="nn">source</span> <span class="nn">to</span> <span class="nn">v</span>
+</span><span class="line">          <span class="n">prev</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="err">←</span> <span class="n">UNDEFINED</span>                 <span class="o">//</span> <span class="n">Previous</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">optimal</span> <span class="n">path</span> <span class="kn">from</span> <span class="nn">source</span>
+</span><span class="line">          <span class="n">add</span> <span class="n">v</span> <span class="n">to</span> <span class="n">Q</span>                          <span class="o">//</span> <span class="n">All</span> <span class="n">nodes</span> <span class="n">initially</span> <span class="ow">in</span> <span class="n">Q</span> <span class="p">(</span><span class="n">unvisited</span> <span class="n">nodes</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">      <span class="n">dist</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="err">←</span> <span class="mi">0</span>                        <span class="o">//</span> <span class="n">Distance</span> <span class="kn">from</span> <span class="nn">source</span> <span class="nn">to</span> <span class="nn">source</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">while</span> <span class="n">Q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">empty</span><span class="p">:</span>
+</span><span class="line">          <span class="n">u</span> <span class="err">←</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">Q</span> <span class="k">with</span> <span class="nb">min</span> <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>    <span class="o">//</span> <span class="n">Source</span> <span class="n">node</span> <span class="n">will</span> <span class="n">be</span> <span class="n">selected</span> <span class="n">first</span>
+</span><span class="line">          <span class="n">remove</span> <span class="n">u</span> <span class="kn">from</span> <span class="nn">Q</span>
+</span><span class="line">
+</span><span class="line">          <span class="k">for</span> <span class="n">each</span> <span class="n">neighbor</span> <span class="n">v</span> <span class="n">of</span> <span class="n">u</span><span class="p">:</span>           <span class="o">//</span> <span class="n">where</span> <span class="n">v</span> <span class="ow">is</span> <span class="n">still</span> <span class="ow">in</span> <span class="n">Q</span><span class="o">.</span>
+</span><span class="line">              <span class="n">alt</span> <span class="err">←</span> <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">length</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+</span><span class="line">              <span class="k">if</span> <span class="n">alt</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>               <span class="o">//</span> <span class="n">A</span> <span class="n">shorter</span> <span class="n">path</span> <span class="n">to</span> <span class="n">v</span> <span class="n">has</span> <span class="n">been</span> <span class="n">found</span>
+</span><span class="line">                  <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="err">←</span> <span class="n">alt</span>
+</span><span class="line">                  <span class="n">prev</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="err">←</span> <span class="n">u</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">return</span> <span class="n">dist</span><span class="p">[],</span> <span class="n">prev</span><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Extention:</p>
+
+<p>I will recommend you to finish the lab2 in 6.034</p>
+
+<p>https://github.com/jasonleaster/MIT_6.034_2015/tree/master/lab2</p>
+
+<p>This article does not finished and will be update these days :)</p>
+
+<p>You can get my implementation on <a href="https://github.com/jasonleaster/Algorithm/blob/master/Graph/Dijkstra/Python/Dijkastra.py">github</a></p>
+
+<hr />
+<p>Photo by Annabella in ChongQin, China
+<img src="http://jasonleaster.github.io/images/img_for_2016_08/zhuanyunlou.png" alt="images" /></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Great Ideas in Object Oriented Programming]]></title>
@@ -5710,1452 +5969,6 @@ For example:</p>
 
 <p><img src="http://jasonleaster.github.io/images/img_for_2015_05_24/cherry_blossom.png" alt="images" /></p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[An Exercise of C++]]></title>
-    <link href="http://jasonleaster.github.io/blog/2015/05/24/an-exercise-of-c-plus-plus/"/>
-    <updated>2015-05-24T13:57:36+08:00</updated>
-    <id>http://jasonleaster.github.io/blog/2015/05/24/an-exercise-of-c-plus-plus</id>
-    <content type="html"><![CDATA[<p>In « The C++ Programming Language » , there is a exercise for learner who is studying C++. It’s that student should write a program in C++ to manipulate “character picture”, something like this.</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_24/output.png" alt="images" /></p>
-
-<!-- more -->
-
-<p>To abstract that picture, we use this <code>class Picture</code> in the header file.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*******************************************************</span>
-</span><span class="line"><span class="cm">Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">Date        :   2015.05.22</span>
-</span><span class="line"><span class="cm">File        :   picture.h</span>
-</span><span class="line"><span class="cm">E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">Description:</span>
-</span><span class="line"><span class="cm">    Here is a demo in &lt;&lt; Ruminations on C++ &gt;&gt;.</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">*******************************************************/</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;string.h&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Picture</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="cm">/*</span>
-</span><span class="line"><span class="cm">       All implementation of member function and friend functions</span>
-</span><span class="line"><span class="cm">       could be found in &quot;picture.cpp&quot;</span>
-</span><span class="line"><span class="cm">     */</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">Picture</span> <span class="nf">frame</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">Picture</span> <span class="k">operator</span> <span class="o">&amp;</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">Picture</span> <span class="k">operator</span> <span class="o">|</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Picture</span><span class="p">()</span><span class="o">:</span> <span class="n">height</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">data</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">        <span class="n">Picture</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="k">const</span><span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-</span><span class="line">        <span class="n">Picture</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">        <span class="o">~</span><span class="n">Picture</span><span class="p">()</span> <span class="p">{</span> <span class="k">delete</span> <span class="p">[]</span> <span class="n">data</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Picture</span><span class="o">&amp;</span> <span class="k">operator</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">height</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">width</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">char</span><span class="o">*</span> <span class="n">data</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">void</span> <span class="nf">copyblock</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           This function is so cool! Don&#39;t you think so? :)</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">char</span><span class="o">&amp;</span> <span class="n">position</span><span class="p">(</span><span class="kt">int</span> <span class="n">row</span><span class="p">,</span> <span class="kt">int</span> <span class="n">col</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">row</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">col</span><span class="p">];</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">char</span> <span class="n">position</span><span class="p">(</span><span class="kt">int</span> <span class="n">row</span><span class="p">,</span> <span class="kt">int</span> <span class="n">col</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">row</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">col</span><span class="p">];</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">clear</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-</span><span class="line">        <span class="kt">void</span> <span class="nf">init</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-</span><span class="line">        <span class="k">static</span> <span class="kt">int</span> <span class="nf">max</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-</span><span class="line"><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Here we should support three different operation to our user.</p>
-
-<ul>
-  <li>Adding frame for picture.</li>
-  <li>Connecting picture vertically</li>
-  <li>Connecting picture horizontal</li>
-</ul>
-
-<p>Aha~ We support that operation by provide there interfaces.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="n">Picture</span> <span class="nf">frame</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">);</span>
-</span><span class="line"><span class="n">Picture</span> <span class="k">operator</span> <span class="o">&amp;</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">);</span>
-</span><span class="line"><span class="n">Picture</span> <span class="k">operator</span> <span class="o">|</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>We could test our implementation by this test program :)</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cp">#include &quot;picture.h&quot;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">char</span><span class="o">*</span> <span class="n">init</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Paris&quot;</span><span class="p">,</span> <span class="s">&quot;in the&quot;</span><span class="p">,</span> <span class="s">&quot;Spring&quot;</span><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Picture</span> <span class="n">p</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="n">frame</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">&amp;</span> <span class="n">p</span><span class="p">;</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">|</span> <span class="n">p</span><span class="p">;</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">Picture</span> <span class="n">q</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">q</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Here is my implementation: file: picture.cpp</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-<span class="line-number">130</span>
-<span class="line-number">131</span>
-<span class="line-number">132</span>
-<span class="line-number">133</span>
-<span class="line-number">134</span>
-<span class="line-number">135</span>
-<span class="line-number">136</span>
-<span class="line-number">137</span>
-<span class="line-number">138</span>
-<span class="line-number">139</span>
-<span class="line-number">140</span>
-<span class="line-number">141</span>
-<span class="line-number">142</span>
-<span class="line-number">143</span>
-<span class="line-number">144</span>
-<span class="line-number">145</span>
-<span class="line-number">146</span>
-<span class="line-number">147</span>
-<span class="line-number">148</span>
-<span class="line-number">149</span>
-<span class="line-number">150</span>
-<span class="line-number">151</span>
-<span class="line-number">152</span>
-<span class="line-number">153</span>
-<span class="line-number">154</span>
-<span class="line-number">155</span>
-<span class="line-number">156</span>
-<span class="line-number">157</span>
-<span class="line-number">158</span>
-<span class="line-number">159</span>
-<span class="line-number">160</span>
-<span class="line-number">161</span>
-<span class="line-number">162</span>
-<span class="line-number">163</span>
-<span class="line-number">164</span>
-<span class="line-number">165</span>
-<span class="line-number">166</span>
-<span class="line-number">167</span>
-<span class="line-number">168</span>
-<span class="line-number">169</span>
-<span class="line-number">170</span>
-<span class="line-number">171</span>
-<span class="line-number">172</span>
-<span class="line-number">173</span>
-<span class="line-number">174</span>
-<span class="line-number">175</span>
-<span class="line-number">176</span>
-<span class="line-number">177</span>
-<span class="line-number">178</span>
-<span class="line-number">179</span>
-<span class="line-number">180</span>
-<span class="line-number">181</span>
-<span class="line-number">182</span>
-<span class="line-number">183</span>
-<span class="line-number">184</span>
-<span class="line-number">185</span>
-<span class="line-number">186</span>
-<span class="line-number">187</span>
-<span class="line-number">188</span>
-<span class="line-number">189</span>
-<span class="line-number">190</span>
-<span class="line-number">191</span>
-<span class="line-number">192</span>
-<span class="line-number">193</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/***************************************************</span>
-</span><span class="line"><span class="cm">    Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">    File        :   picture.cpp</span>
-</span><span class="line"><span class="cm">    Date        :   2015.05.24</span>
-</span><span class="line"><span class="cm">    E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> ***************************************************/</span>
-</span><span class="line"><span class="cp">#include &quot;picture.h&quot;</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   public functions of class @Picture</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">Picture</span><span class="o">::</span><span class="n">Picture</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="k">const</span><span class="o">*</span> <span class="n">array</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">w</span> <span class="o">=</span> <span class="n">Picture</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">init</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">src</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">src</span><span class="p">);</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">while</span><span class="p">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">position</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">=</span> <span class="n">src</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
-</span><span class="line">            <span class="n">j</span><span class="o">++</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">while</span><span class="p">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">width</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">position</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39; &#39;</span><span class="p">;</span>
-</span><span class="line">            <span class="n">j</span><span class="o">++</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Picture</span><span class="o">::</span><span class="n">Picture</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">    <span class="n">height</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">),</span> <span class="n">width</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">),</span>
-</span><span class="line">    <span class="n">data</span><span class="p">(</span><span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="n">p</span><span class="p">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">])</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">copyblock</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Picture</span><span class="o">&amp;</span> <span class="n">Picture</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="k">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">p</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">delete</span> <span class="p">[]</span> <span class="n">data</span><span class="p">;</span>
-</span><span class="line">        <span class="n">init</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">);</span>
-</span><span class="line">        <span class="n">copyblock</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">    Private functions</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="kt">void</span> <span class="n">Picture</span><span class="o">::</span><span class="n">copyblock</span><span class="p">(</span><span class="kt">int</span> <span class="n">row</span><span class="p">,</span> <span class="kt">int</span> <span class="n">col</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">position</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">row</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">col</span><span class="p">)</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Picture</span><span class="o">::</span><span class="n">clear</span><span class="p">(</span><span class="kt">int</span> <span class="n">r1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">c1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r2</span><span class="p">,</span> <span class="kt">int</span> <span class="n">c2</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="n">r1</span><span class="p">;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">r2</span><span class="p">;</span> <span class="n">r</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c1</span><span class="p">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">c2</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">position</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39; &#39;</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Picture</span><span class="o">::</span><span class="n">init</span><span class="p">(</span><span class="kt">int</span> <span class="n">h</span><span class="p">,</span> <span class="kt">int</span> <span class="n">w</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">height</span> <span class="o">=</span> <span class="n">h</span><span class="p">;</span>
-</span><span class="line">    <span class="n">width</span>  <span class="o">=</span> <span class="n">w</span><span class="p">;</span>
-</span><span class="line">    <span class="n">data</span>   <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="n">height</span> <span class="o">*</span> <span class="n">width</span><span class="p">];</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">Picture</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="kt">int</span> <span class="n">m</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="n">n</span> <span class="o">?</span> <span class="nl">m</span> <span class="p">:</span> <span class="n">n</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   Friend functions.</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="n">p</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">o</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="n">o</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">    This function @frame() will help us to add frame </span>
-</span><span class="line"><span class="cm">   into the old picture which was referenced by @p.</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">Picture</span> <span class="n">frame</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Picture</span> <span class="n">r</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">height</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">r</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39;|&#39;</span><span class="p">;</span>
-</span><span class="line">        <span class="n">r</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39;|&#39;</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span><span class="p">(</span> <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">.</span><span class="n">width</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">r</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39;-&#39;</span><span class="p">;</span>
-</span><span class="line">        <span class="n">r</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39;-&#39;</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39;+&#39;</span><span class="p">;</span>
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39;+&#39;</span><span class="p">;</span>
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39;+&#39;</span><span class="p">;</span>
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="sc">&#39;+&#39;</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">copyblock</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   We redefine the @&amp; operator to connect two picture </span>
-</span><span class="line"><span class="cm">   @p and @q vertically.</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">   The height of the new picture will be @p.height + @q.height.</span>
-</span><span class="line"><span class="cm">   The width of the new one will be max value between </span>
-</span><span class="line"><span class="cm">   @p.width and @q.width</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">   We also should clear the new empty region for alignment,</span>
-</span><span class="line"><span class="cm">   if the size of the inputed two pictures are different.</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">Picture</span> <span class="k">operator</span> <span class="o">&amp;</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Picture</span> <span class="n">r</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">height</span> <span class="o">+</span> <span class="n">q</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">Picture</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">q</span><span class="p">.</span><span class="n">width</span><span class="p">));</span>
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">clear</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">,</span>  <span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">width</span><span class="p">);</span>
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">clear</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">q</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">width</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">copyblock</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">copyblock</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   Operator @| is like @&amp; but different.</span>
-</span><span class="line"><span class="cm">   This operation connect two pictures @p and @q horizonal.</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">Picture</span> <span class="k">operator</span> <span class="o">|</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Picture</span> <span class="n">r</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">Picture</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">q</span><span class="p">.</span><span class="n">height</span><span class="p">),</span>
-</span><span class="line">            <span class="n">p</span><span class="p">.</span><span class="n">width</span> <span class="o">+</span> <span class="n">q</span><span class="p">.</span><span class="n">width</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">clear</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">);</span>
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">clear</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">width</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">copyblock</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
-</span><span class="line">    <span class="n">r</span><span class="p">.</span><span class="n">copyblock</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">q</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>You know that that solution is not hard and is easy for us to understand. But there is a weakpoint that we lose the basic intern information of the old picture which we used to connect and create a new picture.</p>
-
-<p><strong>we can’t seperate the real frame and pure picture after we finished our @frame operation.</strong></p>
-
-<p>The same problem exist in others operation. We lose information which may be very useful for us in future.</p>
-
-<p>So… Refactoring is needed.</p>
-
-<h3 id="the-second-solution">The second solution</h3>
-
-<p>The header file which contains the class that is used for abstrcation.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/***********************************************</span>
-</span><span class="line"><span class="cm">    Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">    Date        :   2015.05.22</span>
-</span><span class="line"><span class="cm">    File        :   picture.h</span>
-</span><span class="line"><span class="cm">    E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> ***********************************************/</span>
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;string&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;string.h&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Picture</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">P_Node</span><span class="p">;</span><span class="c1">// base class</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">String_Pic</span><span class="p">;</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">Frame_Pic</span><span class="p">;</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">VCat_Pic</span><span class="p">;</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">HCat_Pic</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Picture</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">Picture</span> <span class="nf">frame</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">Picture</span> <span class="k">operator</span><span class="o">&amp;</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">Picture</span> <span class="k">operator</span><span class="o">|</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Picture</span><span class="p">()</span><span class="o">:</span><span class="n">p</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{}</span> <span class="p">;</span>
-</span><span class="line">        <span class="n">Picture</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="k">const</span><span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-</span><span class="line">        <span class="n">Picture</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">        <span class="o">~</span><span class="n">Picture</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Picture</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">friend</span> <span class="k">class</span> <span class="nc">String_Pic</span><span class="p">;</span>
-</span><span class="line">        <span class="k">friend</span> <span class="k">class</span> <span class="nc">Frame_Pic</span><span class="p">;</span>
-</span><span class="line">        <span class="k">friend</span> <span class="k">class</span> <span class="nc">HCat_Pic</span><span class="p">;</span>
-</span><span class="line">        <span class="k">friend</span> <span class="k">class</span> <span class="nc">VCat_Pic</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="n">P_Node</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Picture</span><span class="p">(</span><span class="n">P_Node</span><span class="o">*</span> <span class="n">p_node</span><span class="p">)</span> <span class="o">:</span> <span class="n">p</span><span class="p">(</span><span class="n">p_node</span><span class="p">)</span> <span class="p">{</span> <span class="p">};</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">height</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">width</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">void</span> <span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">P_Node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Picture</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">protected</span><span class="o">:</span>
-</span><span class="line">        <span class="n">P_Node</span><span class="p">()</span><span class="o">:</span> <span class="n">use</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="p">};</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">int</span> <span class="n">height</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">int</span> <span class="n">width</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="o">~</span><span class="n">P_Node</span><span class="p">()</span> <span class="p">{</span> <span class="p">};</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">max</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">use</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">String_Pic</span><span class="o">:</span> <span class="k">public</span> <span class="n">P_Node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Picture</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">        <span class="n">String_Pic</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="k">const</span><span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-</span><span class="line">        <span class="o">~</span><span class="n">String_Pic</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">height</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">width</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">void</span> <span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="kt">char</span><span class="o">**</span><span class="n">data</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Frame_Pic</span><span class="o">:</span> <span class="k">public</span> <span class="n">P_Node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">Picture</span> <span class="n">frame</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Frame_Pic</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">height</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">width</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">void</span> <span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Picture</span> <span class="n">p</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">VCat_Pic</span><span class="o">:</span> <span class="k">public</span> <span class="n">P_Node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">Picture</span> <span class="k">operator</span><span class="o">&amp;</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">        <span class="n">VCat_Pic</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">height</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">width</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">void</span> <span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Picture</span> <span class="n">top</span><span class="p">,</span> <span class="n">bottom</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">HCat_Pic</span><span class="o">:</span> <span class="k">public</span> <span class="n">P_Node</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">friend</span> <span class="n">Picture</span> <span class="k">operator</span> <span class="o">|</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">        <span class="n">HCat_Pic</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">height</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">width</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">        <span class="kt">void</span> <span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="n">Picture</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Member functions are all implemented in this file “picture.cpp”.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-<span class="line-number">130</span>
-<span class="line-number">131</span>
-<span class="line-number">132</span>
-<span class="line-number">133</span>
-<span class="line-number">134</span>
-<span class="line-number">135</span>
-<span class="line-number">136</span>
-<span class="line-number">137</span>
-<span class="line-number">138</span>
-<span class="line-number">139</span>
-<span class="line-number">140</span>
-<span class="line-number">141</span>
-<span class="line-number">142</span>
-<span class="line-number">143</span>
-<span class="line-number">144</span>
-<span class="line-number">145</span>
-<span class="line-number">146</span>
-<span class="line-number">147</span>
-<span class="line-number">148</span>
-<span class="line-number">149</span>
-<span class="line-number">150</span>
-<span class="line-number">151</span>
-<span class="line-number">152</span>
-<span class="line-number">153</span>
-<span class="line-number">154</span>
-<span class="line-number">155</span>
-<span class="line-number">156</span>
-<span class="line-number">157</span>
-<span class="line-number">158</span>
-<span class="line-number">159</span>
-<span class="line-number">160</span>
-<span class="line-number">161</span>
-<span class="line-number">162</span>
-<span class="line-number">163</span>
-<span class="line-number">164</span>
-<span class="line-number">165</span>
-<span class="line-number">166</span>
-<span class="line-number">167</span>
-<span class="line-number">168</span>
-<span class="line-number">169</span>
-<span class="line-number">170</span>
-<span class="line-number">171</span>
-<span class="line-number">172</span>
-<span class="line-number">173</span>
-<span class="line-number">174</span>
-<span class="line-number">175</span>
-<span class="line-number">176</span>
-<span class="line-number">177</span>
-<span class="line-number">178</span>
-<span class="line-number">179</span>
-<span class="line-number">180</span>
-<span class="line-number">181</span>
-<span class="line-number">182</span>
-<span class="line-number">183</span>
-<span class="line-number">184</span>
-<span class="line-number">185</span>
-<span class="line-number">186</span>
-<span class="line-number">187</span>
-<span class="line-number">188</span>
-<span class="line-number">189</span>
-<span class="line-number">190</span>
-<span class="line-number">191</span>
-<span class="line-number">192</span>
-<span class="line-number">193</span>
-<span class="line-number">194</span>
-<span class="line-number">195</span>
-<span class="line-number">196</span>
-<span class="line-number">197</span>
-<span class="line-number">198</span>
-<span class="line-number">199</span>
-<span class="line-number">200</span>
-<span class="line-number">201</span>
-<span class="line-number">202</span>
-<span class="line-number">203</span>
-<span class="line-number">204</span>
-<span class="line-number">205</span>
-<span class="line-number">206</span>
-<span class="line-number">207</span>
-<span class="line-number">208</span>
-<span class="line-number">209</span>
-<span class="line-number">210</span>
-<span class="line-number">211</span>
-<span class="line-number">212</span>
-<span class="line-number">213</span>
-<span class="line-number">214</span>
-<span class="line-number">215</span>
-<span class="line-number">216</span>
-<span class="line-number">217</span>
-<span class="line-number">218</span>
-<span class="line-number">219</span>
-<span class="line-number">220</span>
-<span class="line-number">221</span>
-<span class="line-number">222</span>
-<span class="line-number">223</span>
-<span class="line-number">224</span>
-<span class="line-number">225</span>
-<span class="line-number">226</span>
-<span class="line-number">227</span>
-<span class="line-number">228</span>
-<span class="line-number">229</span>
-<span class="line-number">230</span>
-<span class="line-number">231</span>
-<span class="line-number">232</span>
-<span class="line-number">233</span>
-<span class="line-number">234</span>
-<span class="line-number">235</span>
-<span class="line-number">236</span>
-<span class="line-number">237</span>
-<span class="line-number">238</span>
-<span class="line-number">239</span>
-<span class="line-number">240</span>
-<span class="line-number">241</span>
-<span class="line-number">242</span>
-<span class="line-number">243</span>
-<span class="line-number">244</span>
-<span class="line-number">245</span>
-<span class="line-number">246</span>
-<span class="line-number">247</span>
-<span class="line-number">248</span>
-<span class="line-number">249</span>
-<span class="line-number">250</span>
-<span class="line-number">251</span>
-<span class="line-number">252</span>
-<span class="line-number">253</span>
-<span class="line-number">254</span>
-<span class="line-number">255</span>
-<span class="line-number">256</span>
-<span class="line-number">257</span>
-<span class="line-number">258</span>
-<span class="line-number">259</span>
-<span class="line-number">260</span>
-<span class="line-number">261</span>
-<span class="line-number">262</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/********************************************************</span>
-</span><span class="line"><span class="cm">    Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">    File        :   picture.cpp</span>
-</span><span class="line"><span class="cm">    Date        :   2015.05.24</span>
-</span><span class="line"><span class="cm">    E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> *******************************************************/</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &quot;picture.h&quot;</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   Member function of @class-P_Node</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="kt">int</span> <span class="n">P_Node</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">y</span> <span class="o">?</span> <span class="nl">x</span> <span class="p">:</span> <span class="n">y</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   Member function of @class-Picture</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">Picture</span><span class="o">::</span><span class="n">Picture</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="k">const</span> <span class="o">*</span><span class="n">str</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">p</span><span class="p">(</span><span class="k">new</span> <span class="n">String_Pic</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Picture</span><span class="o">::</span><span class="n">Picture</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">orig</span><span class="p">)</span><span class="o">:</span><span class="n">p</span><span class="p">(</span><span class="n">orig</span><span class="p">.</span><span class="n">p</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">orig</span><span class="p">.</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span><span class="o">++</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Picture</span><span class="o">::~</span><span class="n">Picture</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="o">--</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">delete</span> <span class="n">p</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Picture</span><span class="o">&amp;</span>
-</span><span class="line"><span class="n">Picture</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">orig</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">orig</span><span class="p">.</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span><span class="o">++</span><span class="p">;</span>
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="o">--</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">use</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">delete</span> <span class="n">p</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">p</span> <span class="o">=</span> <span class="n">orig</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">Picture</span><span class="o">::</span><span class="n">height</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">height</span><span class="p">();</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">Picture</span><span class="o">::</span><span class="n">width</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">();</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Picture</span><span class="o">::</span><span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">o</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">p</span><span class="o">-&gt;</span><span class="n">display</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">ostream</span><span class="o">&amp;</span>
-</span><span class="line"><span class="k">operator</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">ht</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">();</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">wd</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ht</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">p</span><span class="p">.</span><span class="n">display</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">wd</span><span class="p">);</span>
-</span><span class="line">        <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="n">os</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   Member function of @class-String_Pic</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">String_Pic</span><span class="o">::</span><span class="n">String_Pic</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="k">const</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">    <span class="n">data</span><span class="p">(</span><span class="k">new</span> <span class="kt">char</span><span class="o">*</span> <span class="p">[</span><span class="n">n</span><span class="p">]),</span> <span class="n">size</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="n">strlen</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)];</span>
-</span><span class="line">        <span class="n">strcpy</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">String_Pic</span><span class="o">::~</span><span class="n">String_Pic</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">delete</span> <span class="p">[]</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="k">delete</span> <span class="p">[]</span> <span class="n">data</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">String_Pic</span><span class="o">::</span><span class="n">height</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">size</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">String_Pic</span><span class="o">::</span><span class="n">width</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">n</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">n</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="k">static</span> <span class="kt">void</span> <span class="n">pad</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">y</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; &quot;</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">String_Pic</span><span class="o">::</span><span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="kt">int</span> <span class="n">row</span><span class="p">,</span> <span class="kt">int</span> <span class="n">width</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">row</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">height</span><span class="p">())</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="n">data</span><span class="p">[</span><span class="n">row</span><span class="p">];</span>
-</span><span class="line">        <span class="n">start</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">row</span><span class="p">]);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">pad</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">width</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   Member function of @class-Frame_Pic</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">Frame_Pic</span><span class="o">::</span><span class="n">Frame_Pic</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">pic</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">    <span class="n">p</span><span class="p">(</span><span class="n">pic</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">Frame_Pic</span><span class="o">::</span><span class="n">height</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">height</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">Frame_Pic</span><span class="o">::</span><span class="n">width</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Frame_Pic</span><span class="o">::</span><span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="kt">int</span> <span class="n">row</span><span class="p">,</span> <span class="kt">int</span> <span class="n">wd</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">row</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="n">height</span><span class="p">())</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="c1">//run-across ??</span>
-</span><span class="line">        <span class="n">pad</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wd</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="k">else</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">row</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">row</span> <span class="o">==</span> <span class="n">height</span><span class="p">()</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;+&quot;</span><span class="p">;</span>
-</span><span class="line">            <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">();</span>
-</span><span class="line">            <span class="k">while</span><span class="p">(</span><span class="o">--</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line">            <span class="p">{</span>
-</span><span class="line">                <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;-&quot;</span><span class="p">;</span>
-</span><span class="line">            <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">            <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;+&quot;</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">        <span class="k">else</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;|&quot;</span><span class="p">;</span>
-</span><span class="line">            <span class="n">p</span><span class="p">.</span><span class="n">display</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">width</span><span class="p">());</span>
-</span><span class="line">            <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;|&quot;</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">        <span class="n">pad</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="n">width</span><span class="p">(),</span> <span class="n">wd</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Picture</span> <span class="n">frame</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">pic</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="k">new</span> <span class="n">Frame_Pic</span><span class="p">(</span><span class="n">pic</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   Member functions of @class-VCat_Pic</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">VCat_Pic</span><span class="o">::</span><span class="n">VCat_Pic</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">top</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">bottom</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">VCat_Pic</span><span class="o">::</span><span class="n">height</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">top</span><span class="p">.</span><span class="n">height</span><span class="p">()</span> <span class="o">+</span> <span class="n">bottom</span><span class="p">.</span><span class="n">height</span><span class="p">();</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">VCat_Pic</span><span class="o">::</span><span class="n">width</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">max</span><span class="p">(</span><span class="n">top</span><span class="p">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">bottom</span><span class="p">.</span><span class="n">width</span><span class="p">());</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">VCat_Pic</span><span class="o">::</span><span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="kt">int</span> <span class="n">row</span><span class="p">,</span> <span class="kt">int</span> <span class="n">wd</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">row</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">top</span><span class="p">.</span><span class="n">height</span><span class="p">())</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">top</span><span class="p">.</span><span class="n">display</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">wd</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">row</span> <span class="o">&lt;</span> <span class="n">top</span><span class="p">.</span><span class="n">height</span><span class="p">()</span> <span class="o">+</span> <span class="n">bottom</span><span class="p">.</span><span class="n">height</span><span class="p">())</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">bottom</span><span class="p">.</span><span class="n">display</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="n">row</span><span class="o">-</span><span class="n">top</span><span class="p">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">wd</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="k">else</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">pad</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wd</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Picture</span> <span class="k">operator</span> <span class="o">&amp;</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="k">new</span> <span class="n">VCat_Pic</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">   Member functions of @class-HCat_Pic</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line">
-</span><span class="line"><span class="n">HCat_Pic</span><span class="o">::</span><span class="n">HCat_Pic</span><span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">l</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">r</span><span class="p">)</span><span class="o">:</span> <span class="n">left</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="n">right</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="p">{}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">HCat_Pic</span><span class="o">::</span><span class="n">height</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="n">left</span><span class="p">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">right</span><span class="p">.</span><span class="n">height</span><span class="p">());</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">n</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">HCat_Pic</span><span class="o">::</span><span class="n">width</span><span class="p">()</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">left</span><span class="p">.</span><span class="n">width</span><span class="p">()</span> <span class="o">+</span> <span class="n">right</span><span class="p">.</span><span class="n">width</span><span class="p">();</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">HCat_Pic</span><span class="o">::</span><span class="n">display</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="kt">int</span> <span class="n">row</span><span class="p">,</span> <span class="kt">int</span> <span class="n">wd</span><span class="p">)</span> <span class="k">const</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">left</span><span class="p">.</span><span class="n">display</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">left</span><span class="p">.</span><span class="n">width</span><span class="p">());</span>
-</span><span class="line">    <span class="n">right</span><span class="p">.</span><span class="n">display</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">right</span><span class="p">.</span><span class="n">width</span><span class="p">());</span>
-</span><span class="line">    <span class="n">pad</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="n">width</span><span class="p">(),</span> <span class="n">wd</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Picture</span> <span class="k">operator</span> <span class="o">|</span> <span class="p">(</span><span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">l</span><span class="p">,</span> <span class="k">const</span> <span class="n">Picture</span><span class="o">&amp;</span> <span class="n">r</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="k">new</span> <span class="n">HCat_Pic</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>You could use this test program to test our solution :)</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cp">#include &quot;picture.h&quot;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">char</span><span class="o">*</span> <span class="n">init</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Paris&quot;</span><span class="p">,</span> <span class="s">&quot;in the&quot;</span><span class="p">,</span> <span class="s">&quot;Spring&quot;</span><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Picture</span> <span class="n">p</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">frame</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">frame</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">|</span> <span class="n">frame</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">frame</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">frame</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<hr />
-<p>Photo by YanZixin in Changde, China</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_24/tree.png" alt="images" /></p>
 ]]></content>
   </entry>
   
