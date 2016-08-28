@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-08-25T00:18:15+08:00</updated>
+  <updated>2016-08-28T10:33:14+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -21,6 +21,8 @@
     <content type="html"><![CDATA[<p>Searching in a graph is the one of the most popular topic in CS.</p>
 
 <p>In this article, I would like to make a summary about what algorithms for searching in graphes.</p>
+
+<!-- more -->
 
 <h3 id="presentation-of-graph">1. Presentation of Graph</h3>
 
