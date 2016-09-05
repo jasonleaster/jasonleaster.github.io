@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithm | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-08-28T10:33:14+08:00</updated>
+  <updated>2016-09-05T23:36:32+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,215 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Problems With Linked List]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/09/04/problems-with-linked-list/"/>
+    <updated>2016-09-04T21:47:19+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/09/04/problems-with-linked-list</id>
+    <content type="html"><![CDATA[<h3 id="linked-list">1. Linked List</h3>
+
+<p>In computer science, a linked list is a linear collection of data elements, called nodes, each pointing to the next node by means of a pointer. It is a data structure consisting of a group of nodes which together represent a sequence.</p>
+
+<p>For single Linked list:</p>
+
+<p><img src="/images/img_for_2016_09/Singly-linked-list.svg" alt="images" /></p>
+
+<p>A linked list whose nodes contain two fields: an integer value and a link to the next node. The last node is linked to a terminator used to signify the end of the list.</p>
+
+<p>For circle Linked list:</p>
+
+<p><img src="/images/img_for_2016_09/Circularly-linked-list.svg" alt="images" /></p>
+
+<h3 id="classical-algorithm-problem">2. Classical algorithm problem</h3>
+
+<h4 id="linked-list-cycle">2.1 Linked List Cycle</h4>
+
+<blockquote>
+  <p>Given an linked list, to determine if it has a circle. And try to solve this problem without using extra memory.</p>
+</blockquote>
+
+<p>There is a technology called <code>fast pointer and slow pointer</code>.  The essential key point in this technology is <code>remainder %</code> in mathematic. Each remainder digital number system works like a circle.</p>
+
+<center>Digital System: s = x % y</center>
+
+<p>When y is an integer number which is bigger than 1, any integer number x remaind with y will drop into numbers which’s range is [0, y-1]. Got it ? Yes, It’s like a circle. With the incresement of x, the result of <code>x % y</code> will always drops into [0, y-1]. Let’s back to our initial problem.</p>
+
+<p>So, there will be a circle if two pointer move <strong>forward</strong> with <code>different speed</code> and they meet each other before the faster pointer get the end of the list. Otherwise, there does not exist a circle.</p>
+
+<p>We can use code to express this algorithm.</p>
+
+<p>``` python</p>
+
+<h1 id="definition-for-singly-linked-list">Definition for singly-linked list.</h1>
+<p># class ListNode(object):
+#     def <strong>init</strong>(self, x):
+#         self.val = x
+#         self.next = None</p>
+
+<p>class Solution(object):
+    def hasCycle(self, head):
+        “””
+            :type head: ListNode
+            :rtype: bool
+        “””
+        if head is None:
+            return False</p>
+
+<pre><code>    slow = head
+    fast = head
+                                                                         
+    while fast and fast.next:
+        
+        slow = slow.next
+        fast = fast.next.next
+
+        if slow == fast:
+            return True                                                                         
+    return False
+</code></pre>
+
+<p>```</p>
+
+<blockquote>
+  <p>How to calculate the beginning location of the circle ?</p>
+</blockquote>
+
+<p><img src="/images/img_for_2016_09/FastAndSlowPointer.jpg" alt="images" /></p>
+
+<p>We assume that there exist an circle in a linked list like the picture over there.</p>
+
+<p>Just use two pointer to travel the list.</p>
+
+<p>Hypothesis:</p>
+
+<ul>
+  <li>
+    <p>For the faster pointer, it will move forward <strong>two steps</strong> each time. For the slower pointer, it will move forward only <strong>one steps</strong> each time.</p>
+  </li>
+  <li>
+    <p>We also assume that <code>m</code> is the distance between the start location of the circle and the start location of the linked list.</p>
+  </li>
+  <li>
+    <p>The length of the circle is <code>n</code>.</p>
+  </li>
+  <li>
+    <p>The faster pointer will catch the slower pointer after <code>x</code> steps.</p>
+  </li>
+</ul>
+
+<p>According to that hypothesis, we can get some useful information.
+When the slower pointer arrive at the start location of the circle, the faster pointer have moved <code>2m</code> steps. Because they will meet each other after <code>x</code> step for the slower pointer have arrived at the beginning location of the circle. We can make a conclusion.</p>
+
+<center> x / 1 = (n - (m % n) + x)/2 </center>
+
+<p>Looking back, they will meet at x = (n - (m % n)) from the beginning location of the circle.</p>
+
+<p>Looking forward, they will meet at x = (m % n) from the beginning location of the circle.</p>
+
+<p>Aha, if we use anther traveller pointer(named <code>jack</code>) move from the original start location after the faster and the slower meet each other. It will walk through <code>m</code> unit of distance.</p>
+
+<p>Make the slower pointer move forward continully. The <code>jack</code> and <code>slow pointer</code> will meet at the beginning point of the circle.</p>
+
+<p>For time costing:</p>
+<center> m/1 = m % n </center>
+
+<p>If m &lt; n, the faster will not pass the beginning point more than 1 time after the slower and faster meet, otherwise it will pass the beginning location k times where m = z + k * n(z is the remainder of m % n)</p>
+
+<p>``` python</p>
+
+<p>Definition for singly-linked list.
+ # class ListNode(object):
+ #     def <strong>init</strong>(self, x):
+ #         self.val = x
+ #         self.next = None</p>
+
+<p>class Solution(object):
+     def detectCycle(self, head):
+         “””
+         :type head: ListNode
+         :rtype: ListNode
+         “””
+         if head is None:
+             return None</p>
+
+<pre><code>     slow = head
+     fast = head
+   
+     while fast and fast.next:
+         slow = slow.next
+         fast = fast.next.next
+       
+         if slow == fast:
+             p = head
+             while p != slow:
+                 p = p.next
+                 slow = slow.next
+               
+             return p
+           
+     return None
+</code></pre>
+
+<p>```</p>
+
+<h4 id="find-duplicated-number">2.2 Find duplicated number</h4>
+
+<blockquote>
+  <p>Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive), prove that at least one duplicate number must exist. Assume that there is only one duplicate number, find the duplicate one.</p>
+</blockquote>
+
+<p>Note:</p>
+
+<p><small>You must not modify the array (assume the array is read only). <br />
+You must use only constant, O(1) extra space. <br />
+Your runtime complexity should be less than O(n^2). <br />
+There is only one duplicate number in the array, but it could be repeated more than once. \</small></p>
+
+<p>We should notice that the range of these integers is [1, n]. And there are n + 1 integers. 
+We can treat a integer as the index to another integer, which like a pointer. 
+All integers are store in an array which is a continues memory area.(The implementation of built-in data structure – list is a length-variable array)</p>
+
+<p>That array works like a linked-list, doesn’t it? Every integer can be used as index for the array. And there have one duplicate integer at least, which means that there are at least two “pointer” point to next “node”.</p>
+
+<p>It’s like a single linked-list with circles !</p>
+
+<p>So, the original problem can be transformed into how to find the beginning node of the circle in a linked-list. Just look back 2.1 in this article, if you still don’t know how to do it.</p>
+
+<p>``` python</p>
+
+<p>class Solution(object):
+    def findDuplicate(self, nums):
+        “””
+        :type nums: List[int]
+        :rtype: int
+        “””
+        slow = nums[0]
+        fast = nums[slow]
+        while fast != slow:
+            slow = nums[slow]
+            fast = nums[nums[fast]]</p>
+
+<pre><code>    node = 0
+    while node != slow:
+        node = nums[node]
+        slow = nums[slow]
+      
+    return node
+</code></pre>
+
+<p>```</p>
+
+<h3 id="more-classical-problem-wait-to-be-updated-">More classical problem wait to be updated :)</h3>
+
+<hr />
+
+<p>LiuYe Lake, HuNan, China.
+Photo by Anabella.</p>
+
+<p><img src="/images/img_for_2016_09/joke.jpg" alt="images" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Search Algorithm in Graph]]></title>

@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-08-28T10:33:14+08:00</updated>
+  <updated>2016-09-05T23:36:32+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,278 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Problems With Linked List]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/09/04/problems-with-linked-list/"/>
+    <updated>2016-09-04T21:47:19+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/09/04/problems-with-linked-list</id>
+    <content type="html"><![CDATA[<h3 id="linked-list">1. Linked List</h3>
+
+<p>In computer science, a linked list is a linear collection of data elements, called nodes, each pointing to the next node by means of a pointer. It is a data structure consisting of a group of nodes which together represent a sequence.</p>
+
+<p>For single Linked list:</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_09/Singly-linked-list.svg" alt="images" /></p>
+
+<p>A linked list whose nodes contain two fields: an integer value and a link to the next node. The last node is linked to a terminator used to signify the end of the list.</p>
+
+<p>For circle Linked list:</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_09/Circularly-linked-list.svg" alt="images" /></p>
+
+<h3 id="classical-algorithm-problem">2. Classical algorithm problem</h3>
+
+<h4 id="linked-list-cycle">2.1 Linked List Cycle</h4>
+
+<blockquote>
+  <p>Given an linked list, to determine if it has a circle. And try to solve this problem without using extra memory.</p>
+</blockquote>
+
+<p>There is a technology called <code>fast pointer and slow pointer</code>.  The essential key point in this technology is <code>remainder %</code> in mathematic. Each remainder digital number system works like a circle.</p>
+
+<center>Digital System: s = x % y</center>
+
+<p>When y is an integer number which is bigger than 1, any integer number x remaind with y will drop into numbers which’s range is [0, y-1]. Got it ? Yes, It’s like a circle. With the incresement of x, the result of <code>x % y</code> will always drops into [0, y-1]. Let’s back to our initial problem.</p>
+
+<p>So, there will be a circle if two pointer move <strong>forward</strong> with <code>different speed</code> and they meet each other before the faster pointer get the end of the list. Otherwise, there does not exist a circle.</p>
+
+<p>We can use code to express this algorithm.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="c"># Definition for singly-linked list.</span>
+</span><span class="line"><span class="c"># class ListNode(object):</span>
+</span><span class="line"><span class="c">#     def __init__(self, x):</span>
+</span><span class="line"><span class="c">#         self.val = x</span>
+</span><span class="line"><span class="c">#         self.next = None</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">hasCycle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">head</span><span class="p">):</span>
+</span><span class="line">        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">            :type head: ListNode</span>
+</span><span class="line"><span class="sd">            :rtype: bool</span>
+</span><span class="line"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class="line">        <span class="k">if</span> <span class="n">head</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class="line">            <span class="k">return</span> <span class="bp">False</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">slow</span> <span class="o">=</span> <span class="n">head</span>
+</span><span class="line">        <span class="n">fast</span> <span class="o">=</span> <span class="n">head</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">while</span> <span class="n">fast</span> <span class="ow">and</span> <span class="n">fast</span><span class="o">.</span><span class="n">next</span><span class="p">:</span>
+</span><span class="line">
+</span><span class="line">            <span class="n">slow</span> <span class="o">=</span> <span class="n">slow</span><span class="o">.</span><span class="n">next</span>
+</span><span class="line">            <span class="n">fast</span> <span class="o">=</span> <span class="n">fast</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">next</span>
+</span><span class="line">
+</span><span class="line">            <span class="k">if</span> <span class="n">slow</span> <span class="o">==</span> <span class="n">fast</span><span class="p">:</span>
+</span><span class="line">                <span class="k">return</span> <span class="bp">True</span>
+</span><span class="line">        <span class="k">return</span> <span class="bp">False</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<blockquote>
+  <p>How to calculate the beginning location of the circle ?</p>
+</blockquote>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_09/FastAndSlowPointer.jpg" alt="images" /></p>
+
+<p>We assume that there exist an circle in a linked list like the picture over there.</p>
+
+<p>Just use two pointer to travel the list.</p>
+
+<p>Hypothesis:</p>
+
+<ul>
+  <li>
+    <p>For the faster pointer, it will move forward <strong>two steps</strong> each time. For the slower pointer, it will move forward only <strong>one steps</strong> each time.</p>
+  </li>
+  <li>
+    <p>We also assume that <code>m</code> is the distance between the start location of the circle and the start location of the linked list.</p>
+  </li>
+  <li>
+    <p>The length of the circle is <code>n</code>.</p>
+  </li>
+  <li>
+    <p>The faster pointer will catch the slower pointer after <code>x</code> steps.</p>
+  </li>
+</ul>
+
+<p>According to that hypothesis, we can get some useful information.
+When the slower pointer arrive at the start location of the circle, the faster pointer have moved <code>2m</code> steps. Because they will meet each other after <code>x</code> step for the slower pointer have arrived at the beginning location of the circle. We can make a conclusion.</p>
+
+<center> x / 1 = (n - (m % n) + x)/2 </center>
+
+<p>Looking back, they will meet at x = (n - (m % n)) from the beginning location of the circle.</p>
+
+<p>Looking forward, they will meet at x = (m % n) from the beginning location of the circle.</p>
+
+<p>Aha, if we use anther traveller pointer(named <code>jack</code>) move from the original start location after the faster and the slower meet each other. It will walk through <code>m</code> unit of distance.</p>
+
+<p>Make the slower pointer move forward continully. The <code>jack</code> and <code>slow pointer</code> will meet at the beginning point of the circle.</p>
+
+<p>For time costing:</p>
+<center> m/1 = m % n </center>
+
+<p>If m &lt; n, the faster will not pass the beginning point more than 1 time after the slower and faster meet, otherwise it will pass the beginning location k times where m = z + k * n(z is the remainder of m % n)</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">Definition</span> <span class="k">for</span> <span class="n">singly</span><span class="o">-</span><span class="n">linked</span> <span class="nb">list</span><span class="o">.</span>
+</span><span class="line"> <span class="c"># class ListNode(object):</span>
+</span><span class="line"> <span class="c">#     def __init__(self, x):</span>
+</span><span class="line"> <span class="c">#         self.val = x</span>
+</span><span class="line"> <span class="c">#         self.next = None</span>
+</span><span class="line">
+</span><span class="line"> <span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class="line">     <span class="k">def</span> <span class="nf">detectCycle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">head</span><span class="p">):</span>
+</span><span class="line">         <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">         :type head: ListNode</span>
+</span><span class="line"><span class="sd">         :rtype: ListNode</span>
+</span><span class="line"><span class="sd">         &quot;&quot;&quot;</span>
+</span><span class="line">         <span class="k">if</span> <span class="n">head</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class="line">             <span class="k">return</span> <span class="bp">None</span>
+</span><span class="line">
+</span><span class="line">         <span class="n">slow</span> <span class="o">=</span> <span class="n">head</span>
+</span><span class="line">         <span class="n">fast</span> <span class="o">=</span> <span class="n">head</span>
+</span><span class="line">
+</span><span class="line">         <span class="k">while</span> <span class="n">fast</span> <span class="ow">and</span> <span class="n">fast</span><span class="o">.</span><span class="n">next</span><span class="p">:</span>
+</span><span class="line">             <span class="n">slow</span> <span class="o">=</span> <span class="n">slow</span><span class="o">.</span><span class="n">next</span>
+</span><span class="line">             <span class="n">fast</span> <span class="o">=</span> <span class="n">fast</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">next</span>
+</span><span class="line">
+</span><span class="line">             <span class="k">if</span> <span class="n">slow</span> <span class="o">==</span> <span class="n">fast</span><span class="p">:</span>
+</span><span class="line">                 <span class="n">p</span> <span class="o">=</span> <span class="n">head</span>
+</span><span class="line">                 <span class="k">while</span> <span class="n">p</span> <span class="o">!=</span> <span class="n">slow</span><span class="p">:</span>
+</span><span class="line">                     <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">next</span>
+</span><span class="line">                     <span class="n">slow</span> <span class="o">=</span> <span class="n">slow</span><span class="o">.</span><span class="n">next</span>
+</span><span class="line">
+</span><span class="line">                 <span class="k">return</span> <span class="n">p</span>
+</span><span class="line">
+</span><span class="line">         <span class="k">return</span> <span class="bp">None</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="find-duplicated-number">2.2 Find duplicated number</h4>
+
+<blockquote>
+  <p>Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive), prove that at least one duplicate number must exist. Assume that there is only one duplicate number, find the duplicate one.</p>
+</blockquote>
+
+<p>Note:</p>
+
+<p><small>You must not modify the array (assume the array is read only). <br />
+You must use only constant, O(1) extra space. <br />
+Your runtime complexity should be less than O(n^2). <br />
+There is only one duplicate number in the array, but it could be repeated more than once. \</small></p>
+
+<p>We should notice that the range of these integers is [1, n]. And there are n + 1 integers. 
+We can treat a integer as the index to another integer, which like a pointer. 
+All integers are store in an array which is a continues memory area.(The implementation of built-in data structure – list is a length-variable array)</p>
+
+<p>That array works like a linked-list, doesn’t it? Every integer can be used as index for the array. And there have one duplicate integer at least, which means that there are at least two “pointer” point to next “node”.</p>
+
+<p>It’s like a single linked-list with circles !</p>
+
+<p>So, the original problem can be transformed into how to find the beginning node of the circle in a linked-list. Just look back 2.1 in this article, if you still don’t know how to do it.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">findDuplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums</span><span class="p">):</span>
+</span><span class="line">        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">        :type nums: List[int]</span>
+</span><span class="line"><span class="sd">        :rtype: int</span>
+</span><span class="line"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class="line">        <span class="n">slow</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class="line">        <span class="n">fast</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">slow</span><span class="p">]</span>
+</span><span class="line">        <span class="k">while</span> <span class="n">fast</span> <span class="o">!=</span> <span class="n">slow</span><span class="p">:</span>
+</span><span class="line">            <span class="n">slow</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">slow</span><span class="p">]</span>
+</span><span class="line">            <span class="n">fast</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">nums</span><span class="p">[</span><span class="n">fast</span><span class="p">]]</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">node</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">        <span class="k">while</span> <span class="n">node</span> <span class="o">!=</span> <span class="n">slow</span><span class="p">:</span>
+</span><span class="line">            <span class="n">node</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+</span><span class="line">            <span class="n">slow</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">slow</span><span class="p">]</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">return</span> <span class="n">node</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="more-classical-problem-wait-to-be-updated-">More classical problem wait to be updated :)</h3>
+
+<hr />
+
+<p>LiuYe Lake, HuNan, China.
+Photo by Anabella.</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_09/joke.jpg" alt="images" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Search Algorithm in Graph]]></title>
@@ -5878,99 +6150,6 @@ For example:</p>
 <p>Photo by Jason Leaster images</p>
 
 <p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/end.png" alt="images" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Learn to Design a Container]]></title>
-    <link href="http://jasonleaster.github.io/blog/2015/05/25/learn-to-design-a-container/"/>
-    <updated>2015-05-25T19:14:38+08:00</updated>
-    <id>http://jasonleaster.github.io/blog/2015/05/25/learn-to-design-a-container</id>
-    <content type="html"><![CDATA[<p>Container is a collection which help us to store data of different types of data structure.</p>
-
-<p>There are only two types of container in C++/C :</p>
-
-<ul>
-  <li>array</li>
-  <li>structure</li>
-</ul>
-
-<p>C++ could provide more container but it didn’t.</p>
-
-<p><strong>Give a man a fish and you feed him for a day; teach a man to fish and you feed him for a lifetime; knowledge is the best charity;</strong></p>
-
-<p>:)</p>
-
-<!-- more -->
-<p>Here we are gona to design a container which is like array but not the same.</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_24/arch.png" alt="images" /></p>
-
-<p>You could find the implementation of this container on my github.</p>
-
-<p><a href="https://github.com/jasonleaster/Rumination_On_C_plus_plus/blob/master/chapter_13/con_array.h">Our Container Implementation</a></p>
-
-<p>You could test out container by this program.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cp">#include &quot;con_array.h&quot;</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Array</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">ap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-</span><span class="line">    <span class="n">Pointer</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
-</span><span class="line">    <span class="c1">//delete ap;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;The size of Array &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">ap</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">ap</span><span class="o">-&gt;</span><span class="n">resize</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;After resize(), the size of Array &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">ap</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>You could also see the output beblow there:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_24/output1.png" alt="images" /></p>
-
-<hr />
-<p>Photo by Jason Leaster in ChangDe, China</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_05_24/cherry_blossom.png" alt="images" /></p>
-
 ]]></content>
   </entry>
   

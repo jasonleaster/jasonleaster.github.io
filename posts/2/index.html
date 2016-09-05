@@ -9,7 +9,8 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="Try to answer these question. Whatare dictionaries and sets good for? How are dictionaries and set the same? What is the overhead when using a &hellip;">
+  <meta name="description" content="Functional programming is not only use functions.
+Think of “y = f(x)” or “h = f * g” For comparasion, there are different paradigms in programming. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +69,82 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/02/05/functional-programming-in-python/">Functional Programming in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-02-05T02:37:57+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>2:37 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Functional programming is not only use functions.
+Think of “y = f(x)” or “h = f * g”</p>
+
+<p>For comparasion, there are different paradigms in programming.</p>
+
+<ul>
+  <li>Structured/Procedural – Functions, loops, conditions</li>
+  <li>Object-Oriented Programming (OOP) – Classes, objects, methods</li>
+  <li>Functional Programming – Decorators, comprehensions, and generators</li>
+  <li>Logic Programming</li>
+</ul>
+
+<p>Functions in Python are <code>first class value</code>. It can take functions as arguments and return functions like a value.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">function @calc take @f as an argument and use it as a function.</span>
+</span><span class="line"><span class="sd">Something like function pointer in C.</span>
+</span><span class="line"><span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
+</span><span class="line">
+</span><span class="line"><span class="n">calc</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/02/05/functional-programming-in-python/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -679,53 +756,6 @@ concept in machine learning – <code>Boosting</code>.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/05/25/learn-to-design-a-container/">Learn to Design a Container</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-05-25T19:14:38+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:14 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Container is a collection which help us to store data of different types of data structure.</p>
-
-<p>There are only two types of container in C++/C :</p>
-
-<ul>
-  <li>array</li>
-  <li>structure</li>
-</ul>
-
-<p>C++ could provide more container but it didn’t.</p>
-
-<p><strong>Give a man a fish and you feed him for a day; teach a man to fish and you feed him for a lifetime; knowledge is the best charity;</strong></p>
-
-<p>:)</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/05/25/learn-to-design-a-container/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -749,6 +779,10 @@ Hello, world
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/09/04/problems-with-linked-list/">Problems With Linked List</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/08/24/search-algorithm-in-graph/">Search Algorithm in Graph</a>
       </li>
     
@@ -764,10 +798,6 @@ Hello, world
         <a href="/blog/2016/04/09/iterater-and-generator-in-python/">Iterater and Generator in Python</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/04/09/tuple-and-list-in-python/">Tuple and List in Python</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -775,7 +805,7 @@ Hello, world
 <section> 
   <h1>Categories</h1> 
   <ul id="categories"> 
-    <li class='category'><a href='/blog/categories/algorithm/'>algorithm (3)</a></li>
+    <li class='category'><a href='/blog/categories/algorithm/'>algorithm (4)</a></li>
 <li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
 <li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
 <li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
