@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithm | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-09-05T23:36:32+08:00</updated>
+  <updated>2016-10-20T23:36:02+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -25,6 +25,8 @@
 <p>For single Linked list:</p>
 
 <p><img src="/images/img_for_2016_09/Singly-linked-list.svg" alt="images" /></p>
+
+<!-- more -->
 
 <p>A linked list whose nodes contain two fields: an integer value and a link to the next node. The last node is linked to a terminator used to signify the end of the list.</p>
 

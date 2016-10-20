@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-09-05T23:36:32+08:00</updated>
+  <updated>2016-10-20T23:36:02+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,279 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The Brief Introduction to the Architecture of JUnit4]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/09/11/the-brief-introduction-to-the-archtecture-of-junit4/"/>
+    <updated>2016-09-11T15:44:46+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/09/11/the-brief-introduction-to-the-archtecture-of-junit4</id>
+    <content type="html"><![CDATA[<p>JUnit is a good framework for developer to finish testing tasks. 
+I also use JUnit to help me with testing. From the perspective of a good 
+programmer, the source code of JUnit is also a wonderful example to learn
+how to write more good style code in Java.</p>
+
+<p>In this article, I would like to try my best to share my view of JUnit.
+The version of JUnit what I talked is JUnit4 in this article.</p>
+
+<h3 id="how-junit-start-to-run">How JUnit start to run?</h3>
+
+<p>Most Java developers work under the IDE like eclipse, Intellij IDEA and so on. It’s no doubt that the success of Java can’t without the development of IDE in this years.
+But there also will be a satire that some Java programmer just use this framework and have no idea about how it works.</p>
+
+<p>Here is a simple demo for how to use JUnit to test your program.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class="Java"><span class="line"><span class="c1">// MyTest.java</span>
+</span><span class="line"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTest</span> <span class="o">{</span>
+</span><span class="line">    <span class="nd">@Before</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">before</span><span class="o">(){</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;before&quot;</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nd">@Test</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testFunc</span><span class="o">(){</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;testFunc&quot;</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nd">@After</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">after</span><span class="o">(){</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;after&quot;</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>I referenced the point of someone’s view about Java programmer.</p>
+
+<blockquote>
+  <p>“They press down the green buttion in their IDE, and the testing program just run. There even does’t show a main() function in their testing program. They also don’t think why it works and how it can run successfully? Why java program can run without a main() function? It’s a magic? No, please think more deeply and don’t make your self look like an innocent beginner.”</p>
+</blockquote>
+
+<p>With the help of IDE and framework, it’s more and more easy for the developer to finish their project. 
+It <strong>DO</strong> help the developer to accelerate the process to finish a project. It also hide some basical information about how program start to run.</p>
+
+<p>With the IDE, you still a programmer but not a magician :)</p>
+
+<ul>
+  <li>Why <code>MyTest.java</code> could run without main() function?</li>
+  <li>Why the program will run with just pressing the button in your IDE?</li>
+</ul>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_09/IntellijJUnitCallFrame.jpg" align="middle" /></p>
+
+<p>The reason is that IDE will integrated with some plugin. Some GUI button are corelated with that plugin.(Eg. Intellij IDEA have a junit-plugin for JUnit Framework). After you press the button, the plugin start to run and it will call the entrance of the framework for you. You can see that in the image, the first function called by java is <code>JUnitStarter</code> which is on package <code>com.intellij</code>. Finally, it will enter in <code>org.junit</code> which is the JUnit framework package.</p>
+
+<p>You can also see the output of the console in your IDE. You can find that there is commands like this:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="Java"><span class="line">    <span class="nl">D:</span><span class="err">\</span><span class="n">JAVA_ENV</span><span class="err">\</span><span class="n">jdk1</span><span class="o">.</span><span class="mi">8</span><span class="err">\</span><span class="n">bin</span><span class="err">\</span><span class="n">java</span> <span class="o">-</span><span class="nl">agentlib:</span><span class="n">jdwp</span><span class="o">=</span><span class="n">transport</span><span class="o">=</span><span class="n">dt_socket</span><span class="o">,</span><span class="n">address</span><span class="o">=</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="o">:</span><span class="mi">58641</span><span class="o">,</span><span class="n">suspend</span><span class="o">=</span><span class="n">y</span><span class="o">,</span><span class="n">server</span><span class="o">=</span><span class="n">n</span> <span class="o">-</span><span class="n">ea</span> <span class="o">-</span><span class="n">Dfile</span><span class="o">.</span><span class="na">encoding</span><span class="o">=</span><span class="n">GBK</span> <span class="o">-</span><span class="n">classpath</span> <span class="s">&quot;D:\IntelliJ IDEA\lib\idea_rt.jar;    ... A LOT OF JAR ...     E:\Java Framework Source\junit4-master\out\production\main&quot;</span> <span class="n">com</span><span class="o">.</span><span class="na">intellij</span><span class="o">.</span><span class="na">rt</span><span class="o">.</span><span class="na">execution</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">JUnitStarter</span> <span class="o">-</span><span class="n">ideVersion5</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">MyTest</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>For simplicity, the commands over there can be simplied into the below procesure under the CMD or Linux-Shell.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="Java"><span class="line"><span class="nl">Compile:</span>
+</span><span class="line">    <span class="n">javac</span> <span class="o">-</span><span class="n">cp</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="nl">testclasses:</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">junit</span><span class="o">-</span><span class="mf">4.8</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="na">jar</span> <span class="n">MyTest</span><span class="o">.</span><span class="na">java</span>
+</span><span class="line">
+</span><span class="line"><span class="nl">Run:</span>
+</span><span class="line">    <span class="n">java</span>  <span class="o">-</span><span class="n">cp</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="nl">testclasses:</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">junit</span><span class="o">-</span><span class="mf">4.8</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="na">jar</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">JUnitCore</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">MyTest</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Now, the answer is clear that IDE just use a plugin to call the entrance of the framework instead of calling it by yourself under the OS console.</p>
+
+<p>If you use <code>JUnitCore</code> to run your test, <code>JUnitCore</code> then uses reflection to find an appropriate Runner for the passed test classes. One step here is to look for a @RunWith annotation on the test class. If no other Runner is found the default runner (BlockJUnit4ClassRunner) will be used. The Runner will be instantiated and the test class will be passed to the Runner. Now it is Job of the Runner to instantiate and run the passed test class.</p>
+
+<p>Let’s start to look the architecture of the JUnit Framework.</p>
+
+<h3 id="the-high-level-view-of-junit">The high level view of JUnit</h3>
+
+<p>There are two main abstract model for JUnit framework. The one of it is the abstraction of test unit.
+Each test unit has its own scope, name, initial state and the way how to release the resouces which are allocated during the testing time.</p>
+
+<p>For JUnit4, it use this inheritance model to represent that concept.</p>
+
+<p>Review the skeleton of <code>MyTest.java</code>, the test routine is around the test class. Here is the class <code>MyTest</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="Java"><span class="line"><span class="c1">// MyTest.java</span>
+</span><span class="line"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">;</span>
+</span><span class="line"><span class="o">...</span>
+</span><span class="line">    <span class="nd">@Test</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testFunc</span><span class="o">(){</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;testFunc&quot;</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">...</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_09/JUnitInheritance2.jpg" alt="images" /></p>
+
+<p>With the annotation, the framework use the reflection to get the meta-information of the test unit.</p>
+
+<p>A class has it’s own member so JUnit use abstract class <code>FrameworkMember</code> to represent it. 
+Class member can be classify into <code>field</code> and <code>method</code>.
+So JUnit use class <code>FrameworkFiled</code> and <code>FrameworkMethod</code> which inherite from <code>FrameworkMember</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">class</span> <span class="nc">FrameworkField</span> <span class="kd">extends</span> <span class="n">FrameworkMember</span><span class="o">&lt;</span><span class="n">FrameworkField</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class="line">        <span class="kd">private</span> <span class="kd">final</span> <span class="n">Field</span> <span class="n">field</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">        <span class="o">...</span> <span class="o">...</span>
+</span><span class="line"><span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">/**</span>
+</span><span class="line"><span class="cm"> * Represents a method on a test class to be invoked at the appropriate point in</span>
+</span><span class="line"><span class="cm"> * test execution. These methods are usually marked with an annotation (such as</span>
+</span><span class="line"><span class="cm"> * {@code @Test}, {@code @Before}, {@code @After}, {@code @BeforeClass},</span>
+</span><span class="line"><span class="cm"> * {@code @AfterClass}, etc.)</span>
+</span><span class="line"><span class="cm"> *</span>
+</span><span class="line"><span class="cm"> * @since 4.5</span>
+</span><span class="line"><span class="cm"> */</span>
+</span><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FrameworkMethod</span> <span class="kd">extends</span> <span class="n">FrameworkMember</span><span class="o">&lt;</span><span class="n">FrameworkMethod</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class="line">        <span class="kd">private</span> <span class="kd">final</span> <span class="n">Method</span> <span class="n">method</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">        <span class="o">...</span> <span class="o">...</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>FrameworkField</code> maintain a private object of class <code>Field</code> which is used in <strong>reflection</strong>. So do <code>FrameworkMethod</code>.</p>
+
+<p>JUnit tests are started using the <code>JUnitCore</code> class. It will can runners to finish the task.
+The other important heritance show below there.</p>
+
+<p><img src="http://jasonleaster.github.io/images/img_for_2016_09/JUnitInheritance1.jpg" alt="images" /></p>
+
+<p>The <code>public class AllDefaultPossibilitiesBuilder extends RunnerBuilder </code>will be called and try to find a runner to run the test class which is written by user.</p>
+
+<p>Finally, <code>BlockJUnit4ClassRunner</code> will be called.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="cm">/**</span>
+</span><span class="line"><span class="cm"> * Implements the JUnit 4 standard test case class model, as defined by th</span>
+</span><span class="line"><span class="cm"> * annotations in the org.junit package. </span>
+</span><span class="line">
+</span><span class="line"><span class="cm"> * It has a much simpler implementation based on {@link Statement}s,</span>
+</span><span class="line"><span class="cm"> * allowing new operations to be inserted into the appropriate point in the</span>
+</span><span class="line"><span class="cm"> * execution flow.</span>
+</span><span class="line"><span class="cm"> */</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BlockJUnit4ClassRunner</span> <span class="kd">extends</span> <span class="n">ParentRunner</span><span class="o">&lt;</span><span class="n">FrameworkMethod</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ConcurrentMap</span><span class="o">&lt;</span><span class="n">FrameworkMethod</span><span class="o">,</span> <span class="n">Description</span><span class="o">&gt;</span> <span class="n">methodDescriptions</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConcurrentHashMap</span><span class="o">&lt;</span><span class="n">FrameworkMethod</span><span class="o">,</span> <span class="n">Description</span><span class="o">&gt;();</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">...</span> <span class="o">...</span>
+</span><span class="line">
+</span><span class="line">    <span class="nd">@Override</span>
+</span><span class="line">    <span class="kd">protected</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">FrameworkMethod</span><span class="o">&gt;</span> <span class="nf">getChildren</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="c1">// scan test class for methonds annotated with @Test</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nd">@Override</span>
+</span><span class="line">    <span class="kd">protected</span> <span class="n">Description</span> <span class="nf">describeChild</span><span class="o">(</span><span class="n">FrameworkMethod</span> <span class="n">method</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="c1">// create Description based on method name</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nd">@Override</span>
+</span><span class="line">    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">runChild</span><span class="o">(</span><span class="kd">final</span> <span class="n">FrameworkMethod</span> <span class="n">method</span><span class="o">,</span> <span class="n">RunNotifier</span> <span class="n">notifier</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="cm">/* method not annotated with @Ignore */</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="c1">// run methods annotated with @Before</span>
+</span><span class="line">            <span class="c1">// run test method</span>
+</span><span class="line">            <span class="c1">// run methods annotated with @After</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">...</span> <span class="o">...</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="summary">Summary</h3>
+
+<p>Reference: 
+1. http://www.mscharhag.com/java/understanding-junits-runner-architecture</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Problems With Linked List]]></title>
@@ -25,6 +298,8 @@
 <p>For single Linked list:</p>
 
 <p><img src="http://jasonleaster.github.io/images/img_for_2016_09/Singly-linked-list.svg" alt="images" /></p>
+
+<!-- more -->
 
 <p>A linked list whose nodes contain two fields: an integer value and a link to the next node. The last node is linked to a terminator used to signify the end of the list.</p>
 
@@ -4710,1446 +4985,6 @@ For example:</p>
 <p>Photo by Jason Leaster</p>
 
 <p><img src="http://jasonleaster.github.io/images/img_for_2015_06_17/street.png" alt="images" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Memory Model of Objects in C++]]></title>
-    <link href="http://jasonleaster.github.io/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus/"/>
-    <updated>2015-06-13T19:48:42+08:00</updated>
-    <id>http://jasonleaster.github.io/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus</id>
-    <content type="html"><![CDATA[<p>In this blog, I assume that you have a basic background about C++ and know that there is a “monster” we call it as <code>virtual table</code> :)</p>
-
-<p>If there is virtual member function in your class’s definition, there will be a virtual table.</p>
-
-<p>Compiler will generate a pointer which’s name is <code>_vprt</code> and use this pointer to find the virtual table.</p>
-
-<!-- more -->
-
-<p>The function below there is very important for us to understand the C++ object model.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-</span><span class="line"><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="n">get_element</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">obj</span><span class="p">)))</span> <span class="o">+</span> <span class="n">offset</span> <span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Function <code>get_element</code> take the reference of object which’s type is T(I used template technology) and <code>offset</code>.</p>
-
-<p>We get the address of this object by <code>&amp;obj</code> and then we cast it into pointer which point to unsigned long and then we dereference that pointer. Acctually, the pointer which we dereferenced in function <code>get_element</code> is the <code>_vprt</code>.</p>
-
-<p>After we get <code>_vprt</code>, we cast it into <code>unsigned long*</code> again and add <code>offset</code> to get others pointers in virtual table which contains all pointers that point to class virtual member functions.</p>
-
-<p>If we dereference the return value of this function, we will get the pointer which point to the begin of function. Fantastic :)</p>
-
-<h3 id="single-object">Single Object</h3>
-
-<p>First of all, let’s take a glance at this demo:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*******************************************************************</span>
-</span><span class="line"><span class="cm">Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">Date        :   2015.06.13</span>
-</span><span class="line"><span class="cm">File        :   meomory_model_for_single_object.cpp</span>
-</span><span class="line"><span class="cm">E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> ******************************************************************/</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">typedef</span>  <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">FUN</span><span class="p">)</span> <span class="p">(</span><span class="kt">void</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Base</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Base</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">100</span><span class="p">){</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::g()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">h</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::h()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Base::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Base::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">            Private Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-</span><span class="line"><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="n">get_element</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">obj</span><span class="p">)))</span> <span class="o">+</span> <span class="n">offset</span> <span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Base</span> <span class="n">b</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">b</span><span class="p">.</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">            The address which point virtual</span>
-</span><span class="line"><span class="cm">            function&#39;s implementation in virtual table</span>
-</span><span class="line"><span class="cm">        */</span>
-</span><span class="line">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Pointer in Virutal Table: &quot;</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="cm">/* Calling function by pointer in virtual table */</span>
-</span><span class="line">        <span class="p">((</span><span class="n">FUN</span><span class="p">)(</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="p">)))</span> <span class="p">();</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>There are data member <code>num</code> and <code>prv_data</code> with different access label in <code>class base</code>. There also have virtual functions and normal member functions in this class. So … what’s the memory model of this class look like?</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/single_object_memory_model.png" alt="images" /></p>
-
-<p>The output of that demo:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/output1.png" alt="images" /></p>
-
-<h3 id="single-inheritance">Single Inheritance</h3>
-
-<p>The inheritance relationship between the base class and derived class :</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/single_inheritance_model.png" alt="images" /></p>
-
-<p>It’s single inheritance that base class must be only single type.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*******************************************************************</span>
-</span><span class="line"><span class="cm">Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">Date        :   2015.06.12</span>
-</span><span class="line"><span class="cm">File        :   virtual_function_model.cpp</span>
-</span><span class="line"><span class="cm">E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> ******************************************************************/</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">typedef</span>  <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">FUN</span><span class="p">)</span> <span class="p">(</span><span class="kt">void</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Base</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Base</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::g()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">h</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::h()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Base::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Base::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Base</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Derived</span><span class="p">()</span><span class="o">:</span><span class="n">num</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="n">prv_data</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">x</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::x()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">y</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::y()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::g()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">            <span class="n">Base</span><span class="o">::</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-</span><span class="line"><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="n">get_element</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">obj</span><span class="p">)))</span> <span class="o">+</span> <span class="n">offset</span> <span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Base</span> <span class="n">b</span><span class="p">;</span>
-</span><span class="line">    <span class="n">Derived</span> <span class="n">d</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">b</span><span class="p">.</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">d</span><span class="p">.</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">            The address which point virtual</span>
-</span><span class="line"><span class="cm">            function&#39;s implementation in virtual table</span>
-</span><span class="line"><span class="cm">        */</span>
-</span><span class="line">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Pointer in Virutal Table: &quot;</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="cm">/* Calling function by pointer in virtual table */</span>
-</span><span class="line">        <span class="p">((</span><span class="n">FUN</span><span class="p">)(</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="p">)))</span> <span class="p">();</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Pointer in Virutal Table: &quot;</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">        <span class="p">((</span><span class="n">FUN</span><span class="p">)(</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">i</span><span class="p">)))</span> <span class="p">();</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Memory Model:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/single_inheritance_model.png" alt="images" /></p>
-
-<p>Output:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/output2.png" alt="images" /></p>
-
-<p>We find that:</p>
-
-<ul>
-  <li>
-    <p>The virtual table pointer _vprt is at the beginning of the object.</p>
-  </li>
-  <li>
-    <p>Data member store into object and have nothing with the access label but according to the sequence of declaration.</p>
-  </li>
-  <li>
-    <p>In single inheritance model, the virtual function wichi is re-implement will be update in all virtual table.</p>
-  </li>
-</ul>
-
-<h3 id="multiply-inheritance">Multiply Inheritance</h3>
-
-<p>Now, you find that there is only one virtual table in our object under single inheritance situation. But … How about things going on with multiply inheritance(MI) ?</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/multiple_inheritance_model.png" alt="images" /></p>
-
-<p>Let’s go and test it.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*******************************************************************</span>
-</span><span class="line"><span class="cm">Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">Date        :   2015.06.13</span>
-</span><span class="line"><span class="cm">File        :   virtual_function_for_multiple_inheritance.cpp</span>
-</span><span class="line"><span class="cm">E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> ******************************************************************/</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">typedef</span>  <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">FUN</span><span class="p">)</span> <span class="p">(</span><span class="kt">void</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Base_1</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Base_1</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base_1::f() </span><span class="se">\t</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base_1::g() </span><span class="se">\t</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">h</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base_1::h() </span><span class="se">\t</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Base_2</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Base_2</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base_2::f() </span><span class="se">\t</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">x</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base_2::x() </span><span class="se">\t</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Base_3</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Base_3</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">300</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base_3::g() </span><span class="se">\t</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Base_3</span><span class="p">,</span> <span class="k">public</span> <span class="n">Base_2</span><span class="p">,</span> <span class="k">public</span> <span class="n">Base_1</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Derived</span><span class="p">()</span><span class="o">:</span><span class="n">num</span><span class="p">(</span><span class="mi">42</span><span class="p">),</span> <span class="n">prv_data</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">y</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::y() </span><span class="se">\t</span><span class="s">&quot;</span> <span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Here we re-implement the virtual function @f().</span>
-</span><span class="line"><span class="cm">           Compiler will rewrite the virtual table</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::f() </span><span class="se">\t</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-</span><span class="line"><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="n">get_element</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">vprt_offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span> <span class="o">+</span> <span class="n">vprt_offset</span><span class="p">))</span> <span class="o">+</span> <span class="n">offset</span> <span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-</span><span class="line"><span class="kt">void</span> <span class="n">call_vir_func</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">vprt_offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="p">((</span><span class="n">FUN</span><span class="p">)(</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">vprt_offset</span><span class="p">)))</span> <span class="p">();</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Address of function: &quot;</span> <span class="p">;</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">vprt_offset</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Derived</span> <span class="n">d</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Virtual Table of @Base_3 and @Derived:&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Virtual Table of @Base_2:&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base_3</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base_3</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Virtual Table of @Base_1:&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base_3</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base_2</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base_3</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base_2</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base_3</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base_2</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Memory Model:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/multiple_inheritance.png" alt="images" /></p>
-
-<p>Output:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/output3.png" alt="images" /></p>
-
-<p>We can declare some conclusions that:</p>
-
-<ul>
-  <li>
-    <p>Each base class have their own’s virtual table. Assume that The number of base class is N in multiple inheritance. The number of the virtual table is N-1.The virtual table of derived function will be combine into the first base class in the declaration queue of base class.</p>
-  </li>
-  <li>
-    <p>The base virtual table will be update if the derived class rewrite implementation of virtual function in base class.</p>
-  </li>
-</ul>
-
-<h3 id="repeat-inheritance">Repeat Inheritance</h3>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/repeat_inheritance_model.png" alt="images" /></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-<span class="line-number">130</span>
-<span class="line-number">131</span>
-<span class="line-number">132</span>
-<span class="line-number">133</span>
-<span class="line-number">134</span>
-<span class="line-number">135</span>
-<span class="line-number">136</span>
-<span class="line-number">137</span>
-<span class="line-number">138</span>
-<span class="line-number">139</span>
-<span class="line-number">140</span>
-<span class="line-number">141</span>
-<span class="line-number">142</span>
-<span class="line-number">143</span>
-<span class="line-number">144</span>
-<span class="line-number">145</span>
-<span class="line-number">146</span>
-<span class="line-number">147</span>
-<span class="line-number">148</span>
-<span class="line-number">149</span>
-<span class="line-number">150</span>
-<span class="line-number">151</span>
-<span class="line-number">152</span>
-<span class="line-number">153</span>
-<span class="line-number">154</span>
-<span class="line-number">155</span>
-<span class="line-number">156</span>
-<span class="line-number">157</span>
-<span class="line-number">158</span>
-<span class="line-number">159</span>
-<span class="line-number">160</span>
-<span class="line-number">161</span>
-<span class="line-number">162</span>
-<span class="line-number">163</span>
-<span class="line-number">164</span>
-<span class="line-number">165</span>
-<span class="line-number">166</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*******************************************************************</span>
-</span><span class="line"><span class="cm">Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">Date        :   2015.06.14</span>
-</span><span class="line"><span class="cm">File        :   virtual_function_for_repreat_inheritance.cpp</span>
-</span><span class="line"><span class="cm">E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> ******************************************************************/</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">typedef</span>  <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">FUN</span><span class="p">)</span> <span class="p">(</span><span class="kt">void</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Base</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Base</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::g()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">h</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::h()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Base::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Base::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived_1</span><span class="o">:</span> <span class="k">public</span> <span class="n">Base</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Derived_1</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived_1::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">x</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived_1::x()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived_1::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived_1::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived_1::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived_1::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">            <span class="n">Base</span><span class="o">::</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived_2</span><span class="o">:</span> <span class="k">public</span> <span class="n">Base</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Derived_2</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">300</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived_2::g()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived_2::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived_2::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived_2::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived_2::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">            <span class="n">Base</span><span class="o">::</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Derived_2</span><span class="p">,</span> <span class="k">public</span> <span class="n">Derived_1</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Derived</span><span class="p">()</span><span class="o">:</span><span class="n">num</span><span class="p">(</span><span class="mi">42</span><span class="p">),</span> <span class="n">prv_data</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">y</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::y()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Here we re-implement the virtual function @f().</span>
-</span><span class="line"><span class="cm">           Compiler will rewrite the virtual table</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">            <span class="n">Derived_1</span><span class="o">::</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">            <span class="n">Derived_2</span><span class="o">::</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-</span><span class="line"><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="n">get_element</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">vprt_offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span> <span class="o">+</span> <span class="n">vprt_offset</span><span class="p">))</span> <span class="o">+</span> <span class="n">offset</span> <span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-</span><span class="line"><span class="kt">void</span> <span class="n">call_vir_func</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">vprt_offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="p">((</span><span class="n">FUN</span><span class="p">)(</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">vprt_offset</span><span class="p">)))</span> <span class="p">();</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s"> Address of function: &quot;</span> <span class="p">;</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">vprt_offset</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Derived</span> <span class="n">d</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Virtual Table of @Derived, @Derived_2 and @Base:&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Virtual Table of @Derived_1 and @Base:&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Derived_2</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Derived_2</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Derived_2</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Derived_2</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">d</span><span class="p">.</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Memory Model:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/repeat_inheritance.png" alt="images" /></p>
-
-<p>You find that The base object was inherited again and again Output:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/output4.png" alt="images" /></p>
-
-<p>It’s may not what we want that the base class is inherited repeatedly. So C++ use the <code>virtual base</code> technology to solve this problem :)</p>
-
-<h3 id="diamond-inheritance">Diamond Inheritance</h3>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/diamond_inheritance_model.png" alt="images" /></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-<span class="line-number">130</span>
-<span class="line-number">131</span>
-<span class="line-number">132</span>
-<span class="line-number">133</span>
-<span class="line-number">134</span>
-<span class="line-number">135</span>
-<span class="line-number">136</span>
-<span class="line-number">137</span>
-<span class="line-number">138</span>
-<span class="line-number">139</span>
-<span class="line-number">140</span>
-<span class="line-number">141</span>
-<span class="line-number">142</span>
-<span class="line-number">143</span>
-<span class="line-number">144</span>
-<span class="line-number">145</span>
-<span class="line-number">146</span>
-<span class="line-number">147</span>
-<span class="line-number">148</span>
-<span class="line-number">149</span>
-<span class="line-number">150</span>
-<span class="line-number">151</span>
-<span class="line-number">152</span>
-<span class="line-number">153</span>
-<span class="line-number">154</span>
-<span class="line-number">155</span>
-<span class="line-number">156</span>
-<span class="line-number">157</span>
-<span class="line-number">158</span>
-<span class="line-number">159</span>
-<span class="line-number">160</span>
-<span class="line-number">161</span>
-<span class="line-number">162</span>
-<span class="line-number">163</span>
-<span class="line-number">164</span>
-<span class="line-number">165</span>
-<span class="line-number">166</span>
-<span class="line-number">167</span>
-<span class="line-number">168</span>
-<span class="line-number">169</span>
-<span class="line-number">170</span>
-<span class="line-number">171</span>
-<span class="line-number">172</span>
-<span class="line-number">173</span>
-<span class="line-number">174</span>
-</pre></td><td class="code"><pre><code class="C++"><span class="line"><span class="cm">/*******************************************************************</span>
-</span><span class="line"><span class="cm">Programmer  :   EOF</span>
-</span><span class="line"><span class="cm">Date        :   2015.06.14</span>
-</span><span class="line"><span class="cm">File        :   virtual_function_for_diamond_inheritance.cpp</span>
-</span><span class="line"><span class="cm">E-mail      :   jasonleaster@gmail.com</span>
-</span><span class="line">
-</span><span class="line"><span class="cm"> ******************************************************************/</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">typedef</span>  <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">FUN</span><span class="p">)</span> <span class="p">(</span><span class="kt">void</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Base</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Base</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::g()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">h</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Base::h()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Base::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Base::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived_1</span><span class="o">:</span> <span class="k">virtual</span> <span class="k">public</span> <span class="n">Base</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Derived_1</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived_1::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">x</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived_1::x()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived_1::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived_1::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived_1::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived_1::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">            <span class="n">Base</span><span class="o">::</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived_2</span><span class="o">:</span> <span class="k">virtual</span> <span class="k">public</span> <span class="n">Base</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Derived_2</span><span class="p">()</span><span class="o">:</span><span class="n">prv_data</span><span class="p">(</span><span class="mi">300</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived_2::g()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived_2::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived_2::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived_2::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived_2::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">            <span class="n">Base</span><span class="o">::</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Private  Data</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Derived_2</span><span class="p">,</span> <span class="k">public</span> <span class="n">Derived_1</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">public</span><span class="o">:</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">Derived</span><span class="p">()</span><span class="o">:</span><span class="n">num</span><span class="p">(</span><span class="mi">42</span><span class="p">),</span> <span class="n">prv_data</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">y</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::y()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="cm">/*</span>
-</span><span class="line"><span class="cm">           Here we re-implement the virtual function @f().</span>
-</span><span class="line"><span class="cm">           Compiler will rewrite the virtual table</span>
-</span><span class="line"><span class="cm">         */</span>
-</span><span class="line">        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; Derived::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">        <span class="kt">void</span> <span class="n">show</span><span class="p">()</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::num &quot;</span>        <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::prv_data &quot;</span>   <span class="o">&lt;&lt;</span> <span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived::num &quot;</span>       <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;&amp;Derived::prv_data &quot;</span>  <span class="o">&lt;&lt;</span> <span class="o">&amp;</span><span class="n">prv_data</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">            <span class="n">Derived_1</span><span class="o">::</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">            <span class="n">Derived_2</span><span class="o">::</span><span class="n">show</span><span class="p">();</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line">    <span class="k">private</span><span class="o">:</span>
-</span><span class="line">        <span class="kt">int</span> <span class="n">prv_data</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-</span><span class="line"><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="n">get_element</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">vprt_offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">return</span> <span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span> <span class="o">+</span> <span class="n">vprt_offset</span><span class="p">))</span> <span class="o">+</span> <span class="n">offset</span> <span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-</span><span class="line"><span class="kt">void</span> <span class="n">call_vir_func</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">vprt_offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="p">((</span><span class="n">FUN</span><span class="p">)(</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">vprt_offset</span><span class="p">)))</span> <span class="p">();</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s"> Address of function: &quot;</span> <span class="p">;</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span><span class="o">*</span><span class="n">get_element</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">vprt_offset</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">Derived</span> <span class="n">d</span><span class="p">;</span>
-</span><span class="line"><span class="c1">//    d.show();</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Virtual Table of @Derived::Derived_2&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Virtual Table of @Derived::Derived_1&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Derived_2</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base</span><span class="p">))</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Derived_2</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base</span><span class="p">))</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm">    cout &lt;&lt; (int*)&amp;d &lt;&lt; endl;</span>
-</span><span class="line"><span class="cm">    cout &lt;&lt; (int*)&amp;d.Derived_2::num &lt;&lt; endl;</span>
-</span><span class="line"><span class="cm">    cout &lt;&lt; (int*)&amp;d.Derived_1::num &lt;&lt; endl;</span>
-</span><span class="line"><span class="cm">    cout &lt;&lt; (int*)&amp;d.num &lt;&lt; endl;</span>
-</span><span class="line"><span class="cm">    cout &lt;&lt; (int*)&amp;d.Base::num &lt;&lt; endl;</span>
-</span><span class="line"><span class="cm">*/</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Virtual Table of @Derived::Derived_2::Base&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Derived</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base</span><span class="p">))</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Derived</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base</span><span class="p">))</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">    <span class="n">call_vir_func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Derived</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Base</span><span class="p">))</span><span class="o">/</span><span class="mi">8</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>It’s a hard time to draw this picture. But thank god… I make it.</p>
-
-<p>Memory Model:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/diamond_inheritance.png" alt="images" /></p>
-
-<p>Output:</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/output5.png" alt="images" /></p>
-
-<p>ATTENTION: <strong>Every class in C++ only have ONE virtual table, different objects of the same class will share the same virtual table of that class!</strong></p>
-
-<hr />
-
-<p>Photo by Jason Leaster images</p>
-
-<p><img src="http://jasonleaster.github.io/images/img_for_2015_06_12/end.png" alt="images" /></p>
 ]]></content>
   </entry>
   

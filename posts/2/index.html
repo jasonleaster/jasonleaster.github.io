@@ -9,8 +9,7 @@
   <meta name="author" content="Jason Leaster">
 
   
-  <meta name="description" content="Functional programming is not only use functions.
-Think of “y = f(x)” or “h = f * g” For comparasion, there are different paradigms in programming. &hellip;">
+  <meta name="description" content="Python program is compiled down to bytecode which is sort of like assembly for the python virtual machine. The interpreter executes each of these &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +68,55 @@ Think of “y = f(x)” or “h = f * g” For comparasion, there are different 
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/02/06/brief-introduction-to-opcodes-in-python/">Brief Introduction to Opcodes in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-02-06T18:39:50+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>6:39 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Python program is compiled down to bytecode which is sort of like assembly for the python virtual machine. The interpreter executes each of these bytecodes one by one.</p>
+
+<p>Let’s look the following code. It’s easy to understand what it is doing without my explanation.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="p">[</span><span class="n">demo</span><span class="o">.</span><span class="n">py</span><span class="p">]</span>
+</span><span class="line">
+</span><span class="line"><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span class="line"><span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</span><span class="line"><span class="k">print</span> <span class="s">&quot;x, y, z&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/02/06/brief-introduction-to-opcodes-in-python/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -718,44 +766,6 @@ concept in machine learning – <code>Boosting</code>.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus/">Memory Model of Objects in C++</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-06-13T19:48:42+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:48 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In this blog, I assume that you have a basic background about C++ and know that there is a “monster” we call it as <code>virtual table</code> :)</p>
-
-<p>If there is virtual member function in your class’s definition, there will be a virtual table.</p>
-
-<p>Compiler will generate a pointer which’s name is <code>_vprt</code> and use this pointer to find the virtual table.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/06/13/memory-model-of-objects-in-c-plus-plus/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -779,6 +789,10 @@ Hello, world
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/09/11/the-brief-introduction-to-the-archtecture-of-junit4/">The Brief Introduction to the Architecture of JUnit4</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/09/04/problems-with-linked-list/">Problems With Linked List</a>
       </li>
     
@@ -794,10 +808,6 @@ Hello, world
         <a href="/blog/2016/05/19/training-cascade-with-opencv/">Training Cascade With OpenCV</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/04/09/iterater-and-generator-in-python/">Iterater and Generator in Python</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -809,7 +819,7 @@ Hello, world
 <li class='category'><a href='/blog/categories/c/'>c (2)</a></li>
 <li class='category'><a href='/blog/categories/cplusplus/'>cplusplus (7)</a></li>
 <li class='category'><a href='/blog/categories/essay/'>essay (2)</a></li>
-<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (2)</a></li>
 <li class='category'><a href='/blog/categories/labs/'>labs (1)</a></li>
 <li class='category'><a href='/blog/categories/machinelearning/'>machinelearning (4)</a></li>
 <li class='category'><a href='/blog/categories/opencv/'>opencv (1)</a></li>
