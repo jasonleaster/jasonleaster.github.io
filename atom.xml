@@ -4,7 +4,7 @@
   <title><![CDATA[EOF]]></title>
   <link href="http://jasonleaster.github.io/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-10-20T23:36:02+08:00</updated>
+  <updated>2016-11-09T22:17:08+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -25,6 +25,8 @@ how to write more good style code in Java.</p>
 
 <p>In this article, I would like to try my best to share my view of JUnit.
 The version of JUnit what I talked is JUnit4 in this article.</p>
+
+<!-- more -->
 
 <h3 id="how-junit-start-to-run">How JUnit start to run?</h3>
 
