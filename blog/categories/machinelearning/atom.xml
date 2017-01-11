@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Machinelearning | EOF]]></title>
   <link href="http://jasonleaster.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2016-11-09T22:17:08+08:00</updated>
+  <updated>2017-01-11T22:28:44+08:00</updated>
   <id>http://jasonleaster.github.io/</id>
   <author>
     <name><![CDATA[Jason Leaster]]></name>
@@ -12,6 +12,22 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Perceptron]]></title>
+    <link href="http://jasonleaster.github.io/blog/2016/11/20/perceptron/"/>
+    <updated>2016-11-20T16:31:24+08:00</updated>
+    <id>http://jasonleaster.github.io/blog/2016/11/20/perceptron</id>
+    <content type="html"><![CDATA[<h3 id="what-is-perceptron-">What is Perceptron ?</h3>
+
+<p>For problems about binary classification, perceptron is a linear model for classification. The input is the feature vectors and the output is the label({+1, -1})  of the instances. It’s also a typical supervised algorithm in machine learning.</p>
+
+<p>In separable problems, perceptron training can also aim at finding the largest separating margin between the classes.</p>
+
+<p>The definition of Perceptron:
+&gt;</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Training Cascade With OpenCV]]></title>
