@@ -1,0 +1,747 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="jasonleaster, EOF, 刘子健" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="EOF" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="I try to collect problems about Binary Search Tree (BST) which are asked in interview frequently.
+Basicly, here is the definition of Binary Search Tree. And I show the way how to implement the basic o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Binary Search Tree">
+<meta property="og:url" content="http://jasonleaster.github.io/2015/09/24/2015-09-24-binary-search-tree/index.html">
+<meta property="og:site_name" content="EOF">
+<meta property="og:description" content="I try to collect problems about Binary Search Tree (BST) which are asked in interview frequently.
+Basicly, here is the definition of Binary Search Tree. And I show the way how to implement the basic o">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_09_25/bst.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_09_25/1.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_09_25/2.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_09_25/highschool.jpg">
+<meta property="og:updated_time" content="2016-02-04T05:05:31.139Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Binary Search Tree">
+<meta name="twitter:description" content="I try to collect problems about Binary Search Tree (BST) which are asked in interview frequently.
+Basicly, here is the definition of Binary Search Tree. And I show the way how to implement the basic o">
+<meta name="twitter:image" content="http://jasonleaster.github.io/images/img_for_2015_09_25/bst.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://jasonleaster.github.io/2015/09/24/2015-09-24-binary-search-tree/"/>
+
+
+
+
+
+  <title> Binary Search Tree | EOF </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">EOF</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">In this life, be myself!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about-me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-recommends">
+          <a href="/recommends" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-star"></i> <br />
+            
+            推荐
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2015/09/24/2015-09-24-binary-search-tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jason Leaster">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/liuzijian.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EOF">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Binary Search Tree
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-09-24T01:28:33+08:00">
+                2015-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>I try to collect problems about <code>Binary Search Tree (BST)</code> which are asked in interview frequently.</p>
+<p>Basicly, here is the definition of Binary Search Tree. And I show the way how to implement the basic operation like <code>insert</code>, <code>delete</code> and so on.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span><span class="params">()</span> :</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, num = <span class="number">-1</span>)</span> :</span></div><div class="line">      self.val = num</div><div class="line">      self.right  = <span class="keyword">None</span></div><div class="line">      self.left   = <span class="keyword">None</span></div></pre></td></tr></table></figure>
+<p>You could find all my practices with BST in github: <a href="https://github.com/jasonleaster/Algorithm/blob/master/Binary_Search_Tree/Python_version/bst.py" target="_blank" rel="external">BST</a></p>
+<p><img src="/images/img_for_2015_09_25/bst.png" alt="images"></p>
+<a id="more"></a>
+<p>There are three different ways to travel a BST. N(node), L(left subtree), R(right subtree)</p>
+<ul>
+<li><p>NLR: Firstly the traveller access the data of the Node(N) and then it enter into the left sub-tree, travel the right sub-tree</p>
+</li>
+<li><p>LNR</p>
+</li>
+<li><p>LRN</p>
+</li>
+</ul>
+<p>It’s very easy and obvious to implement the recursive definition of the three different traveller.</p>
+<p>You will find that it’s a very efficient way to understand what means Pre-traveller, In-traveller and Post-traveller.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="string">"""</span></div><div class="line">Recursive definition</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">pre_traveller</span><span class="params">(self, node)</span>:</span></div><div class="line">    <span class="keyword">if</span> node == <span class="keyword">None</span> :</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="keyword">print</span> node.val</div><div class="line">    self.pre_traveller(node.left)</div><div class="line">    self.pre_traveller(node.right)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">in_traveller</span><span class="params">(self, node)</span>:</span></div><div class="line">    <span class="keyword">if</span> node == <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line"></div><div class="line">    self.in_traveller(node.left)</div><div class="line">    <span class="keyword">print</span> node.val</div><div class="line">    self.in_traveller(node.right)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">post_traveller</span><span class="params">(self, node)</span>:</span></div><div class="line">    <span class="keyword">if</span> node == <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line"></div><div class="line">    self.post_traveller(node.left)</div><div class="line">    self.post_traveller(node.right)</div><div class="line">    <span class="keyword">print</span> node.val</div></pre></td></tr></table></figure>
+<p>But the interview officer may not be satisfy with your recursive implementation. Take some time to understand the iteratly implementation below there.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="string">"""</span></div><div class="line">Iterately implementation</div><div class="line"></div><div class="line">Given a binary tree, return the preorder traversal of </div><div class="line">its nodes' values.</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">preorderTraversal</span><span class="params">(self, root)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    :type root: TreeNode</div><div class="line">    :rtype: List[int]</div><div class="line">    """</div><div class="line">    <span class="keyword">if</span> root <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span> []</div><div class="line"></div><div class="line">    stack = [root]</div><div class="line">    ret = []</div><div class="line">    </div><div class="line">    <span class="keyword">while</span> len(stack) != <span class="number">0</span>:</div><div class="line">        node = stack.pop()</div><div class="line">        ret.append(node.val)</div><div class="line">        <span class="keyword">if</span> node.right <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">            stack.append(node.right)</div><div class="line">        <span class="keyword">if</span> node.left <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">            stack.append(node.left)</div><div class="line">            </div><div class="line">    <span class="keyword">return</span> ret</div><div class="line"></div><div class="line"><span class="string">"""</span></div><div class="line">Given a binary tree, return the inorder traversal </div><div class="line">of its nodes' values.</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">inorderTraversal</span><span class="params">(self, root)</span>:</span></div><div class="line">    res, stack = [], []</div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        <span class="keyword">while</span> root:</div><div class="line">            stack.append(root)</div><div class="line">            root = root.left</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> stack:</div><div class="line">            <span class="keyword">return</span> res</div><div class="line">        node = stack.pop()</div><div class="line">        res.append(node.val)</div><div class="line">        root = node.right</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">postorderTraversal</span><span class="params">(self, root)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    :type root: TreeNode</div><div class="line">    :rtype: List[int]</div><div class="line">    """</div><div class="line">    res   = []</div><div class="line">    stack = [root]</div><div class="line">    </div><div class="line">    <span class="keyword">while</span> len(stack):</div><div class="line">        node = stack.pop()</div><div class="line">        <span class="keyword">if</span> node:</div><div class="line">            res.append(node.val)</div><div class="line">            stack.append(node.left)</div><div class="line">            stack.append(node.right)</div><div class="line">            </div><div class="line">    <span class="keyword">return</span> res[::<span class="number">-1</span>]</div></pre></td></tr></table></figure>
+<p>There is another interesting problem that how to travel a BST in level order. Something like this:<br>For example:</p>
+<p>Given binary tree {3,9,20,#,#,15,7},</p>
+<p><img src="/images/img_for_2015_09_25/1.png" alt="images"></p>
+<p>return its level order traversal as:</p>
+<p><img src="/images/img_for_2015_09_25/2.png" alt="images"></p>
+<p>At this moment, you should try to use some basic data structure to solve this problem. Don’t forget STACK :)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="string">"""</span></div><div class="line">Given a binary tree, return the level order traversal of </div><div class="line">its nodes' values. (ie, from left to right, level by level).</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">levelOrder</span><span class="params">(self, node)</span>:</span></div><div class="line">    <span class="keyword">if</span> node <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span> []</div><div class="line"></div><div class="line">    stack = [node]</div><div class="line">    length = len(stack)</div><div class="line">    ret = []</div><div class="line">    j = <span class="number">0</span></div><div class="line"></div><div class="line">    <span class="keyword">while</span> length != <span class="number">0</span>:</div><div class="line">        ret.append([])</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, length):</div><div class="line">            </div><div class="line">            ret[j].append(stack[i].val)</div><div class="line">            <span class="keyword">if</span> stack[i].left != <span class="keyword">None</span>:</div><div class="line"></div><div class="line">                stack.append(stack[i].left)</div><div class="line">            <span class="keyword">if</span> stack[i].right != <span class="keyword">None</span>:</div><div class="line">                stack.append(stack[i].right)</div><div class="line"></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, length):</div><div class="line">            stack.remove(stack[<span class="number">0</span>])</div><div class="line"></div><div class="line">        length = len(stack)</div><div class="line">        j += <span class="number">1</span></div><div class="line"></div><div class="line">    <span class="keyword">return</span> ret</div></pre></td></tr></table></figure>
+<p>After you solve this problem, you have knew that stack is a efficient and useful ADT. Once you meet a hard problem, try to use another ADT to solve your problem.</p>
+<p>Function <code>isValidBST</code> help us to check whether the tree is a BST. Now, if you have no idea about what means a BST, go to wikipedia and help yourself :)</p>
+<p>You know that if we travel the tree with <code>In-Order traveller</code>, the output of the traveller is sorted from small element to big one.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">isValidBST</span><span class="params">(self, root)</span>:</span></div><div class="line">    A = []</div><div class="line">    A = self.in_traveller(self.root)</div><div class="line"></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(A)):</div><div class="line">        <span class="keyword">if</span> A[i<span class="number">-1</span>] &gt;= A[i]:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">True</span></div></pre></td></tr></table></figure></p>
+<p>There is a joke about how to invert a BST. </p>
+<blockquote>
+<p>Google: 90% of our engineers use the software you wrote (Homebrew), but you can’t invert a binary tree on a whiteboard so fuck off.</p>
+</blockquote>
+<p>It’s easy to solve this problem by recursion.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">        </div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">invertTree</span><span class="params">(self, root)</span>:</span></div><div class="line">    <span class="keyword">if</span> root <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    </div><div class="line">    root.left, root.right = root.right, root.left</div><div class="line">    self.invertTree(root.left)</div><div class="line">    self.invertTree(root.right)</div></pre></td></tr></table></figure>
+<p>You may also be asked to translate a sorted array into BST. So, how to make it?</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">sortedArrayToBST</span><span class="params">(self, nums)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    :type nums: List[int]</div><div class="line">    :rtype: TreeNode</div><div class="line">    """</div><div class="line">    <span class="keyword">return</span> self.helperSortedArrayToBST(nums, <span class="number">0</span>, len(nums)<span class="number">-1</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">helperSortedArrayToBST</span><span class="params">(self, nums, start, end)</span>:</span></div><div class="line">    <span class="keyword">if</span> start &gt; end:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line">        </div><div class="line">    middle = int((start + end)/<span class="number">2</span>)</div><div class="line">    </div><div class="line">    root = TreeNode(nums[middle])</div><div class="line">    root.left  = self.helper(nums, start, middle<span class="number">-1</span>) </div><div class="line">    root.right = self.helper(nums, middle + <span class="number">1</span>, end)</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> root</div></pre></td></tr></table></figure>
+<p>How to use the output of <code>InOrder-Traveller</code> and <code>PostOrder-Traveller</code> to rebuild a BST ?</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="string">"""</span></div><div class="line">Given inorder and postorder traversal of a tree, </div><div class="line">construct the binary tree.</div><div class="line"></div><div class="line">Note:</div><div class="line">You may assume that duplicates do not exist in the tree.</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildTree</span><span class="params">(self, inorder, postorder)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    :type inorder: List[int]</div><div class="line">    :type postorder: List[int]</div><div class="line">    :rtype: TreeNode</div><div class="line">    """</div><div class="line">    <span class="keyword">if</span> len(inorder) == <span class="number">0</span> <span class="keyword">or</span> len(postorder) == <span class="number">0</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line">    </div><div class="line">    index = inorder.index(postorder.pop())</div><div class="line">    root = TreeNode(inorder[index])</div><div class="line">    </div><div class="line">    <span class="comment"># You HAVE TO build right sub-tree first, </span></div><div class="line">    <span class="comment"># otherwise you will get wrong answer</span></div><div class="line">    <span class="comment"># because you poped the last element of @postorder before here.</span></div><div class="line">    root.right = self.buildTree(inorder[index+<span class="number">1</span>:], postorder)</div><div class="line">    root.left  = self.buildTree(inorder[<span class="number">0</span>:index] , postorder)</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> root</div></pre></td></tr></table></figure>
+<hr>
+<p>Photo By Jason Leaster in ChangDe, China</p>
+<p><img src="/images/img_for_2015_09_25/highschool.jpg" alt="images"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/24/2015-07-24-binary-search/" rel="next" title="Binary Search">
+                <i class="fa fa-chevron-left"></i> Binary Search
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/13/2015-12-13-machine-learning-with-boosting/" rel="prev" title="Machine Learning with Boosting">
+                Machine Learning with Boosting <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/liuzijian.jpg"
+               alt="Jason Leaster" />
+          <p class="site-author-name" itemprop="name">Jason Leaster</p>
+           
+              <p class="site-description motion-element" itemprop="description">生无所息，行胜于言</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jason Leaster</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

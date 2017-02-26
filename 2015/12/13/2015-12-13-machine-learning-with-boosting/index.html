@@ -1,0 +1,799 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="jasonleaster, EOF, 刘子健" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="EOF" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="This blog will talk about the theory and implementation about famouseconcept in machine learning – Boosting.
+All algorithms are implemented in Python.
+There are two main tasks which people want to fin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Machine Learning with Boosting">
+<meta property="og:url" content="http://jasonleaster.github.io/2015/12/13/2015-12-13-machine-learning-with-boosting/index.html">
+<meta property="og:site_name" content="EOF">
+<meta property="og:description" content="This blog will talk about the theory and implementation about famouseconcept in machine learning – Boosting.
+All algorithms are implemented in Python.
+There are two main tasks which people want to fin">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/equation.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/stump.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/weakClassifier.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/AdaBoost.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/samples.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/result.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/iter2.jpg">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/iter5.jpg">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/iter10.jpg">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/output_of_boosting_tree.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/street.png">
+<meta property="og:updated_time" content="2016-07-01T05:08:16.130Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Machine Learning with Boosting">
+<meta name="twitter:description" content="This blog will talk about the theory and implementation about famouseconcept in machine learning – Boosting.
+All algorithms are implemented in Python.
+There are two main tasks which people want to fin">
+<meta name="twitter:image" content="http://jasonleaster.github.io/images/img_for_2015_12_13/equation.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://jasonleaster.github.io/2015/12/13/2015-12-13-machine-learning-with-boosting/"/>
+
+
+
+
+
+  <title> Machine Learning with Boosting | EOF </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">EOF</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">In this life, be myself!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about-me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-recommends">
+          <a href="/recommends" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-star"></i> <br />
+            
+            推荐
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2015/12/13/2015-12-13-machine-learning-with-boosting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jason Leaster">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/liuzijian.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EOF">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Machine Learning with Boosting
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-12-13T17:00:47+08:00">
+                2015-12-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MachineLearning/" itemprop="url" rel="index">
+                    <span itemprop="name">MachineLearning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>This blog will talk about the theory and implementation about famouse<br>concept in machine learning – <code>Boosting</code>.</p>
+<p>All algorithms are implemented in Python.</p>
+<p>There are two main tasks which people want to finish with Machine Learning.</p>
+<ul>
+<li>Classification</li>
+<li>Regression</li>
+</ul>
+<p>There are a lot of other ways to do it but now we focus on <code>boosting</code> algorithm. You know that it’s a fantastic way to make our work done.</p>
+<h3 id="Adaboost-for-classification"><a href="#Adaboost-for-classification" class="headerlink" title="Adaboost for classification"></a>Adaboost for classification</h3><p>If you never hear about adaboost, I recommend you to finish the 7-th lab in MIT 6.034. It will help you a lot to understand what I’m taking about. But this lab didn’t build adaboost completely. So, I implement it individually.</p>
+<p>Give the input training samples which have tag with it.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/equation.png" align="middle"> </div>
+
+<p>where x[i] is the feature of the i-th sample point and y[i] is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
+<p>In this algorithm, there are only two different label of samples {-1, +1}.</p>
+<p>Some classifier like decision tree also can work correctly about classification. But it’s also easy to overfitting. So, we can’t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which’s depth is only one. So we call it as <code>decision stump</code>.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/stump.png" align="middle"> </div>
+
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/weakClassifier.png" align="middle"> </div>
+
+<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/AdaBoost.png" align="middle"> </div>
+
+<p>Test case:</p>
+<p>There are training points with two different label. What if we input a point which’s type is unkown, what the result will be?</p>
+<p><img src="/images/img_for_2015_12_13/samples.png" alt="images"></p>
+<p>The test result is below there:</p>
+<p><img src="/images/img_for_2015_12_13/result.png" alt="images"></p>
+<p>Just create a object of class <code>Adaboost</code> with your training samples with label. like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> adaboost</div><div class="line">a = AdaBoost(Original_Data, Tag)</div><div class="line"><span class="comment"># The up bound of training time to avoid the algorithm won't stop for not meeting the training accuracy.</span></div><div class="line">times = <span class="number">5</span> </div><div class="line"></div><div class="line">a.train(times)</div><div class="line"></div><div class="line">a.prediction(UnkownPoints)</div></pre></td></tr></table></figure>
+<p>API <code>prediction()</code> of class AdaBoost will return the result of prediction according to the model. All job done.</p>
+<p>You could find other test case in my repository in github.</p>
+<p><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Adaboost" target="_blank" rel="external">Implementation of Adaboost in Python</a></p>
+<p>There is an <a href="http://cs229.stanford.edu/extra-notes/boosting.pdf" target="_blank" rel="external">assignment</a> about AdaBoost in Stanford CS 229, which will ask student to implement stump booster. But I don’t really understand the skeleton of that source code. I think there must be something worng with that matlab script <code>stump_booster.m</code>. The week classifier can’t lost the direction information.</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">%%% !!! Don't forget the important variable -- direction</span></div><div class="line"></div><div class="line">API given by the course materials:</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[ind, thresh]</span> = <span class="title">find_best_threshold</span><span class="params">(X, y, p_dist)</span></span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[theta, feature_inds, thresholds]</span> = <span class="title">stump_booster</span><span class="params">(X, y, T)</span></span></div><div class="line"></div><div class="line">API of my solution:</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[ind, thresh, direction]</span> = <span class="title">find_best_threshold</span><span class="params">(X, y, p_dist)</span></span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[theta, feature_inds, thresholds, directions]</span> = <span class="title">stump_booster</span><span class="params">(X, y, T)</span></span></div></pre></td></tr></table></figure>
+<p>Run <code>boost_example.m</code>, you will see the <strong>classifier line</strong> with different iteration.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter2.jpg" width="400" height="400" align="middle"> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter5.jpg" width="400" height="400" align="middle"> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter10.jpg" width="400" height="400" align="middle"> </div>
+
+
+<h3 id="Boosting-Tree"><a href="#Boosting-Tree" class="headerlink" title="Boosting Tree"></a>Boosting Tree</h3><p>We have knew to use <code>AdaBoost</code> to do classification. <code>Boosting Tree</code> will help us to do regression.</p>
+<p>We also use decision stump as the weak classifier. But implementation of decision stump in this algorithm is not the same as that in AdaBoost.</p>
+<p>There are ten samples in my test module:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Original_Data = numpy.array([</div><div class="line">        [<span class="number">2</span>],</div><div class="line">        [<span class="number">3</span>],</div><div class="line">        [<span class="number">4</span>],</div><div class="line">        [<span class="number">5</span>],</div><div class="line">        [<span class="number">6</span>],</div><div class="line">        [<span class="number">7</span>],</div><div class="line">        [<span class="number">8</span>],</div><div class="line">        [<span class="number">9</span>],</div><div class="line">        [<span class="number">10</span>],</div><div class="line">        [<span class="number">1</span>]</div><div class="line">        ]).transpose()</div><div class="line"></div><div class="line">ExpVal = numpy.array([</div><div class="line">        [<span class="number">5.70</span>],</div><div class="line">        [<span class="number">5.91</span>],</div><div class="line">        [<span class="number">6.40</span>],</div><div class="line">        [<span class="number">6.80</span>],</div><div class="line">        [<span class="number">7.05</span>],</div><div class="line">        [<span class="number">8.90</span>],</div><div class="line">        [<span class="number">8.70</span>],</div><div class="line">        [<span class="number">9.00</span>],</div><div class="line">        [<span class="number">9.05</span>],</div><div class="line">        [<span class="number">5.56</span>]</div><div class="line">        ]).transpose()</div></pre></td></tr></table></figure>
+<p>The expected value of Original_Data[i] is ExpVal[i]. The input is from 1 to 10. How about to predict the output when the input is 1 or 11?</p>
+<p>Let’s test it. Here is the result:<br><img src="/images/img_for_2015_12_13/output_of_boosting_tree.png" alt="images"></p>
+<p>Just used 11 weak classifier to construct a stronger classifier to do the regressio. The output is reasonable.</p>
+<p>Here is my implementation of <code>Boosting Tree</code><br><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Boosting_Tree" target="_blank" rel="external">Implementation of Boosting Tree in Python</a></p>
+<p>Reference:</p>
+<ol>
+<li>MIT-6.034, Artificial Intelligence. Lab-7</li>
+<li>&lt;&lt; The statistic methods &gt;&gt; by HangLi.</li>
+<li><a href="https://en.wikipedia.org/wiki/AdaBoost" target="_blank" rel="external">Wikipedia</a></li>
+</ol>
+<hr>
+<p>Photo by Jason Leaster</p>
+<p><img src="/images/img_for_2015_12_13/street.png" alt="images"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/09/24/2015-09-24-binary-search-tree/" rel="next" title="Binary Search Tree">
+                <i class="fa fa-chevron-left"></i> Binary Search Tree
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/25/2015-12-25-labs-of-mit-6-dot-034/" rel="prev" title="Labs of MIT 6.034">
+                Labs of MIT 6.034 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/liuzijian.jpg"
+               alt="Jason Leaster" />
+          <p class="site-author-name" itemprop="name">Jason Leaster</p>
+           
+              <p class="site-description motion-element" itemprop="description">生无所息，行胜于言</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Adaboost-for-classification"><span class="nav-number">1.</span> <span class="nav-text">Adaboost for classification</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Boosting-Tree"><span class="nav-number">2.</span> <span class="nav-text">Boosting Tree</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jason Leaster</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
