@@ -1,0 +1,829 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C,Python," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="EOF" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="PreparationHere, we are goint to analysis how Python deal with Int Object in itself.
+First of all, we should have a environment which help us to explore the detail of the implementation in Python 2.7.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Int Object in Python">
+<meta property="og:url" content="http://jasonleaster.github.io/2016/02/03/2016-02-03-memory-model-of-int-object-in-python/index.html">
+<meta property="og:site_name" content="EOF">
+<meta property="og:description" content="PreparationHere, we are goint to analysis how Python deal with Int Object in itself.
+First of all, we should have a environment which help us to explore the detail of the implementation in Python 2.7.">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_02_03/doc.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_02_03/different_address.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_02_03/printout.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_02_03/street.jpg">
+<meta property="og:updated_time" content="2017-02-26T14:58:05.998Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Int Object in Python">
+<meta name="twitter:description" content="PreparationHere, we are goint to analysis how Python deal with Int Object in itself.
+First of all, we should have a environment which help us to explore the detail of the implementation in Python 2.7.">
+<meta name="twitter:image" content="http://jasonleaster.github.io/images/img_for_2016_02_03/doc.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://jasonleaster.github.io/2016/02/03/2016-02-03-memory-model-of-int-object-in-python/"/>
+
+
+
+
+
+  <title> Int Object in Python | EOF </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">EOF</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">In this life, be myself!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about-me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-recommends">
+          <a href="/recommends" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-star"></i> <br />
+            
+            推荐
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2016/02/03/2016-02-03-memory-model-of-int-object-in-python/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jason Leaster">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/liuzijian.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EOF">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Int Object in Python
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-03T00:56:31+08:00">
+                2016-02-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Preparation"><a href="#Preparation" class="headerlink" title="Preparation"></a>Preparation</h3><p>Here, we are goint to analysis how Python deal with <code>Int Object</code> in itself.</p>
+<p>First of all, we should have a environment which help us to explore the detail of the implementation in <code>Python 2.7</code>. At the same time, our operation shouldn’t influence the origianl Python in your workstation, if you have install Python before.</p>
+<p>You can get the source code from offical website of Python. And you will find that there have a file <code>configure</code> in the directory of the source.</p>
+<p><em>In the file configure, you can replace all string ‘Python’ with ‘pyLab’. And then move all file prefix with <code>Python</code> into <code>pyLab</code>(mainly in directory Misc/ and Modules)</em></p>
+<p>Don’t forget to run the configuration file – configure with the option <code>--prefix=Location where you want the Python which is for lab to install</code></p>
+<p>Finally, just run <code>make &amp; make install</code></p>
+<p>Repeat myself again, the reason that I move all ‘Python’ into ‘pyLab’ is all for making a difference with the original instance which is official and it shouldn’t be influence by any operation from us.</p>
+<h3 id="Rules-of-Object-in-Python"><a href="#Rules-of-Object-in-Python" class="headerlink" title="Rules of Object in Python."></a>Rules of Object in Python.</h3><ul>
+<li>Objects are structures allocated on the heap.  </li>
+<li>Objects are never allocated statically or on the stack; they must be accessed through special macros and functions only.  </li>
+</ul>
+<a id="more"></a>
+<ul>
+<li><p>An object has a ‘reference count’ that is increased or decreased when a pointer to the object is copied or deleted; when the reference count reaches zero there are no references to the object left and it can be removed from the heap.</p>
+</li>
+<li><p>An object has a ‘type’ that determines what it represents and what kind of data it contains.  An object’s type is fixed when it is created. Types themselves are represented as objects; an object contains a pointer to the corresponding type object.  The type itself has a type pointer pointing to the object representing the type ‘type’, which contains a pointer to itself!).</p>
+</li>
+<li><p>Objects do not float around in memory; once allocated an object keeps the same size and address.  Objects that must hold variable-size data can contain pointers to variable-size parts of the object.  Not all objects of the same type have the same size; but the size cannot change after allocation.  </p>
+</li>
+<li><p>Objects are always accessed through pointers of the type ‘PyObject *‘. </p>
+</li>
+</ul>
+<h3 id="Firt-glance-at-the-implementation"><a href="#Firt-glance-at-the-implementation" class="headerlink" title="Firt glance at the implementation."></a>Firt glance at the implementation.</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">   There are two basic different type of Object in Python.</div><div class="line">   1. PyObject.    (Immutable Object eg: int, string object which's </div><div class="line">                                size is known when it is creating.)</div><div class="line">   2. PyVarObject. (Mutable Object eg: list object which's size is </div><div class="line">                    unknown when it is creating and support the </div><div class="line">                    operation of deleting and inserting)</div><div class="line">                        -- notes by Jason Leaster</div><div class="line"> */</div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _object &#123;</div><div class="line">    PyObject_HEAD</div><div class="line">&#125; PyObject;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">    PyObject_VAR_HEAD</div><div class="line">&#125; PyVarObject;</div></pre></td></tr></table></figure>
+<p>Actually, PyObject are created by Macro <code>PyObject_HEAD</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[Include/object.h]</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> _PyObject_HEAD_EXTRA            \</span></div><div class="line">    struct _object *_ob_next;           \</div><div class="line">    struct _object *_ob_prev;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> _PyObject_EXTRA_INIT 0, 0,</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PyObject_HEAD                   \</span></div><div class="line">    _PyObject_HEAD_EXTRA                \</div><div class="line">    Py_ssize_t ob_refcnt;               \</div><div class="line">    struct _typeobject *ob_type;</div><div class="line"></div><div class="line"><span class="comment">/* </span></div><div class="line">   There also have some Macro to get the data member of PyObject.</div><div class="line">                    -- notes by Jason Leaster</div><div class="line"> */</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> Py_REFCNT(ob)           (((PyObject*)(ob))-&gt;ob_refcnt)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> Py_TYPE(ob)             (((PyObject*)(ob))-&gt;ob_type)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> Py_SIZE(ob)             (((PyVarObject*)(ob))-&gt;ob_size)</span></div><div class="line"></div><div class="line">...</div></pre></td></tr></table></figure>
+<p>Typically, the Int Object in Python <code>PyIntObject</code> is a <code>immutable object</code>. Once we created the object, we can’t change the value in that object.</p>
+<p>Back to our topic, let’s look at the definition of <code>PyIntObject</code>.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">//[Include/intobject.h]</span></div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span>&#123;</div><div class="line">    PyObject_HEAD</div><div class="line">    <span class="keyword">long</span> ob_ival;</div><div class="line">&#125; PyIntObject;</div></pre></td></tr></table></figure>
+<p>Aha, the <code>PyIntObject</code> is just a simple capsulation of <code>long</code> in C.<br>This object maintain a long data member.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span></span></div><div class="line"><span class="title">int_compare</span><span class="params">(PyIntObject *v, PyIntObject *w)</span></div><div class="line">&#123;</div><div class="line">    <span class="comment">/*</span></div><div class="line">    You will sigh that "the author of Python is a master in </div><div class="line">    programming". For efficient, they use `register` keyword and </div><div class="line">    try to apply for using register to store the local variable.</div><div class="line">                            -- notes by Jason Leaster.</div><div class="line">    */</div><div class="line">    <span class="keyword">register</span> <span class="keyword">long</span> i = v-&gt;ob_ival;</div><div class="line">    <span class="keyword">register</span> <span class="keyword">long</span> j = w-&gt;ob_ival;</div><div class="line">    <span class="keyword">return</span> (i &lt; j) ? <span class="number">-1</span> : (i &gt; j) ? <span class="number">1</span> : <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>How about the detail of printing a integer in Python ?</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/* ARGSUSED */</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span></span></div><div class="line"><span class="title">int_print</span><span class="params">(PyIntObject *v, FILE *fp, <span class="keyword">int</span> flags)</span></div><div class="line">    <span class="comment">/* flags -- not used but required by interface */</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">long</span> int_val = v-&gt;ob_ival;</div><div class="line">    <span class="function">Py_BEGIN_ALLOW_THREADS</span></div><div class="line">    <span class="title">fprintf</span><span class="params">(fp, <span class="string">"%ld"</span>, int_val)</span>;</div><div class="line">    Py_END_ALLOW_THREADS</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>There have many others method which are defined in <code>PyNumberMethods</code>. Python programmer can get the information about the object with a data member <code>__doc__</code>, like this:</p>
+<p><img src="/images/img_for_2016_02_03/doc.png" alt="images"></p>
+<p>The implementation of that is just a plain text string in <code>Object/intobject.c</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">PyDoc_STRVAR(int_doc,</div><div class="line"><span class="string">"int(x=0) -&gt; int or long\n\</span></div><div class="line">int(x, base=10) -&gt; int or long\n\</div><div class="line">\n\</div><div class="line">Convert a number or string to an integer, or return 0 if no arguments\n\</div><div class="line">are given.  If x is floating point, the conversion truncates towards zero.\n\</div><div class="line">If x is outside the integer range, the function returns a long instead.\n\</div><div class="line">\n\</div><div class="line">If x is not a number or if base is given, then x must be a string or\n\</div><div class="line">Unicode object representing an integer literal in the given base.  The\n\</div><div class="line">literal can be preceded by '+' or '-' and be surrounded by whitespace.\n\</div><div class="line">The base defaults to 10.  Valid bases are 0 and 2-36.  Base 0 means to\n\</div><div class="line">interpret the base from the string as an integer literal.\n\</div><div class="line">&gt;&gt;&gt; int('0b100', base=0)\n\</div><div class="line">4");</div></pre></td></tr></table></figure>
+<h3 id="Initialization-of-PyIntObject"><a href="#Initialization-of-PyIntObject" class="headerlink" title="Initialization of PyIntObject"></a>Initialization of PyIntObject</h3><p>Python support many different API to construct a <code>PyIntObject</code>.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[Include/intobject.h]</div><div class="line">...</div><div class="line">PyAPI_FUNC(PyObject *) PyInt_FromString(<span class="keyword">char</span>*, <span class="keyword">char</span>**, <span class="keyword">int</span>);</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> Py_USING_UNICODE</span></div><div class="line">PyAPI_FUNC(PyObject *) PyInt_FromUnicode(Py_UNICODE*, Py_ssize_t, <span class="keyword">int</span>);</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">PyAPI_FUNC(PyObject *) PyInt_FromLong(<span class="keyword">long</span>);</div><div class="line">PyAPI_FUNC(PyObject *) PyInt_FromSize_t(<span class="keyword">size_t</span>);</div><div class="line">PyAPI_FUNC(PyObject *) PyInt_FromSsize_t(Py_ssize_t);</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>Before we dig into the implementation of the initialization process.<br>Let’s do a lab.</p>
+<p><img src="/images/img_for_2016_02_03/different_address.png" alt="images"></p>
+<p><code>id(object)</code> will returen the address of object in CPython.(If you are interesting in the implementation<br>of built-in method id(object), you can jump to the end of this article and I presented how CPython implement this function.)</p>
+<p>Try to answer the following question.</p>
+<p>Why int object <code>m</code> and <code>n</code> of value <code>1000</code> have different address?</p>
+<p>Why int object <code>x</code> and <code>y</code> of value <code>1</code>    have the same  address?</p>
+<p>The answer relate to the mechanism with numbers in Python.</p>
+<p><em>In daily programming stuff, small number are used frequently. But large number may used frequent more than small numbers</em></p>
+<p>If there isn’t a special mechanism, Python will allocate memory(call malloc() in C) again and again. This stratege isn’t efficient at run time.<br>So, Python support a mechanism which will create small number only once but not bigger number.</p>
+<p>There also have the other question. What means big? What means small?<br>It’s not clearly in theory. But in the implementation, there have a trade off. People can’t cache all integer number for the limitation of memory(RAM).</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[Object/intobject]</div><div class="line">...</div><div class="line"><span class="comment">/*</span></div><div class="line">NSMALLPOSINTS:    Numbers of small positive integers number</div><div class="line">NSMALLNEGINTS:    Numbers of small negative integers number</div><div class="line">        --notes by Jason Leaster</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> NSMALLPOSINTS  </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> NSMALLPOSINTS           257</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> NSMALLNEGINTS  </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> NSMALLNEGINTS           5</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> NSMALLNEGINTS + NSMALLPOSINTS &gt; 0</span></div><div class="line"><span class="comment">/*  References to small integers are saved in this array so that they</span></div><div class="line">    can be shared.</div><div class="line">    The integers that are saved are those in the range</div><div class="line">    -NSMALLNEGINTS (inclusive) to NSMALLPOSINTS (not inclusive).</div><div class="line">*/</div><div class="line"><span class="keyword">static</span> PyIntObject *small_ints[NSMALLNEGINTS + NSMALLPOSINTS];</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">...</div></pre></td></tr></table></figure>
+<p>According to the implementation, the small number is [-5, 257). You can also modify the source code and recomplie it to change the range of small number, if you would like to.</p>
+<blockquote>
+<p>  Integers are quite normal objects, to make object handling uniform.<br>   (Using odd pointers to represent integers would save much space<br>   but require extra checks for this special case throughout the code.)<br>   Since a typical Python program spends much of its time allocating<br>   and deallocating integers, these operations should be very fast.<br>   Therefore we use a dedicated allocation scheme with a much lower<br>   overhead (in space and time) than straight malloc(): a simple<br>   dedicated free list, filled when necessary with memory from malloc().<br>   block_list is a singly-linked list of all PyIntBlocks ever allocated,  linked via their next members.  PyIntBlocks are never returned to the<br>   system before shutdown (PyInt_Fini).<br>   free_list is a singly-linked list of available PyIntObjects, linked<br>   via abuse of their ob_type members.</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BLOCK_SIZE      1000    <span class="comment">/* 1K less typical malloc overhead */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BHEAD_SIZE      8       <span class="comment">/* Enough for a 64-bit pointer */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> N_INTOBJECTS    ((BLOCK_SIZE - BHEAD_SIZE) / sizeof(PyIntObject))</span></div><div class="line"></div><div class="line"><span class="keyword">struct</span> _intblock &#123;</div><div class="line">    <span class="keyword">struct</span> _intblock *next;</div><div class="line">    PyIntObject objects[N_INTOBJECTS];</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _intblock PyIntBlock;</div><div class="line"></div><div class="line"><span class="keyword">static</span> PyIntBlock *block_list = <span class="literal">NULL</span>;</div><div class="line"><span class="keyword">static</span> PyIntObject *free_list = <span class="literal">NULL</span>; <span class="comment">// Initliazed by fill_free_list()</span></div></pre></td></tr></table></figure>
+<h3 id="Insert-and-Delete"><a href="#Insert-and-Delete" class="headerlink" title="Insert and Delete"></a>Insert and Delete</h3><p>A initialization routine from <code>long type</code> integer number.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function">PyObject *</span></div><div class="line"><span class="title">PyInt_FromLong</span><span class="params">(<span class="keyword">long</span> ival)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">register</span> PyIntObject *v;</div><div class="line">    <span class="comment">// try to use small number pool</span></div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> NSMALLNEGINTS + NSMALLPOSINTS &gt; 0</span></div><div class="line">    <span class="keyword">if</span> (-NSMALLNEGINTS &lt;= ival &amp;&amp; ival &lt; NSMALLPOSINTS) &#123;</div><div class="line">        v = small_ints[ival + NSMALLNEGINTS];</div><div class="line">        Py_INCREF(v);</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> COUNT_ALLOCS</span></div><div class="line">        <span class="keyword">if</span> (ival &gt;= <span class="number">0</span>)</div><div class="line">            quick_int_allocs++;</div><div class="line">        <span class="keyword">else</span></div><div class="line">            quick_neg_int_allocs++;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">        <span class="keyword">return</span> (PyObject *) v;</div><div class="line">    &#125;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">   <span class="comment">// if ival is not a small number, create a new instance object.</span></div><div class="line">   <span class="keyword">if</span> (free_list == <span class="literal">NULL</span>) &#123;</div><div class="line">       <span class="keyword">if</span> ((free_list = fill_free_list()) == <span class="literal">NULL</span>)</div><div class="line">           <span class="comment">/*</span></div><div class="line">              fill_free_list() will create a general number pool </div><div class="line">              for PyIntObjects.</div><div class="line">              But if there is no memory, return NULL</div><div class="line">            */</div><div class="line">           <span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">   &#125;</div><div class="line">   <span class="comment">/* Inline PyObject_New */</span></div><div class="line">   v = free_list;</div><div class="line">   free_list = (PyIntObject *)Py_TYPE(v); </div><div class="line">   <span class="comment">// Py_TYPE(ob)  (((PyObject*)(ob))-&gt;ob_type) --notes by Jason Leaster</span></div><div class="line">   PyObject_INIT(v, &amp;PyInt_Type);</div><div class="line">   v-&gt;ob_ival = ival;</div><div class="line">   <span class="keyword">return</span> (PyObject *) v;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Time-for-Hacking"><a href="#Time-for-Hacking" class="headerlink" title="Time for Hacking"></a>Time for Hacking</h3><p>Modify the <code>int_print</code> function in <code>Object/intobject.c</code>.<br>Here is my modification:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"> Programmer : Jason Leaster</div><div class="line"> Date       : 2016.02.03</div><div class="line"></div><div class="line"> Modify from Robert Chen's code.</div><div class="line"> */</div><div class="line"></div><div class="line">tatic <span class="keyword">int</span> values[<span class="number">10</span>];</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> refcounts[<span class="number">10</span>];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span></span></div><div class="line"><span class="title">int_print</span><span class="params">(PyIntObject *v, FILE *fp, <span class="keyword">int</span> flags)</span></div><div class="line">         <span class="comment">/* flags -- not used but required by interface */</span></div><div class="line">&#123;</div><div class="line">        <span class="comment">// &lt;&lt;&lt; modified by Jason Leaster</span></div><div class="line">        PyIntObject* intObjectPtr = <span class="literal">NULL</span>;</div><div class="line">        PyIntBlock* p    = block_list;</div><div class="line">        PyIntBlock* last = <span class="literal">NULL</span>;</div><div class="line">        </div><div class="line">        <span class="keyword">int</span> count = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span>(p != <span class="literal">NULL</span>)</div><div class="line">        &#123;</div><div class="line">            count++;</div><div class="line">            last = p;</div><div class="line">            p = p-&gt;next;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        intObjectPtr = last-&gt;objects;</div><div class="line">        intObjectPtr+= N_INTOBJECTS - <span class="number">1</span>;</div><div class="line">            </div><div class="line">        <span class="built_in">printf</span>(<span class="string">" Address @%p\n"</span>, v);</div><div class="line">        </div><div class="line">        <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++, --intObjectPtr)</div><div class="line">        &#123;</div><div class="line">            values[i] = intObjectPtr-&gt;ob_ival;</div><div class="line">            refcounts[i] = intObjectPtr-&gt;ob_refcnt;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="built_in">printf</span>(<span class="string">" Values: "</span>);</div><div class="line">        <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"%d\t"</span>, values[i]);</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"\n"</span>);</div><div class="line"></div><div class="line">        <span class="built_in">printf</span>(<span class="string">" refcnt: "</span>);</div><div class="line">        <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"%d\t"</span>, refcounts[i]);</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"\n"</span>);</div><div class="line"></div><div class="line">        <span class="built_in">printf</span>(<span class="string">" block_list count: %d\n"</span>, count);</div><div class="line">        <span class="built_in">printf</span>(<span class="string">" free_list : %p\n"</span>, free_list);</div><div class="line"></div><div class="line">        <span class="comment">// &gt;&gt;&gt; Origianl</span></div><div class="line">        <span class="keyword">long</span> int_val = v-&gt;ob_ival;</div><div class="line">        <span class="function">Py_BEGIN_ALLOW_THREADS</span></div><div class="line">        <span class="title">fprintf</span><span class="params">(fp, <span class="string">"%ld"</span>, int_val)</span>;</div><div class="line">        Py_END_ALLOW_THREADS</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Tips for debugging:<br><code>getrefcount</code> in module <code>sys</code> is helpful to get the reference number of object.</p>
+<p><img src="/images/img_for_2016_02_03/printout.png" alt="images"></p>
+<h3 id="Extention-reading"><a href="#Extention-reading" class="headerlink" title="Extention reading"></a>Extention reading</h3><p>There are lots of built-in methods in Python. id(Object) is one of them.</p>
+<p>According to the build-in doc for function id(Object). </p>
+<blockquote>
+<p>In [1]: print id.__doc__<br>id(object) -&gt; integer<br>Return the identity of an object.  This is guaranteed to be unique among<br>simultaneously existing objects.  (Hint: it’s the object’s memory address.)</p>
+</blockquote>
+<p>There is a hint and say the return value of built-in function id(object) is the object’s memory address.</p>
+<p>All the function do is just 5-line codes in the implementation of CPython.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[Python/bltinmodule.c]</div><div class="line">static PyObject *</div><div class="line">builtin_id(PyObject *self, PyObject *v)</div><div class="line">&#123;</div><div class="line">        <span class="keyword">return</span> PyLong_FromVoidPtr(v);</div><div class="line">&#125;</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">static PyMethodDef builtin_methods[] = &#123;</div><div class="line">    ...</div><div class="line">    &#123;<span class="string">"id"</span>,              builtin_id,         METH_O, id_doc&#125;, // id_doc <span class="keyword">is</span> just the value of id.__doc__</div><div class="line">    &#123;<span class="string">"isinstance"</span>,  builtin_isinstance, METH_VARARGS, isinstance_doc&#125;,</div><div class="line">    &#123;<span class="string">"len"</span>,             builtin_len,        METH_O, len_doc&#125;,</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>That’s all about the built-in method id(Object)</p>
+<hr>
+<p>Photo by Jason Leaster, in ChangeDe Hunan<br><img src="/images/img_for_2016_02_03/street.jpg" alt="images"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C</a>
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/30/2015-12-30-machine-learning-with-k-means/" rel="next" title="Machine Learning With K-Means">
+                <i class="fa fa-chevron-left"></i> Machine Learning With K-Means
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/04/2016-02-04-dict-object-in-python/" rel="prev" title="Dict Object in Python">
+                Dict Object in Python <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/liuzijian.jpg"
+               alt="Jason Leaster" />
+          <p class="site-author-name" itemprop="name">Jason Leaster</p>
+           
+              <p class="site-description motion-element" itemprop="description">生无所息，行胜于言</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Preparation"><span class="nav-number">1.</span> <span class="nav-text">Preparation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rules-of-Object-in-Python"><span class="nav-number">2.</span> <span class="nav-text">Rules of Object in Python.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Firt-glance-at-the-implementation"><span class="nav-number">3.</span> <span class="nav-text">Firt glance at the implementation.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Initialization-of-PyIntObject"><span class="nav-number">4.</span> <span class="nav-text">Initialization of PyIntObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-and-Delete"><span class="nav-number">5.</span> <span class="nav-text">Insert and Delete</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Time-for-Hacking"><span class="nav-number">6.</span> <span class="nav-text">Time for Hacking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Extention-reading"><span class="nav-number">7.</span> <span class="nav-text">Extention reading</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jason Leaster</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
