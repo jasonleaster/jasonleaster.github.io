@@ -2,9 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
+    
+    <lastmod>2017-02-27T15:51:19.281Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jasonleaster.github.io/2016/09/11/2016-09-11-the-brief-introduction-to-the-archtecture-of-junit4/</loc>
+    
+    <lastmod>2017-02-27T15:50:54.605Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/</loc>
+    
+    <lastmod>2017-02-27T15:50:34.736Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://jasonleaster.github.io/recommends/index.html</loc>
     
-    <lastmod>2017-02-26T15:08:24.789Z</lastmod>
+    <lastmod>2017-02-27T15:47:05.564Z</lastmod>
     
   </url>
   
@@ -37,23 +58,9 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
-    
-    <lastmod>2017-02-26T13:25:31.237Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://jasonleaster.github.io/2016/09/04/2016-09-04-problems-with-linked-list/</loc>
     
     <lastmod>2017-02-26T13:19:09.715Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/</loc>
-    
-    <lastmod>2017-02-26T13:07:36.218Z</lastmod>
     
   </url>
   
@@ -96,13 +103,6 @@
     <loc>http://jasonleaster.github.io/about-me/index.html</loc>
     
     <lastmod>2017-02-26T12:33:42.873Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://jasonleaster.github.io/2016/09/11/2016-09-11-the-brief-introduction-to-the-archtecture-of-junit4/</loc>
-    
-    <lastmod>2016-10-20T15:38:34.736Z</lastmod>
     
   </url>
   
@@ -268,13 +268,6 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/js/functions.js</loc>
-    
-    <lastmod>2016-02-03T13:56:07.582Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://jasonleaster.github.io/Love/js/functions_dev.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
@@ -290,6 +283,13 @@
   
   <url>
     <loc>http://jasonleaster.github.io/Love/js/garden_dev.js</loc>
+    
+    <lastmod>2016-02-03T13:56:07.582Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jasonleaster.github.io/Love/js/functions.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     

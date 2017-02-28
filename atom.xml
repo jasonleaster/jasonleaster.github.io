@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2017-02-26T13:25:31.237Z</updated>
+  <updated>2017-02-27T15:51:19.281Z</updated>
   <id>http://jasonleaster.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/"/>
     <id>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</id>
     <published>2017-01-12T13:48:18.000Z</published>
-    <updated>2017-02-26T13:25:31.237Z</updated>
+    <updated>2017-02-27T15:51:19.281Z</updated>
     
     <content type="html"><![CDATA[<p>Here are some different solutions with MyBatis and MySQL.</p>
 <p>Way to profile your statements:</p>
@@ -67,6 +67,8 @@
     
       <category term="Database" scheme="http://jasonleaster.github.io/categories/Database/"/>
     
+    
+      <category term="MySQL" scheme="http://jasonleaster.github.io/tags/MySQL/"/>
     
   </entry>
   
@@ -115,7 +117,7 @@
     <link href="http://jasonleaster.github.io/2016/09/11/2016-09-11-the-brief-introduction-to-the-archtecture-of-junit4/"/>
     <id>http://jasonleaster.github.io/2016/09/11/2016-09-11-the-brief-introduction-to-the-archtecture-of-junit4/</id>
     <published>2016-09-11T07:44:46.000Z</published>
-    <updated>2016-10-20T15:38:34.736Z</updated>
+    <updated>2017-02-27T15:50:54.605Z</updated>
     
     <content type="html"><![CDATA[<p>JUnit is a good framework for developer to finish testing tasks.<br>I also use JUnit to help me with testing. From the perspective of a good<br>programmer, the source code of JUnit is also a wonderful example to learn<br>how to write more good style code in Java.</p>
 <p>In this article, I would like to try my best to share my view of JUnit.<br>The version of JUnit what I talked is JUnit4 in this article.</p>
@@ -169,7 +171,7 @@
     
     </summary>
     
-      <category term="java" scheme="http://jasonleaster.github.io/categories/java/"/>
+      <category term="Java" scheme="http://jasonleaster.github.io/categories/Java/"/>
     
     
   </entry>
@@ -312,7 +314,7 @@
     <link href="http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/"/>
     <id>http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/</id>
     <published>2016-06-14T04:49:00.000Z</published>
-    <updated>2017-02-26T13:07:36.218Z</updated>
+    <updated>2017-02-27T15:50:34.736Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>Object-oriented programming (OOP) is a programming paradigm based on the concept of “objects”, which may contain data, in the form of fields, often known as attributes; and code, in the form of procedures, often known as methods. – <a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">Wikipedia</a></p>
@@ -370,7 +372,7 @@
     
     </summary>
     
-      <category term="JAVA" scheme="http://jasonleaster.github.io/categories/JAVA/"/>
+      <category term="Java" scheme="http://jasonleaster.github.io/categories/Java/"/>
     
     
   </entry>
