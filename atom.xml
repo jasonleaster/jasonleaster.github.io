@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2017-02-27T15:51:19.281Z</updated>
+  <updated>2017-05-22T15:17:08.281Z</updated>
   <id>http://jasonleaster.github.io/</id>
   
   <author>
@@ -16,17 +16,163 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Design Pattern</title>
+    <link href="http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/"/>
+    <id>http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/</id>
+    <published>2017-04-16T03:05:59.000Z</published>
+    <updated>2017-05-22T15:17:08.281Z</updated>
+    
+    <content type="html"><![CDATA[<p>Definition of Design Pattern:</p>
+<blockquote>
+<p>In software engineering, a software design pattern is a <strong>general reusable solution</strong> to a commonly occurring problem within a given context in software design. – WikiPedia.</p>
+</blockquote>
+<p>Depends on abstract model but not implementation details.</p>
+<h3 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h3><p><img src="/images/img_for_2017_04_16/Singleton_UML_class_diagram.svg.png" alt="images"></p>
+<p>Applicable scene:<br><em>We should use this design pattern when we will get trouble if we create many instances of a class. It’s enough for us to create only one instance of a class like Log Manager, utils, thread pool, cache manager, configure files manager and so on.</em></p>
+<p>Targt:<br><em>We could use this pattern to restricts the instantiation of a class to one object.</em></p>
+<p>An implementation of the singleton pattern must:</p>
+<ul>
+<li>ensure that only one instance of the singleton class ever exists</li>
+<li>provide global access to that instance.</li>
+</ul>
+<a id="more"></a>
+<p>There also have two different way to construct this pattern.</p>
+<p>The first way:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">    	<span class="keyword">return</span> INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>The other way(Lazy Initialization):</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singleton instance = <span class="keyword">null</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">		    <span class="keyword">synchronized</span>(Singleton.class) &#123;</div><div class="line">	            	<span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">		     	    instance = <span class="keyword">new</span> Singleton();</div><div class="line">		    	&#125;</div><div class="line">		    &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Example in real project:<br>I used single pattern to implement the <code>JedisPoolUtils</code> class. This class helps me to manage a Jedis pool and binding lots of helpful functions in this tool class.<br><a href="https://github.com/jasonleaster/TheWayToJava/blob/master/TinyTools/src/main/java/org/jasonleaster/utils/cache/JedisPoolUtils.java" target="_blank" rel="external">JedisPoolUtils.java</a></p>
+<h3 id="Template-Method-Pattern"><a href="#Template-Method-Pattern" class="headerlink" title="Template Method Pattern"></a>Template Method Pattern</h3><p>Definition Of this pattern:<br><em>Template method pattern defines the program skeleton of an algorithm. It define a base class and allow the sub-class to override or implement some methods in the base class. The sub-class can redefine some special steps in the algorithm and don’t need to modify the architecture of the algorithm.</em></p>
+<p><img src="/images/img_for_2017_04_16/Template_Method_UML_class_diagram.svg.png" alt="images"></p>
+<p>Applicable scene:</p>
+<ol>
+<li>Operations and procdure have common logical. </li>
+<li>Extract common codes into base class when you refactor your implementation.  </li>
+<li>The target of algorithm is clearly.</li>
+</ol>
+<p>Key elements to implement this pattern：</p>
+<ul>
+<li><p>Abstract Base Class<br>a. Basic Methods. To different sub class, basic methods are same to them.<br>b. Abstract Methods or Callback Function. It know the principle but don’t know the detail of implementation.<br>c. Hook function. It only supply a default implementation in the base class, which can make sub-class more flexiable.<br>d. Template Method. According to the need of subclass (which means different needs of bussiness request)，this method define an algorithm framework for all sub-class. It must be declared as <code>final</code>. Sub-class can replace the <code>Call back function</code> and <code>Hook functio</code> of base class but can’t replace another methods of base class.</p>
+</li>
+<li><p>Concrete Sub Class<br>a. Implement the call back function which is inherited from base class.<br>b. The optional hook functions.</p>
+</li>
+</ul>
+<p>Prepare a base class and implement some basic common methods for different sub-class. Then, just leave some abstract methods for sub-class to implement. Finally, the template method function combine all element into a template method(algorithm).</p>
+<p>Advantages:</p>
+<ul>
+<li>Encapsulation. This pattern encapsulate a algorithm framework and put the core part of the algorithm into a final method of base class. Lots of details are shielded.</li>
+<li>Reuse of codes. Avoid to write duplicate codes.</li>
+<li>Easy to maintain. All framework done :)</li>
+</ul>
+<p>Disadvantages：</p>
+<ul>
+<li>Inheritance makes code coupling tightly.</li>
+</ul>
+<p>Example in real project:<br><a href="https://github.com/jasonleaster/TheWayToJava/blob/master/TinyTools/src/main/java/org/jasonleaster/utils/cache/JedisPoolUtils.java" target="_blank" rel="external">JedisPoolUtils.java</a><br>The inner class <code>Executor</code> is the base class of template method pattern and the different anonymous class is the sub-class which extend <code>Executor</code> and override the abstract method. <code>getResult()</code> is the template method.</p>
+<h3 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h3><p>A proxy is a wrapper or agent object that is being called by the client to access the real serving object behind the scenes.<br>For the client, usage of a proxy object is similar to using the real object, because both implement the same interface.</p>
+<p><img src="/images/img_for_2017_04_16/Proxy_pattern_diagram.svg.png" alt="images"></p>
+<h4 id="Static-Proxy"><a href="#Static-Proxy" class="headerlink" title="Static Proxy"></a>Static Proxy</h4><h4 id="Dynamic-Proxy"><a href="#Dynamic-Proxy" class="headerlink" title="Dynamic Proxy"></a>Dynamic Proxy</h4><p>In contrast with static proxy, the dynamic proxy generates bytecode which requires Java reflection at runtime. With dynamic you need not crate the proxy class, which can lead to more convenience.</p>
+<h3 id="Factory"><a href="#Factory" class="headerlink" title="Factory"></a>Factory</h3><p>Applicable scene:</p>
+<ul>
+<li>有一组类似的对象需要创建</li>
+<li>在编码时不能预见需要创建哪种类的实例</li>
+<li>系统需要考虑扩展性，不应依赖于产品类实例如何被创建、组合和表达的细节</li>
+</ul>
+<p>目的:<br>   定义一个接口来创建对象，但是让子类来决定哪些类需要被实例化。工厂方法把实例化的工作推迟到子类中去实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//几个Button类</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Button</span></span>&#123;<span class="comment">/* ...*/</span>&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WinButton</span> <span class="keyword">extends</span> <span class="title">Button</span></span>&#123;<span class="comment">/* ...*/</span>&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MacButton</span> <span class="keyword">extends</span> <span class="title">Button</span></span>&#123;<span class="comment">/* ...*/</span>&#125;</div><div class="line"></div><div class="line"><span class="comment">//它们的工厂类</span></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ButtonFactory</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">abstract</span> Button <span class="title">createButton</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WinButtonFactory</span> <span class="keyword">implements</span> <span class="title">ButtonFactory</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Button <span class="title">createButton</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WinButton();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MacButtonFactory</span> <span class="keyword">implements</span> <span class="title">ButtonFactory</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Button <span class="title">createButton</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MacButton();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h4><h4 id="工厂模式和抽象工厂模式的对比"><a href="#工厂模式和抽象工厂模式的对比" class="headerlink" title="工厂模式和抽象工厂模式的对比"></a>工厂模式和抽象工厂模式的对比</h4><ul>
+<li><small>工厂模式是一个极端情况的抽象工厂模式，而抽象工厂模式可以看成是工厂模式的推广</small></li>
+<li><small>工厂模式用来创建一个产品的等级结构，而抽象工厂模式是用来创建多个产品的等级结构</small></li>
+<li><small>工厂模式只有一个抽象产品类，而抽象工厂模式有多个抽象产品类</small></li>
+</ul>
+<h3 id="观察者模式-Observer"><a href="#观察者模式-Observer" class="headerlink" title="观察者模式 Observer"></a>观察者模式 Observer</h3><p>定义：<br>    定义对象间的一种 <strong>一对多的依赖关系</strong>。当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并自动更新。</p>
+<p>目标与观察者之间的关系：<br>一个目标可以对应多个观察者，但是如果要实现多个目标对应多个观察者的时候，观察者应该为不同的目标提供不同的更新接口，这样实现才能简洁易懂，而不要只提供一个接口并被迫在该接口内部判断各个不同的目标。</p>
+<p>适用场景：<br>触发联动。</p>
+<ul>
+<li>当一个抽象模型有两个方面，其中一个方面的操作依赖于另外一个方面的状态变化</li>
+<li>如果在更改一个对象的时候，需要同时连带改动其他对象，而且不知道究竟应该有多少对象需要被连带改变</li>
+<li>当一个对象必须通知其他的对象，但是你有希望这个对象和其他被通知的对象是松散耦合的。</li>
+</ul>
+<p>单向依赖：<br>只有观察者依赖目标，而不是目标依赖观察者。他们之间的联系掌握在目标手中，只有目标知道什么时候更新观察者的信息，在整个过程中，观察者是被动的，等待目标对其更新。</p>
+<p>命名建议：<br>观察者模式又称发布订阅模式。</p>
+<ul>
+<li>目标接口的定义，建议在名称后面跟Subject</li>
+<li>观察者接口的定义，建议在名称后面跟Observer</li>
+<li>观察者接口的更新方法，建议名称后面跟Update</li>
+</ul>
+<p>触发通知机制：<br>一定要注意触发通知的时机。一般是在完成了目标属性”状态”的维护之后，触发更新。不能先通知(notify)后更新，否则会导致目标和观察者状态属性的不一致。</p>
+<p>通知的顺序：<br>目标通知观察者的顺序是不确定的，程序实现不应该依赖目标通知观察者更新的顺序。</p>
+<h4 id="推模型"><a href="#推模型" class="headerlink" title="推模型"></a>推模型</h4><p>目标对象主动向观察者推送目标的详细信息，推送的信息通常是目标对象的全部或部分数据</p>
+<h4 id="拉模型"><a href="#拉模型" class="headerlink" title="拉模型"></a>拉模型</h4><p>目标对象在通知观察者的时候，只传递少量的信息。如果观察者需要更具体的信息，由观察者主动到目标对象中获取，相当于是观察者从目标对象中拉去数据。一般这种模型的实现中，会把目标对象自身通过update方法传递给观察者。</p>
+<p>观察者模式的优缺点：<br>优点：</p>
+<ul>
+<li>观察者模式实现了观察者和目标之间抽象耦合，只是在抽象层面耦合，而不是具体实现</li>
+<li>观察者模式实现了动态联动</li>
+<li>观察者模式支持广播通信<br>缺点：</li>
+<li>可能引起无谓的操作（观察者模式实质上是一种广播通信。调用者可能只想某个观察者接受信息，但是观察者模式会使得所有观察者都接受到最新的信息）</li>
+</ul>
+<h3 id="适配器-Adapter"><a href="#适配器-Adapter" class="headerlink" title="适配器 Adapter"></a>适配器 Adapter</h3><p>适配器模式是为了解决不兼容不匹配的问题而引入的，有时也称包装(wrapper)。</p>
+<p>定义：<br>    适配器模式将一个雷达接口，转换成客户期望的另外一个接口。使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Definition of Design Pattern:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In software engineering, a software design pattern is a &lt;strong&gt;general reusable solution&lt;/strong&gt; to a commonly occurring problem within a given context in software design. – WikiPedia.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Depends on abstract model but not implementation details.&lt;/p&gt;
+&lt;h3 id=&quot;Singleton-Pattern&quot;&gt;&lt;a href=&quot;#Singleton-Pattern&quot; class=&quot;headerlink&quot; title=&quot;Singleton Pattern&quot;&gt;&lt;/a&gt;Singleton Pattern&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/img_for_2017_04_16/Singleton_UML_class_diagram.svg.png&quot; alt=&quot;images&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Applicable scene:&lt;br&gt;&lt;em&gt;We should use this design pattern when we will get trouble if we create many instances of a class. It’s enough for us to create only one instance of a class like Log Manager, utils, thread pool, cache manager, configure files manager and so on.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Targt:&lt;br&gt;&lt;em&gt;We could use this pattern to restricts the instantiation of a class to one object.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;An implementation of the singleton pattern must:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ensure that only one instance of the singleton class ever exists&lt;/li&gt;
+&lt;li&gt;provide global access to that instance.&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="http://jasonleaster.github.io/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GoBang -- A practice with Artificial Intellijence</title>
+    <link href="http://jasonleaster.github.io/2017/03/12/2017-03-12-GoBang-A-practice-with-AI/"/>
+    <id>http://jasonleaster.github.io/2017/03/12/2017-03-12-GoBang-A-practice-with-AI/</id>
+    <published>2017-03-12T02:11:17.000Z</published>
+    <updated>2017-05-21T13:27:23.769Z</updated>
+    
+    <content type="html"><![CDATA[<p>To be continued [&gt;_&lt;]</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;To be continued [&amp;gt;_&amp;lt;]&lt;/p&gt;
+
+    
+    </summary>
+    
+    
+      <category term="AI" scheme="http://jasonleaster.github.io/tags/AI/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Good Practices with MySQL</title>
     <link href="http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/"/>
     <id>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</id>
     <published>2017-01-12T13:48:18.000Z</published>
-    <updated>2017-02-27T15:51:19.281Z</updated>
+    <updated>2017-05-21T09:47:45.060Z</updated>
     
     <content type="html"><![CDATA[<p>Here are some different solutions with MyBatis and MySQL.</p>
 <p>Way to profile your statements:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mysql&gt; set profiling=1;</div><div class="line">mysql&gt; select filed from table;</div><div class="line">mysql&gt; ... more mysql statements and operation on MySQL ...</div><div class="line">mysql&gt; show profiles;</div></pre></td></tr></table></figure>
+<p>You can also profile you SQL statements with the help of the IDE. In MySQL-Workbench, the duration time is how long the statment excuted in the MySQL-Server and the fetch time is how long the results are transformed in the network.</p>
 <a id="more"></a>
-<h3 id="Insert-items-into-a-table"><a href="#Insert-items-into-a-table" class="headerlink" title="Insert items into a table"></a>Insert items into a table</h3><ul>
+<h3 id="Insert-items-into-a-table-with-MyBatis-in-Java"><a href="#Insert-items-into-a-table-with-MyBatis-in-Java" class="headerlink" title="Insert items into a table with MyBatis in Java"></a>Insert items into a table with MyBatis in Java</h3><ul>
 <li>Proposal soluton 1</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(User user)</span></span>;</div></pre></td></tr></table></figure>
@@ -35,7 +181,9 @@
 <li>Proposal soluton 2</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertUsers</span><span class="params">(@Param(<span class="string">"users"</span>)</span> List&lt;User&gt; users)</span>;</div></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Good practice</span></div><div class="line">    Proposal 1:</div><div class="line">    Use INSERT IGNORE rather than INSERT. If a record doesn't duplicate an existing record,</div><div class="line">    MySQL inserts it as usual. If the record is a duplicate, the IGNORE keyword tells MySQL</div><div class="line">    to discard it silently without generating an error.</div><div class="line"></div><div class="line">    Proposal 2:</div><div class="line">    Use REPLACE rather than INSERT. If the record is new, it's inserted just as with INSERT.</div><div class="line">    If it's a duplicate, the new record replaces the old one</div><div class="line">--&gt;</div><div class="line"><span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">"insertUsers"</span>&gt;</span></div><div class="line">    insert ignore into users (email, username, password, userType)</div><div class="line">    values</div><div class="line">    <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">"users"</span> <span class="attr">item</span>=<span class="string">"element"</span> <span class="attr">index</span>=<span class="string">"index"</span> <span class="attr">open</span>=<span class="string">"("</span> <span class="attr">separator</span>=<span class="string">"),("</span>  <span class="attr">close</span>=<span class="string">")"</span>&gt;</span></div><div class="line">        #&#123;element.email,jdbcType=VARCHAR&#125;,</div><div class="line">        #&#123;element.username,jdbcType=VARCHAR&#125;,</div><div class="line">        #&#123;element.password,jdbcType=VARCHAR&#125;,</div><div class="line">        #&#123;element.userType, jdbcType=INTEGER&#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">insert</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Good practice</span></div><div class="line">    Proposal 1:</div><div class="line">    Use INSERT IGNORE rather than INSERT. If a record doesn't duplicate</div><div class="line">    an existing record, MySQL inserts it as usual. If the record is a </div><div class="line">    duplicate, the IGNORE keyword tells MySQL to discard it silently </div><div class="line">    without generating an error.</div><div class="line"></div><div class="line">    Proposal 2:</div><div class="line">    Use REPLACE rather than INSERT. If the record is new, it's inserted</div><div class="line">    just as with INSERT. If it's a duplicate, the new record replaces the</div><div class="line">    old one</div><div class="line">--&gt;</div><div class="line"><span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">"insertUsers"</span>&gt;</span></div><div class="line">    insert ignore into users (email, username, password, userType)</div><div class="line">    values</div><div class="line">    <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">"users"</span> <span class="attr">item</span>=<span class="string">"element"</span> <span class="attr">index</span>=<span class="string">"index"</span> <span class="attr">open</span>=<span class="string">"("</span> <span class="attr">separator</span>=<span class="string">"),</span></span></div><div class="line">         ("  <span class="attr">close</span>=<span class="string">")"</span>&gt;</div><div class="line">        #&#123;element.email,jdbcType=VARCHAR&#125;,</div><div class="line">        #&#123;element.username,jdbcType=VARCHAR&#125;,</div><div class="line">        #&#123;element.password,jdbcType=VARCHAR&#125;,</div><div class="line">        #&#123;element.userType, jdbcType=INTEGER&#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">insert</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Please pay attention to those guy who write database access statements in a for-loop. They are trouble maker :)</p>
+<p>Try your best to avoid to do DAO operation in for-loop.</p>
 <h3 id="Performance-Comparision"><a href="#Performance-Comparision" class="headerlink" title="Performance Comparision"></a>Performance Comparision</h3><p>Operation :  </p>
 <blockquote>
 <p>insert 100 items into the table. </p>
@@ -45,6 +193,13 @@
 <p>Solution One cost time: 9667 ms<br>Solution Two cost time: 495  ms</p>
 </blockquote>
 <p>With the help of MyBatis, we can insert multi items in a list into database, but not insert them one by one. ( Hibernate could do the same thing)</p>
+<h3 id="Tuning-MySQL-my-cnf"><a href="#Tuning-MySQL-my-cnf" class="headerlink" title="Tuning MySQL: my.cnf"></a>Tuning MySQL: my.cnf</h3><p>Sometimes, you find that the query statments are very slow and the expected return data are not more than 100k rows.</p>
+<p>You may try to tune your MySQL server and modify the <code>my.cnf</code> file which is loaded by MySQL for initialization. Familiar with this confiuration file will help you to avoid this common pitfall.</p>
+<h4 id="Basic-settings"><a href="#Basic-settings" class="headerlink" title="Basic settings"></a>Basic settings</h4><p>Here are 3 MySQL performance tuning settings that you should always look at. If you do not, you are very likely to run into problems very quickly.</p>
+<p><code>innodb_buffer_pool_size</code>: this is the #1 setting to look at for any installation using InnoDB. The buffer pool is where data and indexes are cached: having it as large as possible will ensure you use memory and not disks for most read operations. Typical values are 5-6GB (8GB RAM), 20-25GB (32GB RAM), 100-120GB (128GB RAM).</p>
+<p><code>innodb_log_file_size</code>: this is the size of the redo logs. The redo logs are used to make sure writes are fast and durable and also during crash recovery. Up to MySQL 5.1, it was hard to adjust, as you wanted both large redo logs for good performance and small redo logs for fast crash recovery. Fortunately crash recovery performance has improved a lot since MySQL 5.5 so you can now have good write performance and fast crash recovery. Until MySQL 5.5 the total redo log size was limited to 4GB (the default is to have 2 log files). This has been lifted in MySQL 5.6.</p>
+<p>Starting with innodb_log_file_size = 512M (giving 1GB of redo logs) should give you plenty of room for writes. If you know your application is write-intensive and you are using MySQL 5.6, you can start with innodb_log_file_size = 4G.</p>
+<p><code>max_connections</code>: if you are often facing the ‘Too many connections’ error, max_connections is too low. It is very frequent that because the application does not close connections to the database correctly, you need much more than the default 151 connections. The main drawback of high values for max_connections (like 1000 or more) is that the server will become unresponsive if for any reason it has to run 1000 or more active transactions. Using a connection pool at the application level or a thread pool at the MySQL level can help here.</p>
 <h3 id="Use-NOT-NULL-If-You-Can"><a href="#Use-NOT-NULL-If-You-Can" class="headerlink" title="Use NOT NULL If You Can"></a>Use NOT NULL If You Can</h3><p>Unless you have a very specific reason to use a NULL value, you should always set your columns as NOT NULL.</p>
 <p>First of all, ask yourself if there is any difference between having an empty string value vs. a NULL value (for INT fields: 0 vs. NULL). If there is no reason to have both, you do not need a NULL field. (Did you know that Oracle considers NULL and empty string as being the same?)</p>
 <p>NULL columns require additional space and they can add complexity to your comparison statements. Just avoid them when you can. However, I understand some people might have very specific reasons to have NULL values, which is not always a bad thing.</p>
@@ -62,6 +217,7 @@
       &lt;p&gt;Here are some different solutions with MyBatis and MySQL.&lt;/p&gt;
 &lt;p&gt;Way to profile your statements:&lt;/p&gt;
 &lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;mysql&amp;gt; set profiling=1;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;mysql&amp;gt; select filed from table;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;mysql&amp;gt; ... more mysql statements and operation on MySQL ...&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;mysql&amp;gt; show profiles;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;You can also profile you SQL statements with the help of the IDE. In MySQL-Workbench, the duration time is how long the statment excuted in the MySQL-Server and the fetch time is how long the results are transformed in the network.&lt;/p&gt;
     
     </summary>
     
@@ -314,7 +470,7 @@
     <link href="http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/"/>
     <id>http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/</id>
     <published>2016-06-14T04:49:00.000Z</published>
-    <updated>2017-02-27T15:55:32.709Z</updated>
+    <updated>2017-05-21T13:29:51.962Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>Object-oriented programming (OOP) is a programming paradigm based on the concept of “objects”, which may contain data, in the form of fields, often known as attributes; and code, in the form of procedures, often known as methods. – <a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">Wikipedia</a></p>
@@ -336,7 +492,7 @@
 <p>Here all information is public, this is the most convenient for end users, but limits our ability to change things later in development. What would happend if you build a software and you find something should be changed with the implementation of <code>MyPoint1</code>. You may want to add more attributes into this class. You may also want to rewrite your code and change it into another coordinate system but not descartes coordinate system.</p>
 <p>If the others module depends on your implementation of <code>MyPoints1</code> and use the data member of that class directly, you may have to rewrite your whole project and it will cost your a lot of time. It will be nightmare for programmer to be told “Hey, buddy. There is something changed with requirement, you have to rewrite your whole project. Just put the code into garbage collector. It can’t be modified to satisfy the new requirement.”</p>
 <p><img src="/images/img_for_2016_06_14/wth.png" alt="images"></p>
-<p>Here is a bettern one solution. In <code>MyPoint2</code>, the detail of this class are setted as private which means that the client(user) can’t use the information about the implementation directly. The only way that the user can use the information which they need is to use the interface that the class supply with. In this example, the interface which public can access is <em>getX()</em>  and <em>getY()</em> .</p>
+<p>Here is a bettern one solution. In <code>MyPoint2</code>, the detail of this class are setted as private which means that the client(user) can’t use the information about the implementation directly. The only way that the user can use the information which they need is to use the interface that the class supply with. In this example, the interface which is public can access <em>getX()</em>  and <em>getY()</em> .</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[MyPoint2.java]</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPoint2</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> x;  <span class="comment">// x and y are private</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> y;</div><div class="line">                </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyPoint2</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.x = x;</div><div class="line">        <span class="keyword">this</span>.y = y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> x;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Client Code</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        MyPoint2 p = <span class="keyword">new</span> MyPoint2(<span class="number">1</span>, <span class="number">2</span>);</div><div class="line">        <span class="keyword">int</span> z = p.getX() + p.getY(); <span class="comment">// Good Style :)</span></div><div class="line">        System.out.print(z);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>The advantage of accessing control and encapsulation is that we can replace the current implementation into another better one and make sure the client don’t need to be modified for this changes in the original class(MyPoint2).</p>
 <p>Here, we implement Point with polar coordinate system. All the interface that set as public in <code>MyPoint2</code> are unchanged. This make sure that the client which use <code>getX()</code> and <code>getY()</code> don’t need to be modified for changes with the implementation of Point.</p>
@@ -1054,154 +1210,6 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
       <category term="labs" scheme="http://jasonleaster.github.io/tags/labs/"/>
     
       <category term="MachineLearning" scheme="http://jasonleaster.github.io/tags/MachineLearning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Machine Learning with Boosting</title>
-    <link href="http://jasonleaster.github.io/2015/12/13/2015-12-13-machine-learning-with-boosting/"/>
-    <id>http://jasonleaster.github.io/2015/12/13/2015-12-13-machine-learning-with-boosting/</id>
-    <published>2015-12-13T09:00:47.000Z</published>
-    <updated>2016-07-01T05:08:16.130Z</updated>
-    
-    <content type="html"><![CDATA[<p>This blog will talk about the theory and implementation about famouse<br>concept in machine learning – <code>Boosting</code>.</p>
-<p>All algorithms are implemented in Python.</p>
-<p>There are two main tasks which people want to finish with Machine Learning.</p>
-<ul>
-<li>Classification</li>
-<li>Regression</li>
-</ul>
-<p>There are a lot of other ways to do it but now we focus on <code>boosting</code> algorithm. You know that it’s a fantastic way to make our work done.</p>
-<h3 id="Adaboost-for-classification"><a href="#Adaboost-for-classification" class="headerlink" title="Adaboost for classification"></a>Adaboost for classification</h3><p>If you never hear about adaboost, I recommend you to finish the 7-th lab in MIT 6.034. It will help you a lot to understand what I’m taking about. But this lab didn’t build adaboost completely. So, I implement it individually.</p>
-<p>Give the input training samples which have tag with it.</p>
-<div style="text-align:center"><img src="/images/img_for_2015_12_13/equation.png" align="middle"> </div>
-
-<p>where x[i] is the feature of the i-th sample point and y[i] is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
-<p>In this algorithm, there are only two different label of samples {-1, +1}.</p>
-<p>Some classifier like decision tree also can work correctly about classification. But it’s also easy to overfitting. So, we can’t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which’s depth is only one. So we call it as <code>decision stump</code>.</p>
-<div style="text-align:center"><img src="/images/img_for_2015_12_13/stump.png" align="middle"> </div>
-
-
-<div style="text-align:center"><img src="/images/img_for_2015_12_13/weakClassifier.png" align="middle"> </div>
-
-<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting.</p>
-<div style="text-align:center"><img src="/images/img_for_2015_12_13/AdaBoost.png" align="middle"> </div>
-
-<p>Test case:</p>
-<p>There are training points with two different label. What if we input a point which’s type is unkown, what the result will be?</p>
-<p><img src="/images/img_for_2015_12_13/samples.png" alt="images"></p>
-<p>The test result is below there:</p>
-<p><img src="/images/img_for_2015_12_13/result.png" alt="images"></p>
-<p>Just create a object of class <code>Adaboost</code> with your training samples with label. like this:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> adaboost</div><div class="line">a = AdaBoost(Original_Data, Tag)</div><div class="line"><span class="comment"># The up bound of training time to avoid the algorithm won't stop for not meeting the training accuracy.</span></div><div class="line">times = <span class="number">5</span> </div><div class="line"></div><div class="line">a.train(times)</div><div class="line"></div><div class="line">a.prediction(UnkownPoints)</div></pre></td></tr></table></figure>
-<p>API <code>prediction()</code> of class AdaBoost will return the result of prediction according to the model. All job done.</p>
-<p>You could find other test case in my repository in github.</p>
-<p><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Adaboost" target="_blank" rel="external">Implementation of Adaboost in Python</a></p>
-<p>There is an <a href="http://cs229.stanford.edu/extra-notes/boosting.pdf" target="_blank" rel="external">assignment</a> about AdaBoost in Stanford CS 229, which will ask student to implement stump booster. But I don’t really understand the skeleton of that source code. I think there must be something worng with that matlab script <code>stump_booster.m</code>. The week classifier can’t lost the direction information.</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">%%% !!! Don't forget the important variable -- direction</span></div><div class="line"></div><div class="line">API given by the course materials:</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[ind, thresh]</span> = <span class="title">find_best_threshold</span><span class="params">(X, y, p_dist)</span></span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[theta, feature_inds, thresholds]</span> = <span class="title">stump_booster</span><span class="params">(X, y, T)</span></span></div><div class="line"></div><div class="line">API of my solution:</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[ind, thresh, direction]</span> = <span class="title">find_best_threshold</span><span class="params">(X, y, p_dist)</span></span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[theta, feature_inds, thresholds, directions]</span> = <span class="title">stump_booster</span><span class="params">(X, y, T)</span></span></div></pre></td></tr></table></figure>
-<p>Run <code>boost_example.m</code>, you will see the <strong>classifier line</strong> with different iteration.</p>
-<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter2.jpg" width="400" height="400" align="middle"> </div>
-
-<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter5.jpg" width="400" height="400" align="middle"> </div>
-
-<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter10.jpg" width="400" height="400" align="middle"> </div>
-
-
-<h3 id="Boosting-Tree"><a href="#Boosting-Tree" class="headerlink" title="Boosting Tree"></a>Boosting Tree</h3><p>We have knew to use <code>AdaBoost</code> to do classification. <code>Boosting Tree</code> will help us to do regression.</p>
-<p>We also use decision stump as the weak classifier. But implementation of decision stump in this algorithm is not the same as that in AdaBoost.</p>
-<p>There are ten samples in my test module:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Original_Data = numpy.array([</div><div class="line">        [<span class="number">2</span>],</div><div class="line">        [<span class="number">3</span>],</div><div class="line">        [<span class="number">4</span>],</div><div class="line">        [<span class="number">5</span>],</div><div class="line">        [<span class="number">6</span>],</div><div class="line">        [<span class="number">7</span>],</div><div class="line">        [<span class="number">8</span>],</div><div class="line">        [<span class="number">9</span>],</div><div class="line">        [<span class="number">10</span>],</div><div class="line">        [<span class="number">1</span>]</div><div class="line">        ]).transpose()</div><div class="line"></div><div class="line">ExpVal = numpy.array([</div><div class="line">        [<span class="number">5.70</span>],</div><div class="line">        [<span class="number">5.91</span>],</div><div class="line">        [<span class="number">6.40</span>],</div><div class="line">        [<span class="number">6.80</span>],</div><div class="line">        [<span class="number">7.05</span>],</div><div class="line">        [<span class="number">8.90</span>],</div><div class="line">        [<span class="number">8.70</span>],</div><div class="line">        [<span class="number">9.00</span>],</div><div class="line">        [<span class="number">9.05</span>],</div><div class="line">        [<span class="number">5.56</span>]</div><div class="line">        ]).transpose()</div></pre></td></tr></table></figure>
-<p>The expected value of Original_Data[i] is ExpVal[i]. The input is from 1 to 10. How about to predict the output when the input is 1 or 11?</p>
-<p>Let’s test it. Here is the result:<br><img src="/images/img_for_2015_12_13/output_of_boosting_tree.png" alt="images"></p>
-<p>Just used 11 weak classifier to construct a stronger classifier to do the regressio. The output is reasonable.</p>
-<p>Here is my implementation of <code>Boosting Tree</code><br><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Boosting_Tree" target="_blank" rel="external">Implementation of Boosting Tree in Python</a></p>
-<p>Reference:</p>
-<ol>
-<li>MIT-6.034, Artificial Intelligence. Lab-7</li>
-<li>&lt;&lt; The statistic methods &gt;&gt; by HangLi.</li>
-<li><a href="https://en.wikipedia.org/wiki/AdaBoost" target="_blank" rel="external">Wikipedia</a></li>
-</ol>
-<hr>
-<p>Photo by Jason Leaster</p>
-<p><img src="/images/img_for_2015_12_13/street.png" alt="images"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;This blog will talk about the theory and implementation about famouse&lt;br&gt;concept in machine learning – &lt;code&gt;Boosting&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;All 
-    
-    </summary>
-    
-      <category term="MachineLearning" scheme="http://jasonleaster.github.io/categories/MachineLearning/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Binary Search Tree</title>
-    <link href="http://jasonleaster.github.io/2015/09/24/2015-09-24-binary-search-tree/"/>
-    <id>http://jasonleaster.github.io/2015/09/24/2015-09-24-binary-search-tree/</id>
-    <published>2015-09-23T17:28:33.000Z</published>
-    <updated>2016-02-04T05:05:31.139Z</updated>
-    
-    <content type="html"><![CDATA[<p>I try to collect problems about <code>Binary Search Tree (BST)</code> which are asked in interview frequently.</p>
-<p>Basicly, here is the definition of Binary Search Tree. And I show the way how to implement the basic operation like <code>insert</code>, <code>delete</code> and so on.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span><span class="params">()</span> :</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, num = <span class="number">-1</span>)</span> :</span></div><div class="line">      self.val = num</div><div class="line">      self.right  = <span class="keyword">None</span></div><div class="line">      self.left   = <span class="keyword">None</span></div></pre></td></tr></table></figure>
-<p>You could find all my practices with BST in github: <a href="https://github.com/jasonleaster/Algorithm/blob/master/Binary_Search_Tree/Python_version/bst.py" target="_blank" rel="external">BST</a></p>
-<p><img src="/images/img_for_2015_09_25/bst.png" alt="images"></p>
-<a id="more"></a>
-<p>There are three different ways to travel a BST. N(node), L(left subtree), R(right subtree)</p>
-<ul>
-<li><p>NLR: Firstly the traveller access the data of the Node(N) and then it enter into the left sub-tree, travel the right sub-tree</p>
-</li>
-<li><p>LNR</p>
-</li>
-<li><p>LRN</p>
-</li>
-</ul>
-<p>It’s very easy and obvious to implement the recursive definition of the three different traveller.</p>
-<p>You will find that it’s a very efficient way to understand what means Pre-traveller, In-traveller and Post-traveller.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="string">"""</span></div><div class="line">Recursive definition</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">pre_traveller</span><span class="params">(self, node)</span>:</span></div><div class="line">    <span class="keyword">if</span> node == <span class="keyword">None</span> :</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="keyword">print</span> node.val</div><div class="line">    self.pre_traveller(node.left)</div><div class="line">    self.pre_traveller(node.right)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">in_traveller</span><span class="params">(self, node)</span>:</span></div><div class="line">    <span class="keyword">if</span> node == <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line"></div><div class="line">    self.in_traveller(node.left)</div><div class="line">    <span class="keyword">print</span> node.val</div><div class="line">    self.in_traveller(node.right)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">post_traveller</span><span class="params">(self, node)</span>:</span></div><div class="line">    <span class="keyword">if</span> node == <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line"></div><div class="line">    self.post_traveller(node.left)</div><div class="line">    self.post_traveller(node.right)</div><div class="line">    <span class="keyword">print</span> node.val</div></pre></td></tr></table></figure>
-<p>But the interview officer may not be satisfy with your recursive implementation. Take some time to understand the iteratly implementation below there.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="string">"""</span></div><div class="line">Iterately implementation</div><div class="line"></div><div class="line">Given a binary tree, return the preorder traversal of </div><div class="line">its nodes' values.</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">preorderTraversal</span><span class="params">(self, root)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    :type root: TreeNode</div><div class="line">    :rtype: List[int]</div><div class="line">    """</div><div class="line">    <span class="keyword">if</span> root <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span> []</div><div class="line"></div><div class="line">    stack = [root]</div><div class="line">    ret = []</div><div class="line">    </div><div class="line">    <span class="keyword">while</span> len(stack) != <span class="number">0</span>:</div><div class="line">        node = stack.pop()</div><div class="line">        ret.append(node.val)</div><div class="line">        <span class="keyword">if</span> node.right <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">            stack.append(node.right)</div><div class="line">        <span class="keyword">if</span> node.left <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">            stack.append(node.left)</div><div class="line">            </div><div class="line">    <span class="keyword">return</span> ret</div><div class="line"></div><div class="line"><span class="string">"""</span></div><div class="line">Given a binary tree, return the inorder traversal </div><div class="line">of its nodes' values.</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">inorderTraversal</span><span class="params">(self, root)</span>:</span></div><div class="line">    res, stack = [], []</div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        <span class="keyword">while</span> root:</div><div class="line">            stack.append(root)</div><div class="line">            root = root.left</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> stack:</div><div class="line">            <span class="keyword">return</span> res</div><div class="line">        node = stack.pop()</div><div class="line">        res.append(node.val)</div><div class="line">        root = node.right</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">postorderTraversal</span><span class="params">(self, root)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    :type root: TreeNode</div><div class="line">    :rtype: List[int]</div><div class="line">    """</div><div class="line">    res   = []</div><div class="line">    stack = [root]</div><div class="line">    </div><div class="line">    <span class="keyword">while</span> len(stack):</div><div class="line">        node = stack.pop()</div><div class="line">        <span class="keyword">if</span> node:</div><div class="line">            res.append(node.val)</div><div class="line">            stack.append(node.left)</div><div class="line">            stack.append(node.right)</div><div class="line">            </div><div class="line">    <span class="keyword">return</span> res[::<span class="number">-1</span>]</div></pre></td></tr></table></figure>
-<p>There is another interesting problem that how to travel a BST in level order. Something like this:<br>For example:</p>
-<p>Given binary tree {3,9,20,#,#,15,7},</p>
-<p><img src="/images/img_for_2015_09_25/1.png" alt="images"></p>
-<p>return its level order traversal as:</p>
-<p><img src="/images/img_for_2015_09_25/2.png" alt="images"></p>
-<p>At this moment, you should try to use some basic data structure to solve this problem. Don’t forget STACK :)</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="string">"""</span></div><div class="line">Given a binary tree, return the level order traversal of </div><div class="line">its nodes' values. (ie, from left to right, level by level).</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">levelOrder</span><span class="params">(self, node)</span>:</span></div><div class="line">    <span class="keyword">if</span> node <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span> []</div><div class="line"></div><div class="line">    stack = [node]</div><div class="line">    length = len(stack)</div><div class="line">    ret = []</div><div class="line">    j = <span class="number">0</span></div><div class="line"></div><div class="line">    <span class="keyword">while</span> length != <span class="number">0</span>:</div><div class="line">        ret.append([])</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, length):</div><div class="line">            </div><div class="line">            ret[j].append(stack[i].val)</div><div class="line">            <span class="keyword">if</span> stack[i].left != <span class="keyword">None</span>:</div><div class="line"></div><div class="line">                stack.append(stack[i].left)</div><div class="line">            <span class="keyword">if</span> stack[i].right != <span class="keyword">None</span>:</div><div class="line">                stack.append(stack[i].right)</div><div class="line"></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, length):</div><div class="line">            stack.remove(stack[<span class="number">0</span>])</div><div class="line"></div><div class="line">        length = len(stack)</div><div class="line">        j += <span class="number">1</span></div><div class="line"></div><div class="line">    <span class="keyword">return</span> ret</div></pre></td></tr></table></figure>
-<p>After you solve this problem, you have knew that stack is a efficient and useful ADT. Once you meet a hard problem, try to use another ADT to solve your problem.</p>
-<p>Function <code>isValidBST</code> help us to check whether the tree is a BST. Now, if you have no idea about what means a BST, go to wikipedia and help yourself :)</p>
-<p>You know that if we travel the tree with <code>In-Order traveller</code>, the output of the traveller is sorted from small element to big one.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">isValidBST</span><span class="params">(self, root)</span>:</span></div><div class="line">    A = []</div><div class="line">    A = self.in_traveller(self.root)</div><div class="line"></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(A)):</div><div class="line">        <span class="keyword">if</span> A[i<span class="number">-1</span>] &gt;= A[i]:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">True</span></div></pre></td></tr></table></figure></p>
-<p>There is a joke about how to invert a BST. </p>
-<blockquote>
-<p>Google: 90% of our engineers use the software you wrote (Homebrew), but you can’t invert a binary tree on a whiteboard so fuck off.</p>
-</blockquote>
-<p>It’s easy to solve this problem by recursion.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">        </div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">invertTree</span><span class="params">(self, root)</span>:</span></div><div class="line">    <span class="keyword">if</span> root <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    </div><div class="line">    root.left, root.right = root.right, root.left</div><div class="line">    self.invertTree(root.left)</div><div class="line">    self.invertTree(root.right)</div></pre></td></tr></table></figure>
-<p>You may also be asked to translate a sorted array into BST. So, how to make it?</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">sortedArrayToBST</span><span class="params">(self, nums)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    :type nums: List[int]</div><div class="line">    :rtype: TreeNode</div><div class="line">    """</div><div class="line">    <span class="keyword">return</span> self.helperSortedArrayToBST(nums, <span class="number">0</span>, len(nums)<span class="number">-1</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">helperSortedArrayToBST</span><span class="params">(self, nums, start, end)</span>:</span></div><div class="line">    <span class="keyword">if</span> start &gt; end:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line">        </div><div class="line">    middle = int((start + end)/<span class="number">2</span>)</div><div class="line">    </div><div class="line">    root = TreeNode(nums[middle])</div><div class="line">    root.left  = self.helper(nums, start, middle<span class="number">-1</span>) </div><div class="line">    root.right = self.helper(nums, middle + <span class="number">1</span>, end)</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> root</div></pre></td></tr></table></figure>
-<p>How to use the output of <code>InOrder-Traveller</code> and <code>PostOrder-Traveller</code> to rebuild a BST ?</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="string">"""</span></div><div class="line">Given inorder and postorder traversal of a tree, </div><div class="line">construct the binary tree.</div><div class="line"></div><div class="line">Note:</div><div class="line">You may assume that duplicates do not exist in the tree.</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildTree</span><span class="params">(self, inorder, postorder)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    :type inorder: List[int]</div><div class="line">    :type postorder: List[int]</div><div class="line">    :rtype: TreeNode</div><div class="line">    """</div><div class="line">    <span class="keyword">if</span> len(inorder) == <span class="number">0</span> <span class="keyword">or</span> len(postorder) == <span class="number">0</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line">    </div><div class="line">    index = inorder.index(postorder.pop())</div><div class="line">    root = TreeNode(inorder[index])</div><div class="line">    </div><div class="line">    <span class="comment"># You HAVE TO build right sub-tree first, </span></div><div class="line">    <span class="comment"># otherwise you will get wrong answer</span></div><div class="line">    <span class="comment"># because you poped the last element of @postorder before here.</span></div><div class="line">    root.right = self.buildTree(inorder[index+<span class="number">1</span>:], postorder)</div><div class="line">    root.left  = self.buildTree(inorder[<span class="number">0</span>:index] , postorder)</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> root</div></pre></td></tr></table></figure>
-<hr>
-<p>Photo By Jason Leaster in ChangDe, China</p>
-<p><img src="/images/img_for_2015_09_25/highschool.jpg" alt="images"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;I try to collect problems about &lt;code&gt;Binary Search Tree (BST)&lt;/code&gt; which are asked in interview frequently.&lt;/p&gt;
-&lt;p&gt;Basicly, here is the definition of Binary Search Tree. And I show the way how to implement the basic operation like &lt;code&gt;insert&lt;/code&gt;, &lt;code&gt;delete&lt;/code&gt; and so on.&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;TreeNode&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; :&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self, num = &lt;span class=&quot;number&quot;&gt;-1&lt;/span&gt;)&lt;/span&gt; :&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;      self.val = num&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;      self.right  = &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;      self.left   = &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;You could find all my practices with BST in github: &lt;a href=&quot;https://github.com/jasonleaster/Algorithm/blob/master/Binary_Search_Tree/Python_version/bst.py&quot;&gt;BST&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/img_for_2015_09_25/bst.png&quot; alt=&quot;images&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="algorithm" scheme="http://jasonleaster.github.io/categories/algorithm/"/>
-    
     
   </entry>
   

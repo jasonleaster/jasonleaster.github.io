@@ -282,6 +282,353 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2015/12/13/2015-12-13-machine-learning-with-boosting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jason Leaster">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/liuzijian.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EOF">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/12/13/2015-12-13-machine-learning-with-boosting/" itemprop="url">
+                  Machine Learning with Boosting
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-12-13T17:00:47+08:00">
+                2015-12-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MachineLearning/" itemprop="url" rel="index">
+                    <span itemprop="name">MachineLearning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>This blog will talk about the theory and implementation about famouse<br>concept in machine learning – <code>Boosting</code>.</p>
+<p>All algorithms are implemented in Python.</p>
+<p>There are two main tasks which people want to finish with Machine Learning.</p>
+<ul>
+<li>Classification</li>
+<li>Regression</li>
+</ul>
+<p>There are a lot of other ways to do it but now we focus on <code>boosting</code> algorithm. You know that it’s a fantastic way to make our work done.</p>
+<h3 id="Adaboost-for-classification"><a href="#Adaboost-for-classification" class="headerlink" title="Adaboost for classification"></a>Adaboost for classification</h3><p>If you never hear about adaboost, I recommend you to finish the 7-th lab in MIT 6.034. It will help you a lot to understand what I’m taking about. But this lab didn’t build adaboost completely. So, I implement it individually.</p>
+<p>Give the input training samples which have tag with it.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/equation.png" align="middle"> </div>
+
+<p>where x[i] is the feature of the i-th sample point and y[i] is the <code>label</code> (soemtimes we call it as <code>tag</code>) with the sample point.</p>
+<p>In this algorithm, there are only two different label of samples {-1, +1}.</p>
+<p>Some classifier like decision tree also can work correctly about classification. But it’s also easy to overfitting. So, we can’t use it in some special situation. Instread of using decision tree, we use <code>decision stump</code> which is a special type of decision tree which’s depth is only one. So we call it as <code>decision stump</code>.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/stump.png" align="middle"> </div>
+
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/weakClassifier.png" align="middle"> </div>
+
+<p><code>Yoav Freund</code> and <code>Robert Schapire</code> create this algorithm <strong>AdaBoost</strong> which means adaptive boosting.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/AdaBoost.png" align="middle"> </div>
+
+<p>Test case:</p>
+<p>There are training points with two different label. What if we input a point which’s type is unkown, what the result will be?</p>
+<p><img src="/images/img_for_2015_12_13/samples.png" alt="images"></p>
+<p>The test result is below there:</p>
+<p><img src="/images/img_for_2015_12_13/result.png" alt="images"></p>
+<p>Just create a object of class <code>Adaboost</code> with your training samples with label. like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> adaboost</div><div class="line">a = AdaBoost(Original_Data, Tag)</div><div class="line"><span class="comment"># The up bound of training time to avoid the algorithm won't stop for not meeting the training accuracy.</span></div><div class="line">times = <span class="number">5</span> </div><div class="line"></div><div class="line">a.train(times)</div><div class="line"></div><div class="line">a.prediction(UnkownPoints)</div></pre></td></tr></table></figure>
+<p>API <code>prediction()</code> of class AdaBoost will return the result of prediction according to the model. All job done.</p>
+<p>You could find other test case in my repository in github.</p>
+<p><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Adaboost" target="_blank" rel="external">Implementation of Adaboost in Python</a></p>
+<p>There is an <a href="http://cs229.stanford.edu/extra-notes/boosting.pdf" target="_blank" rel="external">assignment</a> about AdaBoost in Stanford CS 229, which will ask student to implement stump booster. But I don’t really understand the skeleton of that source code. I think there must be something worng with that matlab script <code>stump_booster.m</code>. The week classifier can’t lost the direction information.</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">%%% !!! Don't forget the important variable -- direction</span></div><div class="line"></div><div class="line">API given by the course materials:</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[ind, thresh]</span> = <span class="title">find_best_threshold</span><span class="params">(X, y, p_dist)</span></span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[theta, feature_inds, thresholds]</span> = <span class="title">stump_booster</span><span class="params">(X, y, T)</span></span></div><div class="line"></div><div class="line">API of my solution:</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[ind, thresh, direction]</span> = <span class="title">find_best_threshold</span><span class="params">(X, y, p_dist)</span></span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[theta, feature_inds, thresholds, directions]</span> = <span class="title">stump_booster</span><span class="params">(X, y, T)</span></span></div></pre></td></tr></table></figure>
+<p>Run <code>boost_example.m</code>, you will see the <strong>classifier line</strong> with different iteration.</p>
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter2.jpg" width="400" height="400" align="middle"> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter5.jpg" width="400" height="400" align="middle"> </div>
+
+<div style="text-align:center"><img src="/images/img_for_2015_12_13/iter10.jpg" width="400" height="400" align="middle"> </div>
+
+
+<h3 id="Boosting-Tree"><a href="#Boosting-Tree" class="headerlink" title="Boosting Tree"></a>Boosting Tree</h3><p>We have knew to use <code>AdaBoost</code> to do classification. <code>Boosting Tree</code> will help us to do regression.</p>
+<p>We also use decision stump as the weak classifier. But implementation of decision stump in this algorithm is not the same as that in AdaBoost.</p>
+<p>There are ten samples in my test module:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Original_Data = numpy.array([</div><div class="line">        [<span class="number">2</span>],</div><div class="line">        [<span class="number">3</span>],</div><div class="line">        [<span class="number">4</span>],</div><div class="line">        [<span class="number">5</span>],</div><div class="line">        [<span class="number">6</span>],</div><div class="line">        [<span class="number">7</span>],</div><div class="line">        [<span class="number">8</span>],</div><div class="line">        [<span class="number">9</span>],</div><div class="line">        [<span class="number">10</span>],</div><div class="line">        [<span class="number">1</span>]</div><div class="line">        ]).transpose()</div><div class="line"></div><div class="line">ExpVal = numpy.array([</div><div class="line">        [<span class="number">5.70</span>],</div><div class="line">        [<span class="number">5.91</span>],</div><div class="line">        [<span class="number">6.40</span>],</div><div class="line">        [<span class="number">6.80</span>],</div><div class="line">        [<span class="number">7.05</span>],</div><div class="line">        [<span class="number">8.90</span>],</div><div class="line">        [<span class="number">8.70</span>],</div><div class="line">        [<span class="number">9.00</span>],</div><div class="line">        [<span class="number">9.05</span>],</div><div class="line">        [<span class="number">5.56</span>]</div><div class="line">        ]).transpose()</div></pre></td></tr></table></figure>
+<p>The expected value of Original_Data[i] is ExpVal[i]. The input is from 1 to 10. How about to predict the output when the input is 1 or 11?</p>
+<p>Let’s test it. Here is the result:<br><img src="/images/img_for_2015_12_13/output_of_boosting_tree.png" alt="images"></p>
+<p>Just used 11 weak classifier to construct a stronger classifier to do the regressio. The output is reasonable.</p>
+<p>Here is my implementation of <code>Boosting Tree</code><br><a href="https://github.com/jasonleaster/Machine_Learning/tree/master/Boosting_Tree" target="_blank" rel="external">Implementation of Boosting Tree in Python</a></p>
+<p>Reference:</p>
+<ol>
+<li>MIT-6.034, Artificial Intelligence. Lab-7</li>
+<li>&lt;&lt; The statistic methods &gt;&gt; by HangLi.</li>
+<li><a href="https://en.wikipedia.org/wiki/AdaBoost" target="_blank" rel="external">Wikipedia</a></li>
+</ol>
+<hr>
+<p>Photo by Jason Leaster</p>
+<p><img src="/images/img_for_2015_12_13/street.png" alt="images"></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2015/09/24/2015-09-24-binary-search-tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jason Leaster">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/liuzijian.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EOF">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/09/24/2015-09-24-binary-search-tree/" itemprop="url">
+                  Binary Search Tree
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-09-24T01:28:33+08:00">
+                2015-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>I try to collect problems about <code>Binary Search Tree (BST)</code> which are asked in interview frequently.</p>
+<p>Basicly, here is the definition of Binary Search Tree. And I show the way how to implement the basic operation like <code>insert</code>, <code>delete</code> and so on.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span><span class="params">()</span> :</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, num = <span class="number">-1</span>)</span> :</span></div><div class="line">      self.val = num</div><div class="line">      self.right  = <span class="keyword">None</span></div><div class="line">      self.left   = <span class="keyword">None</span></div></pre></td></tr></table></figure>
+<p>You could find all my practices with BST in github: <a href="https://github.com/jasonleaster/Algorithm/blob/master/Binary_Search_Tree/Python_version/bst.py">BST</a></p>
+<p><img src="/images/img_for_2015_09_25/bst.png" alt="images"></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/09/24/2015-09-24-binary-search-tree/#more" rel="contents">
+              Read All About It &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2015/07/24/2015-07-24-binary-search/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1463,299 +1810,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2015/05/15/2015-05-15-why-should-we-use-c-plus-plus/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jason Leaster">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/liuzijian.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EOF">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/05/15/2015-05-15-why-should-we-use-c-plus-plus/" itemprop="url">
-                  Why should we use C++
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-15T22:56:11+08:00">
-                2015-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Cplusplus/" itemprop="url" rel="index">
-                    <span itemprop="name">Cplusplus</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>After reading the chapter 0, 1 and 2 of <code>&lt;&lt; Reminations on C++ &gt;&gt;</code>, I try to make myself more sober and do some summaries for this question.</p>
-<p><strong>Why should we use C++ ?</strong></p>
-<p>What I want to do is to give the answer in advance and then give the reason.</p>
-<p>Here we go.</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/05/15/2015-05-15-why-should-we-use-c-plus-plus/#more" rel="contents">
-              Read All About It &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2015/05/09/2015-05-09-what-means-freedom/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jason Leaster">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/liuzijian.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EOF">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/05/09/2015-05-09-what-means-freedom/" itemprop="url">
-                  What Means Freedom ?
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-09T00:46:36+08:00">
-                2015-05-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/essay/" itemprop="url" rel="index">
-                    <span itemprop="name">essay</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>What does it mean to be free? Free is being able to choose. To choose your own space to be in. To form your surrounding in a way that will make you to take out the best of you. Free is to say no. Get your freedom …</p>
-<p><img src="/images/img_for_What_means_freedom/freedom.png" alt="images"></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1800,7 +1859,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1818,7 +1877,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

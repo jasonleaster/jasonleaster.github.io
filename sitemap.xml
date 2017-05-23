@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/</loc>
+    
+    <lastmod>2017-05-22T15:17:08.281Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/</loc>
+    
+    <lastmod>2017-05-21T13:29:51.962Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jasonleaster.github.io/2017/03/12/2017-03-12-GoBang-A-practice-with-AI/</loc>
+    
+    <lastmod>2017-05-21T13:27:23.769Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
+    
+    <lastmod>2017-05-21T09:47:45.060Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://jasonleaster.github.io/about-me/index.html</loc>
     
     <lastmod>2017-03-12T01:39:25.701Z</lastmod>
@@ -19,20 +47,6 @@
     <loc>http://jasonleaster.github.io/recommends/index.html</loc>
     
     <lastmod>2017-02-27T16:09:07.468Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/</loc>
-    
-    <lastmod>2017-02-27T15:55:32.709Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
-    
-    <lastmod>2017-02-27T15:51:19.281Z</lastmod>
     
   </url>
   
@@ -275,14 +289,14 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/js/garden.js</loc>
+    <loc>http://jasonleaster.github.io/Love/js/functions_dev.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/js/functions_dev.js</loc>
+    <loc>http://jasonleaster.github.io/Love/js/garden.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     

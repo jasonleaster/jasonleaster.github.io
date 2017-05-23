@@ -1,0 +1,823 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="EOF" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Definition of Design Pattern:
+
+In software engineering, a software design pattern is a general reusable solution to a commonly occurring problem within a given context in software design. – WikiPedia.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Design Pattern">
+<meta property="og:url" content="http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/index.html">
+<meta property="og:site_name" content="EOF">
+<meta property="og:description" content="Definition of Design Pattern:
+
+In software engineering, a software design pattern is a general reusable solution to a commonly occurring problem within a given context in software design. – WikiPedia.">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2017_04_16/Singleton_UML_class_diagram.svg.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2017_04_16/Template_Method_UML_class_diagram.svg.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2017_04_16/Proxy_pattern_diagram.svg.png">
+<meta property="og:updated_time" content="2017-05-22T15:17:08.281Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Design Pattern">
+<meta name="twitter:description" content="Definition of Design Pattern:
+
+In software engineering, a software design pattern is a general reusable solution to a commonly occurring problem within a given context in software design. – WikiPedia.">
+<meta name="twitter:image" content="http://jasonleaster.github.io/images/img_for_2017_04_16/Singleton_UML_class_diagram.svg.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/"/>
+
+
+
+
+
+  <title> Design Pattern | EOF </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">EOF</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">In this life, be myself!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about-me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-recommends">
+          <a href="/recommends" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-star"></i> <br />
+            
+            推荐
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jason Leaster">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/liuzijian.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EOF">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Design Pattern
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T11:05:59+08:00">
+                2017-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Definition of Design Pattern:</p>
+<blockquote>
+<p>In software engineering, a software design pattern is a <strong>general reusable solution</strong> to a commonly occurring problem within a given context in software design. – WikiPedia.</p>
+</blockquote>
+<p>Depends on abstract model but not implementation details.</p>
+<h3 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h3><p><img src="/images/img_for_2017_04_16/Singleton_UML_class_diagram.svg.png" alt="images"></p>
+<p>Applicable scene:<br><em>We should use this design pattern when we will get trouble if we create many instances of a class. It’s enough for us to create only one instance of a class like Log Manager, utils, thread pool, cache manager, configure files manager and so on.</em></p>
+<p>Targt:<br><em>We could use this pattern to restricts the instantiation of a class to one object.</em></p>
+<p>An implementation of the singleton pattern must:</p>
+<ul>
+<li>ensure that only one instance of the singleton class ever exists</li>
+<li>provide global access to that instance.</li>
+</ul>
+<a id="more"></a>
+<p>There also have two different way to construct this pattern.</p>
+<p>The first way:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">    	<span class="keyword">return</span> INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>The other way(Lazy Initialization):</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singleton instance = <span class="keyword">null</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">		    <span class="keyword">synchronized</span>(Singleton.class) &#123;</div><div class="line">	            	<span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">		     	    instance = <span class="keyword">new</span> Singleton();</div><div class="line">		    	&#125;</div><div class="line">		    &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Example in real project:<br>I used single pattern to implement the <code>JedisPoolUtils</code> class. This class helps me to manage a Jedis pool and binding lots of helpful functions in this tool class.<br><a href="https://github.com/jasonleaster/TheWayToJava/blob/master/TinyTools/src/main/java/org/jasonleaster/utils/cache/JedisPoolUtils.java" target="_blank" rel="external">JedisPoolUtils.java</a></p>
+<h3 id="Template-Method-Pattern"><a href="#Template-Method-Pattern" class="headerlink" title="Template Method Pattern"></a>Template Method Pattern</h3><p>Definition Of this pattern:<br><em>Template method pattern defines the program skeleton of an algorithm. It define a base class and allow the sub-class to override or implement some methods in the base class. The sub-class can redefine some special steps in the algorithm and don’t need to modify the architecture of the algorithm.</em></p>
+<p><img src="/images/img_for_2017_04_16/Template_Method_UML_class_diagram.svg.png" alt="images"></p>
+<p>Applicable scene:</p>
+<ol>
+<li>Operations and procdure have common logical. </li>
+<li>Extract common codes into base class when you refactor your implementation.  </li>
+<li>The target of algorithm is clearly.</li>
+</ol>
+<p>Key elements to implement this pattern：</p>
+<ul>
+<li><p>Abstract Base Class<br>a. Basic Methods. To different sub class, basic methods are same to them.<br>b. Abstract Methods or Callback Function. It know the principle but don’t know the detail of implementation.<br>c. Hook function. It only supply a default implementation in the base class, which can make sub-class more flexiable.<br>d. Template Method. According to the need of subclass (which means different needs of bussiness request)，this method define an algorithm framework for all sub-class. It must be declared as <code>final</code>. Sub-class can replace the <code>Call back function</code> and <code>Hook functio</code> of base class but can’t replace another methods of base class.</p>
+</li>
+<li><p>Concrete Sub Class<br>a. Implement the call back function which is inherited from base class.<br>b. The optional hook functions.</p>
+</li>
+</ul>
+<p>Prepare a base class and implement some basic common methods for different sub-class. Then, just leave some abstract methods for sub-class to implement. Finally, the template method function combine all element into a template method(algorithm).</p>
+<p>Advantages:</p>
+<ul>
+<li>Encapsulation. This pattern encapsulate a algorithm framework and put the core part of the algorithm into a final method of base class. Lots of details are shielded.</li>
+<li>Reuse of codes. Avoid to write duplicate codes.</li>
+<li>Easy to maintain. All framework done :)</li>
+</ul>
+<p>Disadvantages：</p>
+<ul>
+<li>Inheritance makes code coupling tightly.</li>
+</ul>
+<p>Example in real project:<br><a href="https://github.com/jasonleaster/TheWayToJava/blob/master/TinyTools/src/main/java/org/jasonleaster/utils/cache/JedisPoolUtils.java" target="_blank" rel="external">JedisPoolUtils.java</a><br>The inner class <code>Executor</code> is the base class of template method pattern and the different anonymous class is the sub-class which extend <code>Executor</code> and override the abstract method. <code>getResult()</code> is the template method.</p>
+<h3 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h3><p>A proxy is a wrapper or agent object that is being called by the client to access the real serving object behind the scenes.<br>For the client, usage of a proxy object is similar to using the real object, because both implement the same interface.</p>
+<p><img src="/images/img_for_2017_04_16/Proxy_pattern_diagram.svg.png" alt="images"></p>
+<h4 id="Static-Proxy"><a href="#Static-Proxy" class="headerlink" title="Static Proxy"></a>Static Proxy</h4><h4 id="Dynamic-Proxy"><a href="#Dynamic-Proxy" class="headerlink" title="Dynamic Proxy"></a>Dynamic Proxy</h4><p>In contrast with static proxy, the dynamic proxy generates bytecode which requires Java reflection at runtime. With dynamic you need not crate the proxy class, which can lead to more convenience.</p>
+<h3 id="Factory"><a href="#Factory" class="headerlink" title="Factory"></a>Factory</h3><p>Applicable scene:</p>
+<ul>
+<li>有一组类似的对象需要创建</li>
+<li>在编码时不能预见需要创建哪种类的实例</li>
+<li>系统需要考虑扩展性，不应依赖于产品类实例如何被创建、组合和表达的细节</li>
+</ul>
+<p>目的:<br>   定义一个接口来创建对象，但是让子类来决定哪些类需要被实例化。工厂方法把实例化的工作推迟到子类中去实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//几个Button类</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Button</span></span>&#123;<span class="comment">/* ...*/</span>&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WinButton</span> <span class="keyword">extends</span> <span class="title">Button</span></span>&#123;<span class="comment">/* ...*/</span>&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MacButton</span> <span class="keyword">extends</span> <span class="title">Button</span></span>&#123;<span class="comment">/* ...*/</span>&#125;</div><div class="line"></div><div class="line"><span class="comment">//它们的工厂类</span></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ButtonFactory</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">abstract</span> Button <span class="title">createButton</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WinButtonFactory</span> <span class="keyword">implements</span> <span class="title">ButtonFactory</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Button <span class="title">createButton</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WinButton();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MacButtonFactory</span> <span class="keyword">implements</span> <span class="title">ButtonFactory</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Button <span class="title">createButton</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MacButton();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h4><h4 id="工厂模式和抽象工厂模式的对比"><a href="#工厂模式和抽象工厂模式的对比" class="headerlink" title="工厂模式和抽象工厂模式的对比"></a>工厂模式和抽象工厂模式的对比</h4><ul>
+<li><small>工厂模式是一个极端情况的抽象工厂模式，而抽象工厂模式可以看成是工厂模式的推广</small></li>
+<li><small>工厂模式用来创建一个产品的等级结构，而抽象工厂模式是用来创建多个产品的等级结构</small></li>
+<li><small>工厂模式只有一个抽象产品类，而抽象工厂模式有多个抽象产品类</small></li>
+</ul>
+<h3 id="观察者模式-Observer"><a href="#观察者模式-Observer" class="headerlink" title="观察者模式 Observer"></a>观察者模式 Observer</h3><p>定义：<br>    定义对象间的一种 <strong>一对多的依赖关系</strong>。当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并自动更新。</p>
+<p>目标与观察者之间的关系：<br>一个目标可以对应多个观察者，但是如果要实现多个目标对应多个观察者的时候，观察者应该为不同的目标提供不同的更新接口，这样实现才能简洁易懂，而不要只提供一个接口并被迫在该接口内部判断各个不同的目标。</p>
+<p>适用场景：<br>触发联动。</p>
+<ul>
+<li>当一个抽象模型有两个方面，其中一个方面的操作依赖于另外一个方面的状态变化</li>
+<li>如果在更改一个对象的时候，需要同时连带改动其他对象，而且不知道究竟应该有多少对象需要被连带改变</li>
+<li>当一个对象必须通知其他的对象，但是你有希望这个对象和其他被通知的对象是松散耦合的。</li>
+</ul>
+<p>单向依赖：<br>只有观察者依赖目标，而不是目标依赖观察者。他们之间的联系掌握在目标手中，只有目标知道什么时候更新观察者的信息，在整个过程中，观察者是被动的，等待目标对其更新。</p>
+<p>命名建议：<br>观察者模式又称发布订阅模式。</p>
+<ul>
+<li>目标接口的定义，建议在名称后面跟Subject</li>
+<li>观察者接口的定义，建议在名称后面跟Observer</li>
+<li>观察者接口的更新方法，建议名称后面跟Update</li>
+</ul>
+<p>触发通知机制：<br>一定要注意触发通知的时机。一般是在完成了目标属性”状态”的维护之后，触发更新。不能先通知(notify)后更新，否则会导致目标和观察者状态属性的不一致。</p>
+<p>通知的顺序：<br>目标通知观察者的顺序是不确定的，程序实现不应该依赖目标通知观察者更新的顺序。</p>
+<h4 id="推模型"><a href="#推模型" class="headerlink" title="推模型"></a>推模型</h4><p>目标对象主动向观察者推送目标的详细信息，推送的信息通常是目标对象的全部或部分数据</p>
+<h4 id="拉模型"><a href="#拉模型" class="headerlink" title="拉模型"></a>拉模型</h4><p>目标对象在通知观察者的时候，只传递少量的信息。如果观察者需要更具体的信息，由观察者主动到目标对象中获取，相当于是观察者从目标对象中拉去数据。一般这种模型的实现中，会把目标对象自身通过update方法传递给观察者。</p>
+<p>观察者模式的优缺点：<br>优点：</p>
+<ul>
+<li>观察者模式实现了观察者和目标之间抽象耦合，只是在抽象层面耦合，而不是具体实现</li>
+<li>观察者模式实现了动态联动</li>
+<li>观察者模式支持广播通信<br>缺点：</li>
+<li>可能引起无谓的操作（观察者模式实质上是一种广播通信。调用者可能只想某个观察者接受信息，但是观察者模式会使得所有观察者都接受到最新的信息）</li>
+</ul>
+<h3 id="适配器-Adapter"><a href="#适配器-Adapter" class="headerlink" title="适配器 Adapter"></a>适配器 Adapter</h3><p>适配器模式是为了解决不兼容不匹配的问题而引入的，有时也称包装(wrapper)。</p>
+<p>定义：<br>    适配器模式将一个雷达接口，转换成客户期望的另外一个接口。使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/12/2017-03-12-GoBang-A-practice-with-AI/" rel="next" title="GoBang -- A practice with Artificial Intellijence">
+                <i class="fa fa-chevron-left"></i> GoBang -- A practice with Artificial Intellijence
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/liuzijian.jpg"
+               alt="Jason Leaster" />
+          <p class="site-author-name" itemprop="name">Jason Leaster</p>
+           
+              <p class="site-description motion-element" itemprop="description">Tell me and I forget, teach me and I may remember, involve me and I learn. -- Benjamin Franklin</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Singleton-Pattern"><span class="nav-number">1.</span> <span class="nav-text">Singleton Pattern</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Template-Method-Pattern"><span class="nav-number">2.</span> <span class="nav-text">Template Method Pattern</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Proxy"><span class="nav-number">3.</span> <span class="nav-text">Proxy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Static-Proxy"><span class="nav-number">3.1.</span> <span class="nav-text">Static Proxy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dynamic-Proxy"><span class="nav-number">3.2.</span> <span class="nav-text">Dynamic Proxy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Factory"><span class="nav-number">4.</span> <span class="nav-text">Factory</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#抽象工厂模式"><span class="nav-number">4.1.</span> <span class="nav-text">抽象工厂模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#工厂模式和抽象工厂模式的对比"><span class="nav-number">4.2.</span> <span class="nav-text">工厂模式和抽象工厂模式的对比</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#观察者模式-Observer"><span class="nav-number">5.</span> <span class="nav-text">观察者模式 Observer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#推模型"><span class="nav-number">5.1.</span> <span class="nav-text">推模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拉模型"><span class="nav-number">5.2.</span> <span class="nav-text">拉模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#适配器-Adapter"><span class="nav-number">6.</span> <span class="nav-text">适配器 Adapter</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jason Leaster</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
