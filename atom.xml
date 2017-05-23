@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2017-05-22T15:17:08.281Z</updated>
+  <updated>2017-05-23T14:31:22.479Z</updated>
   <id>http://jasonleaster.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/"/>
     <id>http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/</id>
     <published>2017-04-16T03:05:59.000Z</published>
-    <updated>2017-05-22T15:17:08.281Z</updated>
+    <updated>2017-05-23T14:31:22.479Z</updated>
     
     <content type="html"><![CDATA[<p>Definition of Design Pattern:</p>
 <blockquote>
@@ -71,48 +71,13 @@
 <p>Example in real project:<br><a href="https://github.com/jasonleaster/TheWayToJava/blob/master/TinyTools/src/main/java/org/jasonleaster/utils/cache/JedisPoolUtils.java" target="_blank" rel="external">JedisPoolUtils.java</a><br>The inner class <code>Executor</code> is the base class of template method pattern and the different anonymous class is the sub-class which extend <code>Executor</code> and override the abstract method. <code>getResult()</code> is the template method.</p>
 <h3 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h3><p>A proxy is a wrapper or agent object that is being called by the client to access the real serving object behind the scenes.<br>For the client, usage of a proxy object is similar to using the real object, because both implement the same interface.</p>
 <p><img src="/images/img_for_2017_04_16/Proxy_pattern_diagram.svg.png" alt="images"></p>
-<h4 id="Static-Proxy"><a href="#Static-Proxy" class="headerlink" title="Static Proxy"></a>Static Proxy</h4><h4 id="Dynamic-Proxy"><a href="#Dynamic-Proxy" class="headerlink" title="Dynamic Proxy"></a>Dynamic Proxy</h4><p>In contrast with static proxy, the dynamic proxy generates bytecode which requires Java reflection at runtime. With dynamic you need not crate the proxy class, which can lead to more convenience.</p>
-<h3 id="Factory"><a href="#Factory" class="headerlink" title="Factory"></a>Factory</h3><p>Applicable scene:</p>
-<ul>
-<li>有一组类似的对象需要创建</li>
-<li>在编码时不能预见需要创建哪种类的实例</li>
-<li>系统需要考虑扩展性，不应依赖于产品类实例如何被创建、组合和表达的细节</li>
-</ul>
-<p>目的:<br>   定义一个接口来创建对象，但是让子类来决定哪些类需要被实例化。工厂方法把实例化的工作推迟到子类中去实现。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//几个Button类</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Button</span></span>&#123;<span class="comment">/* ...*/</span>&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WinButton</span> <span class="keyword">extends</span> <span class="title">Button</span></span>&#123;<span class="comment">/* ...*/</span>&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MacButton</span> <span class="keyword">extends</span> <span class="title">Button</span></span>&#123;<span class="comment">/* ...*/</span>&#125;</div><div class="line"></div><div class="line"><span class="comment">//它们的工厂类</span></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ButtonFactory</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">abstract</span> Button <span class="title">createButton</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WinButtonFactory</span> <span class="keyword">implements</span> <span class="title">ButtonFactory</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Button <span class="title">createButton</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WinButton();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MacButtonFactory</span> <span class="keyword">implements</span> <span class="title">ButtonFactory</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Button <span class="title">createButton</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MacButton();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h4><h4 id="工厂模式和抽象工厂模式的对比"><a href="#工厂模式和抽象工厂模式的对比" class="headerlink" title="工厂模式和抽象工厂模式的对比"></a>工厂模式和抽象工厂模式的对比</h4><ul>
-<li><small>工厂模式是一个极端情况的抽象工厂模式，而抽象工厂模式可以看成是工厂模式的推广</small></li>
-<li><small>工厂模式用来创建一个产品的等级结构，而抽象工厂模式是用来创建多个产品的等级结构</small></li>
-<li><small>工厂模式只有一个抽象产品类，而抽象工厂模式有多个抽象产品类</small></li>
-</ul>
-<h3 id="观察者模式-Observer"><a href="#观察者模式-Observer" class="headerlink" title="观察者模式 Observer"></a>观察者模式 Observer</h3><p>定义：<br>    定义对象间的一种 <strong>一对多的依赖关系</strong>。当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并自动更新。</p>
-<p>目标与观察者之间的关系：<br>一个目标可以对应多个观察者，但是如果要实现多个目标对应多个观察者的时候，观察者应该为不同的目标提供不同的更新接口，这样实现才能简洁易懂，而不要只提供一个接口并被迫在该接口内部判断各个不同的目标。</p>
-<p>适用场景：<br>触发联动。</p>
-<ul>
-<li>当一个抽象模型有两个方面，其中一个方面的操作依赖于另外一个方面的状态变化</li>
-<li>如果在更改一个对象的时候，需要同时连带改动其他对象，而且不知道究竟应该有多少对象需要被连带改变</li>
-<li>当一个对象必须通知其他的对象，但是你有希望这个对象和其他被通知的对象是松散耦合的。</li>
-</ul>
-<p>单向依赖：<br>只有观察者依赖目标，而不是目标依赖观察者。他们之间的联系掌握在目标手中，只有目标知道什么时候更新观察者的信息，在整个过程中，观察者是被动的，等待目标对其更新。</p>
-<p>命名建议：<br>观察者模式又称发布订阅模式。</p>
-<ul>
-<li>目标接口的定义，建议在名称后面跟Subject</li>
-<li>观察者接口的定义，建议在名称后面跟Observer</li>
-<li>观察者接口的更新方法，建议名称后面跟Update</li>
-</ul>
-<p>触发通知机制：<br>一定要注意触发通知的时机。一般是在完成了目标属性”状态”的维护之后，触发更新。不能先通知(notify)后更新，否则会导致目标和观察者状态属性的不一致。</p>
-<p>通知的顺序：<br>目标通知观察者的顺序是不确定的，程序实现不应该依赖目标通知观察者更新的顺序。</p>
-<h4 id="推模型"><a href="#推模型" class="headerlink" title="推模型"></a>推模型</h4><p>目标对象主动向观察者推送目标的详细信息，推送的信息通常是目标对象的全部或部分数据</p>
-<h4 id="拉模型"><a href="#拉模型" class="headerlink" title="拉模型"></a>拉模型</h4><p>目标对象在通知观察者的时候，只传递少量的信息。如果观察者需要更具体的信息，由观察者主动到目标对象中获取，相当于是观察者从目标对象中拉去数据。一般这种模型的实现中，会把目标对象自身通过update方法传递给观察者。</p>
-<p>观察者模式的优缺点：<br>优点：</p>
-<ul>
-<li>观察者模式实现了观察者和目标之间抽象耦合，只是在抽象层面耦合，而不是具体实现</li>
-<li>观察者模式实现了动态联动</li>
-<li>观察者模式支持广播通信<br>缺点：</li>
-<li>可能引起无谓的操作（观察者模式实质上是一种广播通信。调用者可能只想某个观察者接受信息，但是观察者模式会使得所有观察者都接受到最新的信息）</li>
-</ul>
-<h3 id="适配器-Adapter"><a href="#适配器-Adapter" class="headerlink" title="适配器 Adapter"></a>适配器 Adapter</h3><p>适配器模式是为了解决不兼容不匹配的问题而引入的，有时也称包装(wrapper)。</p>
-<p>定义：<br>    适配器模式将一个雷达接口，转换成客户期望的另外一个接口。使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</p>
+<h4 id="Static-Proxy"><a href="#Static-Proxy" class="headerlink" title="Static Proxy"></a>Static Proxy</h4><p>The source code of the proxy class was created by programmer before compile. The <code>static proxy</code> which means it existed before the program run. It’s established that the relationship between proxy class and delegated class.</p>
+<h4 id="Dynamic-Proxy"><a href="#Dynamic-Proxy" class="headerlink" title="Dynamic Proxy"></a>Dynamic Proxy</h4><p>In contrast with static proxy, the dynamic proxy generates bytecode which requires Java reflection at runtime. With dynamic you don’t need to create the proxy class, which can lead to more convenience.</p>
+<p>If you familar with MyBatis, you may be well known about ORM codes below there.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DAO</span> </span>&#123;</div><div class="line">  <span class="function">User <span class="title">selectUsers</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"selectUsers"</span> <span class="attr">resultType</span>=<span class="string">"User"</span>&gt;</span></div><div class="line">  select id, username, password</div><div class="line">  from users</div><div class="line">  where id = #&#123;id&#125;</div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Generally, MyBatis also use dynamic proxy to generate an proxy instance for interface DAO. Everytime user call interface DAO, the action will be captured (by reflection) and transform to the proxy instance. You can find the proxy handler in the source code </p>
+<p><a href="https://github.com/mybatis/mybatis-3/blob/master/src/main/java/org/apache/ibatis/binding/MapperProxy.java" target="_blank" rel="external">MapperProxy.java</a></p>
 ]]></content>
     
     <summary type="html">
