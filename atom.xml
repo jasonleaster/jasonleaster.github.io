@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2017-05-23T14:31:22.479Z</updated>
+  <updated>2017-06-22T14:29:42.348Z</updated>
   <id>http://jasonleaster.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/"/>
     <id>http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/</id>
     <published>2017-04-16T03:05:59.000Z</published>
-    <updated>2017-05-23T14:31:22.479Z</updated>
+    <updated>2017-06-22T14:29:42.348Z</updated>
     
     <content type="html"><![CDATA[<p>Definition of Design Pattern:</p>
 <blockquote>
@@ -41,7 +41,9 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">    	<span class="keyword">return</span> INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>The other way(Lazy Initialization):</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singleton instance = <span class="keyword">null</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">		    <span class="keyword">synchronized</span>(Singleton.class) &#123;</div><div class="line">	            	<span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">		     	    instance = <span class="keyword">new</span> Singleton();</div><div class="line">		    	&#125;</div><div class="line">		    &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Example in real project:<br>I used single pattern to implement the <code>JedisPoolUtils</code> class. This class helps me to manage a Jedis pool and binding lots of helpful functions in this tool class.<br><a href="https://github.com/jasonleaster/TheWayToJava/blob/master/TinyTools/src/main/java/org/jasonleaster/utils/cache/JedisPoolUtils.java" target="_blank" rel="external">JedisPoolUtils.java</a></p>
+<p>Example in real project:<br>I used single pattern to implement the <code>JedisPoolUtils</code> class. This class helps me to manage a Jedis pool and binding lots of helpful functions in this tool class.</p>
+<p>Recommened Article: <a href="http://wuchong.me/blog/2014/08/28/how-to-correctly-write-singleton-pattern/" target="_blank" rel="external">how-to-correctly-write-singleton-pattern</a></p>
+<p><a href="https://github.com/jasonleaster/TheWayToJava/blob/master/TinyTools/src/main/java/org/jasonleaster/utils/cache/JedisPoolUtils.java" target="_blank" rel="external">JedisPoolUtils.java</a></p>
 <h3 id="Template-Method-Pattern"><a href="#Template-Method-Pattern" class="headerlink" title="Template Method Pattern"></a>Template Method Pattern</h3><p>Definition Of this pattern:<br><em>Template method pattern defines the program skeleton of an algorithm. It define a base class and allow the sub-class to override or implement some methods in the base class. The sub-class can redefine some special steps in the algorithm and don’t need to modify the architecture of the algorithm.</em></p>
 <p><img src="/images/img_for_2017_04_16/Template_Method_UML_class_diagram.svg.png" alt="images"></p>
 <p>Applicable scene:</p>
@@ -78,6 +80,7 @@
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"selectUsers"</span> <span class="attr">resultType</span>=<span class="string">"User"</span>&gt;</span></div><div class="line">  select id, username, password</div><div class="line">  from users</div><div class="line">  where id = #&#123;id&#125;</div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure>
 <p>Generally, MyBatis also use dynamic proxy to generate an proxy instance for interface DAO. Everytime user call interface DAO, the action will be captured (by reflection) and transform to the proxy instance. You can find the proxy handler in the source code </p>
 <p><a href="https://github.com/mybatis/mybatis-3/blob/master/src/main/java/org/apache/ibatis/binding/MapperProxy.java" target="_blank" rel="external">MapperProxy.java</a></p>
+<h3 id="Decorator"><a href="#Decorator" class="headerlink" title="Decorator"></a>Decorator</h3><p>Lately, we have been talked about <code>Proxy Pattern</code></p>
 ]]></content>
     
     <summary type="html">
