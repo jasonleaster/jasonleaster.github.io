@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://jasonleaster.github.io/2016/04/09/2016-04-09-Tuple-and-list-in-python/</loc>
+    
+    <lastmod>2017-06-26T15:49:19.113Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/</loc>
     
     <lastmod>2017-06-22T14:29:42.348Z</lastmod>
@@ -68,13 +75,6 @@
     <loc>http://jasonleaster.github.io/2016/02/22/2016-02-22-exception-control-in-python/</loc>
     
     <lastmod>2017-02-26T13:28:32.763Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://jasonleaster.github.io/2016/04/09/2016-04-09-Tuple-and-list-in-python/</loc>
-    
-    <lastmod>2017-02-26T13:27:18.740Z</lastmod>
     
   </url>
   
@@ -268,6 +268,13 @@
   </url>
   
   <url>
+    <loc>http://jasonleaster.github.io/Love/css/default_dev.css</loc>
+    
+    <lastmod>2016-02-03T13:56:07.598Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://jasonleaster.github.io/Love/css/default.css</loc>
     
     <lastmod>2016-02-03T13:56:07.598Z</lastmod>
@@ -275,9 +282,9 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/css/default_dev.css</loc>
+    <loc>http://jasonleaster.github.io/Love/js/functions_dev.js</loc>
     
-    <lastmod>2016-02-03T13:56:07.598Z</lastmod>
+    <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     
   </url>
   
@@ -297,13 +304,6 @@
   
   <url>
     <loc>http://jasonleaster.github.io/Love/js/garden.js</loc>
-    
-    <lastmod>2016-02-03T13:56:07.582Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://jasonleaster.github.io/Love/js/functions_dev.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     
