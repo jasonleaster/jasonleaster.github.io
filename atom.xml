@@ -133,7 +133,7 @@
     <link href="http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/"/>
     <id>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</id>
     <published>2017-01-12T13:48:18.000Z</published>
-    <updated>2017-05-21T09:47:45.060Z</updated>
+    <updated>2017-06-28T15:22:46.314Z</updated>
     
     <content type="html"><![CDATA[<p>Here are some different solutions with MyBatis and MySQL.</p>
 <p>Way to profile your statements:</p>
@@ -163,6 +163,7 @@
 <p>With the help of MyBatis, we can insert multi items in a list into database, but not insert them one by one. ( Hibernate could do the same thing)</p>
 <h3 id="Tuning-MySQL-my-cnf"><a href="#Tuning-MySQL-my-cnf" class="headerlink" title="Tuning MySQL: my.cnf"></a>Tuning MySQL: my.cnf</h3><p>Sometimes, you find that the query statments are very slow and the expected return data are not more than 100k rows.</p>
 <p>You may try to tune your MySQL server and modify the <code>my.cnf</code> file which is loaded by MySQL for initialization. Familiar with this confiuration file will help you to avoid this common pitfall.</p>
+<h4 id="Use-index-as-you-can-as-possible"><a href="#Use-index-as-you-can-as-possible" class="headerlink" title="Use index as you can as possible"></a>Use index as you can as possible</h4><p>Make sure that <strong>both fileds</strong> of two tables which you reference to join <em>*have index</em> on that fields. Otherwise, you make get into trouble about the performance of query process in MySQL.</p>
 <h4 id="Basic-settings"><a href="#Basic-settings" class="headerlink" title="Basic settings"></a>Basic settings</h4><p>Here are 3 MySQL performance tuning settings that you should always look at. If you do not, you are very likely to run into problems very quickly.</p>
 <p><code>innodb_buffer_pool_size</code>: this is the #1 setting to look at for any installation using InnoDB. The buffer pool is where data and indexes are cached: having it as large as possible will ensure you use memory and not disks for most read operations. Typical values are 5-6GB (8GB RAM), 20-25GB (32GB RAM), 100-120GB (128GB RAM).</p>
 <p><code>innodb_log_file_size</code>: this is the size of the redo logs. The redo logs are used to make sure writes are fast and durable and also during crash recovery. Up to MySQL 5.1, it was hard to adjust, as you wanted both large redo logs for good performance and small redo logs for fast crash recovery. Fortunately crash recovery performance has improved a lot since MySQL 5.5 so you can now have good write performance and fast crash recovery. Until MySQL 5.5 the total redo log size was limited to 4GB (the default is to have 2 log files). This has been lifted in MySQL 5.6.</p>
