@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://jasonleaster.github.io/recommends/index.html</loc>
+    
+    <lastmod>2017-07-15T15:24:15.998Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
     
     <lastmod>2017-07-08T04:59:12.902Z</lastmod>
@@ -47,13 +54,6 @@
     <loc>http://jasonleaster.github.io/2016/09/11/2016-09-11-the-brief-introduction-to-the-archtecture-of-junit4/</loc>
     
     <lastmod>2017-02-27T16:10:05.568Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://jasonleaster.github.io/recommends/index.html</loc>
-    
-    <lastmod>2017-02-27T16:09:07.468Z</lastmod>
     
   </url>
   
@@ -296,14 +296,14 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/js/garden_dev.js</loc>
+    <loc>http://jasonleaster.github.io/Love/js/garden.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/js/garden.js</loc>
+    <loc>http://jasonleaster.github.io/Love/js/garden_dev.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     
