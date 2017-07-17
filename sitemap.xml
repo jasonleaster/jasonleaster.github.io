@@ -2,16 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://jasonleaster.github.io/recommends/index.html</loc>
+    <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
     
-    <lastmod>2017-07-15T15:24:15.998Z</lastmod>
+    <lastmod>2017-07-17T15:48:30.133Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
+    <loc>http://jasonleaster.github.io/recommends/index.html</loc>
     
-    <lastmod>2017-07-08T04:59:12.902Z</lastmod>
+    <lastmod>2017-07-15T15:24:15.998Z</lastmod>
     
   </url>
   
@@ -268,14 +268,14 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/css/default.css</loc>
+    <loc>http://jasonleaster.github.io/Love/css/default_dev.css</loc>
     
     <lastmod>2016-02-03T13:56:07.598Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/css/default_dev.css</loc>
+    <loc>http://jasonleaster.github.io/Love/css/default.css</loc>
     
     <lastmod>2016-02-03T13:56:07.598Z</lastmod>
     
