@@ -133,7 +133,7 @@
     <link href="http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/"/>
     <id>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</id>
     <published>2017-01-12T13:48:18.000Z</published>
-    <updated>2017-07-17T15:50:49.977Z</updated>
+    <updated>2017-07-19T13:15:34.602Z</updated>
     
     <content type="html"><![CDATA[<p>In this blog, I will try my best to summary helpful experience with MySQL. Without other declaration, the deault engine which I used is innodb.</p>
 <h3 id="Explain-your-query-statement-is-a-kind-of-virtue"><a href="#Explain-your-query-statement-is-a-kind-of-virtue" class="headerlink" title="Explain your query statement is a kind of virtue"></a>Explain your query statement is a kind of virtue</h3><p>If you are not confident with what have done in your query statements, please add <code>explain</code> key word before your query statement and let the interepter tell you how MySQL will excute the statement.</p>
@@ -201,6 +201,7 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
 </blockquote>
 <p>If you have do query operation on the table which are created by someone(maybe it’s yourself). It hasn’t a primary key and never set NOT NULL constraint with filed.</p>
 <p>I will recommend you to use <strong>having id is not NULL</strong> clause to filter the NULL rows which are selected by your query statments.</p>
+<hr>
 <p>Recommended Resources:</p>
 <ul>
 <li><a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-storage-engine.html" target="_blank" rel="external">Official Documents Of MySQL</a></li>
