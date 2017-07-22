@@ -133,7 +133,7 @@
     <link href="http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/"/>
     <id>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</id>
     <published>2017-01-12T13:48:18.000Z</published>
-    <updated>2017-07-19T13:15:34.602Z</updated>
+    <updated>2017-07-22T16:06:06.971Z</updated>
     
     <content type="html"><![CDATA[<p>In this blog, I will try my best to summary helpful experience with MySQL. Without other declaration, the deault engine which I used is innodb.</p>
 <h3 id="Explain-your-query-statement-is-a-kind-of-virtue"><a href="#Explain-your-query-statement-is-a-kind-of-virtue" class="headerlink" title="Explain your query statement is a kind of virtue"></a>Explain your query statement is a kind of virtue</h3><p>If you are not confident with what have done in your query statements, please add <code>explain</code> key word before your query statement and let the interepter tell you how MySQL will excute the statement.</p>
@@ -208,6 +208,7 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
 <li><code>&lt;&lt;High Performance MySQL&gt;&gt;</code></li>
 <li><code>&lt;&lt;MySQL技术内幕: SQL编程&gt;&gt;</code></li>
 <li><a href="https://blog.jcole.us/2013/01/10/btree-index-structures-in-innodb/" target="_blank" rel="external">B+Tree index structures in InnoDB</a></li>
+<li><code>&lt;&lt;阿里巴巴Java编程规范&gt;&gt; SQL规约相关章节</code></li>
 </ul>
 ]]></content>
     
@@ -226,6 +227,8 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
     </summary>
     
       <category term="Database" scheme="http://jasonleaster.github.io/categories/Database/"/>
+    
+      <category term="MySQL" scheme="http://jasonleaster.github.io/categories/Database/MySQL/"/>
     
     
       <category term="MySQL" scheme="http://jasonleaster.github.io/tags/MySQL/"/>
@@ -644,10 +647,10 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
     <link href="http://jasonleaster.github.io/2016/04/09/2016-04-09-tuple-and-list-in-python/"/>
     <id>http://jasonleaster.github.io/2016/04/09/2016-04-09-tuple-and-list-in-python/</id>
     <published>2016-04-09T00:52:51.000Z</published>
-    <updated>2017-06-26T15:49:19.113Z</updated>
+    <updated>2017-07-20T14:35:19.550Z</updated>
     
     <content type="html"><![CDATA[<p>Try to answer the following question.</p>
-<p>What are lists andd tuples good for?</p>
+<p>What are lists and tuples good for?</p>
 <p>What is the complexity of a lookup in a list/tuple?</p>
 <p>How is that complexity achieved?</p>
 <p>What are the differences between lists and tuples?</p>
@@ -671,7 +674,7 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
     <summary type="html">
     
       &lt;p&gt;Try to answer the following question.&lt;/p&gt;
-&lt;p&gt;What are lists andd tuples good for?&lt;/p&gt;
+&lt;p&gt;What are lists and tuples good for?&lt;/p&gt;
 &lt;p&gt;What is the complexity of a lookup in a list/tuple?&lt;/p&gt;
 &lt;p&gt;How is that complexity achieved?&lt;/p&gt;
 &lt;p&gt;What are the differences between lists and tuples?&lt;/p&gt;

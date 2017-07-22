@@ -2,30 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
-    
-    <lastmod>2017-07-19T13:15:34.602Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://jasonleaster.github.io/todo/index.html</loc>
     
-    <lastmod>2017-07-19T13:13:55.262Z</lastmod>
+    <lastmod>2017-07-22T16:12:22.497Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/recommends/index.html</loc>
+    <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
     
-    <lastmod>2017-07-15T15:24:15.998Z</lastmod>
+    <lastmod>2017-07-22T16:06:06.971Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://jasonleaster.github.io/2016/04/09/2016-04-09-tuple-and-list-in-python/</loc>
     
-    <lastmod>2017-06-26T15:49:19.113Z</lastmod>
+    <lastmod>2017-07-20T14:35:19.550Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jasonleaster.github.io/recommends/index.html</loc>
+    
+    <lastmod>2017-07-19T17:09:28.025Z</lastmod>
     
   </url>
   
