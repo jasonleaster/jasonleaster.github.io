@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2017-06-22T14:29:42.348Z</updated>
+  <updated>2017-08-06T09:49:34.154Z</updated>
   <id>http://jasonleaster.github.io/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Design Pattern</title>
+    <title>Design Pattern - I</title>
     <link href="http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/"/>
     <id>http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/</id>
     <published>2017-04-16T03:05:59.000Z</published>
-    <updated>2017-06-22T14:29:42.348Z</updated>
+    <updated>2017-08-06T09:49:34.154Z</updated>
     
     <content type="html"><![CDATA[<p>Definition of Design Pattern:</p>
 <blockquote>
@@ -101,8 +101,8 @@
     
     </summary>
     
+      <category term="Java" scheme="http://jasonleaster.github.io/categories/Java/"/>
     
-      <category term="Java" scheme="http://jasonleaster.github.io/tags/Java/"/>
     
   </entry>
   
@@ -240,13 +240,13 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
     <link href="http://jasonleaster.github.io/2017/01/11/2017-01-11-summary-for-2016-year/"/>
     <id>http://jasonleaster.github.io/2017/01/11/2017-01-11-summary-for-2016-year/</id>
     <published>2017-01-11T14:07:11.000Z</published>
-    <updated>2017-02-26T12:39:43.695Z</updated>
+    <updated>2017-07-22T16:28:09.410Z</updated>
     
-    <content type="html"><![CDATA[<p>Looking back this year, for leaving school and beginning to my career life, there have many changes, twists and turns in my life. There also have many moved and warm moments in this year. At the last day of this year, they all gone.</p>
+    <content type="html"><![CDATA[<p>Looking back to this year, for leaving school and beginning to my career life, there have many changes, twists and turns in my life. There also have many moved and warm moments in this year. At the last day of this year, they all gone.</p>
 <a id="more"></a>
 <p>Last year, this time, I was busy in my school for finishing my graduation project “E-Face”. Particulary, I want to say thanks to my teacher Hongzhong Tang. Without her encouragement, I can’t do it well. It amost costs my half year time to finish this project.</p>
 <p>Daily, I read paper about face detection. I pay a lot of time to code, debug and verify my new idea about the implementation.</p>
-<p>It’s about March and April. One day, my father call me and tell me that he felt not good. After the short call, I knew he need a surgery. Before the day when he has been performed the operation, I go back home to accompany him. He spent about six hours to finish his operation. During that time, I waited out sideof the door of the OR(operating room) all the time. After that, I stay at home for a month to accompany him and help him to recover.</p>
+<p>It’s about in March and April. One day, my father call me and tell me that he felt not good. After the short call, I knew he need a surgery. Before the day when he has been performed the operation, I go back home to accompany him. He spent about six hours to finish his operation. During that time, I waited out sideof the door of the OR(operating room) all the time. After that, I stay at home for a month to accompany him and help him to recover.</p>
 <p>June, thesis defense, take the diploma,  pack up and quit. I don’t feel happy for graduation nor sad for leaving. I just leave the place where I think it’s like a naive garden. From my perspective, school like a cage. They have a lot of things in common. Teenagers can’t adapt to industrial society, so adult set many rules for them and keep them in a place to avoid to be disturbed by the little guys.</p>
 <p>Carrying heavy suitcases, it took me about 12-hours to come to the destination – ShenZhen, which everybody talk about.</p>
 <p>Maybe, it’s for my shallow. I feel nothing different with my hometown but the high prices of daily necessities and the congested road. </p>
@@ -266,7 +266,7 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
     
     <summary type="html">
     
-      &lt;p&gt;Looking back this year, for leaving school and beginning to my career life, there have many changes, twists and turns in my life. There also have many moved and warm moments in this year. At the last day of this year, they all gone.&lt;/p&gt;
+      &lt;p&gt;Looking back to this year, for leaving school and beginning to my career life, there have many changes, twists and turns in my life. There also have many moved and warm moments in this year. At the last day of this year, they all gone.&lt;/p&gt;
     
     </summary>
     
