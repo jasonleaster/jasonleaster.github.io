@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://jasonleaster.github.io/2017/12/24/Summary-for-2017-Year/</loc>
+    
+    <lastmod>2018-01-07T07:54:10.187Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jasonleaster.github.io/todo/index.html</loc>
+    
+    <lastmod>2017-12-20T12:05:00.480Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://jasonleaster.github.io/recommends/index.html</loc>
     
     <lastmod>2017-11-05T05:20:26.166Z</lastmod>
@@ -9,49 +23,42 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/todo/index.html</loc>
-    
-    <lastmod>2017-08-19T13:42:52.337Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/</loc>
+    <loc>http://jasonleaster.github.io/2017/04/16/Design-Pattern/</loc>
     
     <lastmod>2017-08-06T09:49:34.154Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2017/01/11/2017-01-11-summary-for-2016-year/</loc>
+    <loc>http://jasonleaster.github.io/2017/01/11/summary-for-2016-year/</loc>
     
     <lastmod>2017-07-22T16:28:09.410Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</loc>
+    <loc>http://jasonleaster.github.io/2017/01/12/good-practices-with-mysql/</loc>
     
     <lastmod>2017-07-22T16:06:06.971Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/04/09/2016-04-09-tuple-and-list-in-python/</loc>
+    <loc>http://jasonleaster.github.io/2016/04/09/tuple-and-list-in-python/</loc>
     
     <lastmod>2017-07-20T14:35:19.550Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/</loc>
+    <loc>http://jasonleaster.github.io/2016/06/14/great-ideas-in-object-oriented-programming/</loc>
     
     <lastmod>2017-05-21T13:29:51.962Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2017/03/12/2017-03-12-GoBang-A-practice-with-AI/</loc>
+    <loc>http://jasonleaster.github.io/2017/03/12/GoBang-A-practice-with-AI/</loc>
     
     <lastmod>2017-05-21T13:27:23.769Z</lastmod>
     
@@ -65,49 +72,49 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/09/11/2016-09-11-the-brief-introduction-to-the-archtecture-of-junit4/</loc>
+    <loc>http://jasonleaster.github.io/2016/09/11/the-brief-introduction-to-the-archtecture-of-junit4/</loc>
     
     <lastmod>2017-02-27T16:10:05.568Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/02/03/2016-02-03-memory-model-of-int-object-in-python/</loc>
+    <loc>http://jasonleaster.github.io/2016/02/03/memory-model-of-int-object-in-python/</loc>
     
     <lastmod>2017-02-26T14:58:05.998Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/02/21/2016-02-21-architecture-of-python-virtual-machine/</loc>
+    <loc>http://jasonleaster.github.io/2016/02/21/architecture-of-python-virtual-machine/</loc>
     
     <lastmod>2017-02-26T14:43:46.434Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/02/22/2016-02-22-exception-control-in-python/</loc>
+    <loc>http://jasonleaster.github.io/2016/02/22/exception-control-in-python/</loc>
     
     <lastmod>2017-02-26T13:28:32.763Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/09/04/2016-09-04-problems-with-linked-list/</loc>
+    <loc>http://jasonleaster.github.io/2016/09/04/problems-with-linked-list/</loc>
     
     <lastmod>2017-02-26T13:19:09.715Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/05/19/2016-05-19-training-cascade-with-opencv/</loc>
+    <loc>http://jasonleaster.github.io/2016/05/19/training-cascade-with-opencv/</loc>
     
     <lastmod>2017-02-26T13:06:38.568Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/12/25/2015-12-25-labs-of-mit-6-dot-034/</loc>
+    <loc>http://jasonleaster.github.io/2015/12/25/labs-of-mit-6-dot-034/</loc>
     
     <lastmod>2017-02-26T13:05:40.615Z</lastmod>
     
@@ -128,133 +135,133 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/08/24/2016-08-24-search-algorithm-in-graph/</loc>
+    <loc>http://jasonleaster.github.io/2016/08/24/search-algorithm-in-graph/</loc>
     
     <lastmod>2016-08-28T02:25:20.203Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/12/13/2015-12-13-machine-learning-with-boosting/</loc>
+    <loc>http://jasonleaster.github.io/2015/12/13/machine-learning-with-boosting/</loc>
     
     <lastmod>2016-07-01T05:08:16.130Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/04/09/2016-04-09-iterater-and-generator-in-python/</loc>
+    <loc>http://jasonleaster.github.io/2016/04/09/iterater-and-generator-in-python/</loc>
     
     <lastmod>2016-04-09T13:07:14.756Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/02/04/2016-02-04-dict-object-in-python/</loc>
+    <loc>http://jasonleaster.github.io/2016/02/04/dict-object-in-python/</loc>
     
     <lastmod>2016-04-09T05:53:49.889Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/02/19/2016-02-19-web-crawler/</loc>
+    <loc>http://jasonleaster.github.io/2016/02/19/web-crawler/</loc>
     
     <lastmod>2016-02-21T14:35:40.824Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/02/06/2016-02-06-brief-introduction-to-opcodes-in-python/</loc>
+    <loc>http://jasonleaster.github.io/2016/02/06/brief-introduction-to-opcodes-in-python/</loc>
     
     <lastmod>2016-02-15T12:19:13.983Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2016/02/05/2016-02-05-functional-programming-in-python/</loc>
+    <loc>http://jasonleaster.github.io/2016/02/05/functional-programming-in-python/</loc>
     
     <lastmod>2016-02-06T08:30:53.211Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/07/24/2015-07-24-binary-search/</loc>
+    <loc>http://jasonleaster.github.io/2015/07/24/binary-search/</loc>
     
     <lastmod>2016-02-05T11:02:14.490Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/12/30/2015-12-30-machine-learning-with-k-means/</loc>
+    <loc>http://jasonleaster.github.io/2015/12/30/machine-learning-with-k-means/</loc>
     
     <lastmod>2016-02-04T05:51:25.851Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/09/24/2015-09-24-binary-search-tree/</loc>
+    <loc>http://jasonleaster.github.io/2015/09/24/binary-search-tree/</loc>
     
     <lastmod>2016-02-04T05:05:31.139Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/06/17/2015-06-17-what-should-we-focus-on/</loc>
+    <loc>http://jasonleaster.github.io/2015/06/17/what-should-we-focus-on/</loc>
     
     <lastmod>2016-02-04T05:04:57.022Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/06/13/2015-06-13-memory-model-of-objects-in-c-plus-plus/</loc>
+    <loc>http://jasonleaster.github.io/2015/06/13/memory-model-of-objects-in-c-plus-plus/</loc>
     
     <lastmod>2016-02-04T05:04:44.098Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/05/25/2015-05-25-learn-to-design-a-container/</loc>
+    <loc>http://jasonleaster.github.io/2015/05/25/learn-to-design-a-container/</loc>
     
     <lastmod>2016-02-04T05:04:28.229Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/05/24/2015-05-24-an-exercise-of-c-plus-plus/</loc>
+    <loc>http://jasonleaster.github.io/2015/05/24/an-exercise-of-c-plus-plus/</loc>
     
     <lastmod>2016-02-04T05:04:17.061Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/05/19/2015-05-19-an-example-for-oop-in-c-plus-plus/</loc>
+    <loc>http://jasonleaster.github.io/2015/05/19/an-example-for-oop-in-c-plus-plus/</loc>
     
     <lastmod>2016-02-04T05:03:59.521Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/05/18/2015-05-18-surrogate-class/</loc>
+    <loc>http://jasonleaster.github.io/2015/05/18/surrogate-class/</loc>
     
     <lastmod>2016-02-04T05:03:46.588Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/05/18/2015-05-18-handle-class/</loc>
+    <loc>http://jasonleaster.github.io/2015/05/18/handle-class/</loc>
     
     <lastmod>2016-02-04T05:02:53.519Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/05/15/2015-05-15-why-should-we-use-c-plus-plus/</loc>
+    <loc>http://jasonleaster.github.io/2015/05/15/why-should-we-use-c-plus-plus/</loc>
     
     <lastmod>2016-02-04T05:02:28.690Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/2015/05/09/2015-05-09-what-means-freedom/</loc>
+    <loc>http://jasonleaster.github.io/2015/05/09/what-means-freedom/</loc>
     
     <lastmod>2016-02-04T05:02:05.625Z</lastmod>
     
@@ -282,14 +289,14 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/js/functions_dev.js</loc>
+    <loc>http://jasonleaster.github.io/Love/js/functions.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/js/garden.js</loc>
+    <loc>http://jasonleaster.github.io/Love/js/functions_dev.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     
@@ -303,7 +310,7 @@
   </url>
   
   <url>
-    <loc>http://jasonleaster.github.io/Love/js/functions.js</loc>
+    <loc>http://jasonleaster.github.io/Love/js/garden.js</loc>
     
     <lastmod>2016-02-03T13:56:07.582Z</lastmod>
     

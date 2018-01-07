@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="EOF" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Searching in a graph is the one of the most popular topic in CS. 
+In this article, I would like to make a summary about what algorithms for searching in graphes.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Search Algorithm in Graph">
+<meta property="og:url" content="http://jasonleaster.github.io/2016/08/24/search-algorithm-in-graph/index.html">
+<meta property="og:site_name" content="EOF">
+<meta property="og:description" content="Searching in a graph is the one of the most popular topic in CS. 
+In this article, I would like to make a summary about what algorithms for searching in graphes.">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_08/graph.jpg">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_08/pathForDFS.jpg">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_08/pathForDijkastra.jpg">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_08/zhuanyunlou.png">
+<meta property="og:updated_time" content="2016-08-28T02:25:20.203Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Search Algorithm in Graph">
+<meta name="twitter:description" content="Searching in a graph is the one of the most popular topic in CS. 
+In this article, I would like to make a summary about what algorithms for searching in graphes.">
+<meta name="twitter:image" content="http://jasonleaster.github.io/images/img_for_2016_08/graph.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://jasonleaster.github.io/2016/08/24/search-algorithm-in-graph/"/>
+
+
+
+
+
+  <title>Search Algorithm in Graph | EOF</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">EOF</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">In this life, be myself!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2016/08/24/search-algorithm-in-graph/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jason Leaster">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EOF">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Search Algorithm in Graph</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-24T20:46:43+08:00">
+                2016-08-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Searching in a graph is the one of the most popular topic in CS. </p>
+<p>In this article, I would like to make a summary about what algorithms for searching in graphes.</p>
+<a id="more"></a>
+<h3 id="1-Presentation-of-Graph"><a href="#1-Presentation-of-Graph" class="headerlink" title="1. Presentation of Graph"></a>1. Presentation of Graph</h3><ul>
+<li>Adjacency Matrix</li>
+<li>Adjacency List</li>
+</ul>
+<p>What is better, adjacency lists or adjacency matrices for graph problem ?</p>
+<p>It depends on the problem.</p>
+<p>An adjacency matrix uses <code>O(n*n)</code> memory. It has fast lookups to check for presence or absence of a specific edge, but slow to iterate over all edges.</p>
+<p>  Adjacency lists use memory in proportion to the number edges, which might save a lot of memory if the adjacency matrix is sparse. It is fast to iterate over all edges, but finding the presence or absence specific edge is slightly slower than with the matrix.</p>
+<p><strong>In this article, I would like to use adjacency matrix to represent the graph in our problems. I want to express the essential idea in algorithms but not the programming language grammer. So all implementation of algorithm will be written in Python.</strong></p>
+<p>We will try to use different ways to solve the demo problem. Here is the graph which we will use in this article.</p>
+<p><img src="/images/img_for_2016_08/graph.jpg" alt="images"></p>
+<p>The corresponding adjacency matrix:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">INF = float(<span class="string">'inf'</span>)</div><div class="line">graph = [</div><div class="line">[INF,   <span class="number">7</span>,   <span class="number">9</span>, INF, INF,  <span class="number">14</span>],</div><div class="line">[  <span class="number">7</span>, INF,  <span class="number">10</span>,  <span class="number">15</span>, INF, INF],</div><div class="line">[  <span class="number">9</span>,  <span class="number">19</span>, INF,  <span class="number">11</span>, INF,   <span class="number">2</span>],</div><div class="line">[INF,  <span class="number">15</span>,  <span class="number">11</span>, INF,   <span class="number">6</span>, INF],</div><div class="line">[INF, INF, INF,   <span class="number">6</span>, INF,   <span class="number">9</span>],</div><div class="line">[ <span class="number">14</span>, INF,   <span class="number">2</span>, INF,   <span class="number">9</span>, INF]</div><div class="line">]</div></pre></td></tr></table></figure>
+<h3 id="2-BFS-Breadth-First-Search"><a href="#2-BFS-Breadth-First-Search" class="headerlink" title="2. BFS Breadth First Search"></a>2. BFS Breadth First Search</h3><p>Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. It starts at the tree root (or some arbitrary node of a graph, sometimes referred to as a ‘search key’) and explores the neighbor nodes first, before moving to the next level neighbors.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">BFS</span><span class="params">(matrix, start, end)</span>:</span></div><div class="line">    size = len(matrix)</div><div class="line">    visited = [start]</div><div class="line">    Q = [ [start] ]</div><div class="line">    path = [] <span class="comment"># possible solution, @path is a nested list [[] ...]</span></div><div class="line"></div><div class="line">    <span class="keyword">while</span> len(Q) != <span class="number">0</span>:</div><div class="line">        path = Q.pop(<span class="number">0</span>)</div><div class="line">        curNode = path[<span class="number">-1</span>]</div><div class="line"></div><div class="line">        <span class="keyword">if</span> curNode == end:</div><div class="line">            <span class="keyword">return</span> path <span class="comment"># the solution</span></div><div class="line"></div><div class="line">        neighbors = []</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(size):</div><div class="line">            <span class="keyword">if</span> matrix[curNode][i] != INF:</div><div class="line">            neighbors.append(i)</div><div class="line"></div><div class="line">        <span class="comment"># to find the neighbors who are unvisited</span></div><div class="line">        i = <span class="number">0</span></div><div class="line">        <span class="keyword">while</span> i &lt; len(neighbors):</div><div class="line">            <span class="keyword">if</span> neighbors[i] <span class="keyword">in</span> visited:</div><div class="line">                neighbors.remove(neighbors[i])</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                i += <span class="number">1</span></div><div class="line"></div><div class="line">        <span class="comment">#add unvisited neighbor into visited line.</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> neighbors:</div><div class="line">            visited.append(i)</div><div class="line">            Q.append(path + [i])</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">None</span></div></pre></td></tr></table></figure>
+<h3 id="DFS-Depth-First-Search"><a href="#DFS-Depth-First-Search" class="headerlink" title="DFS Depth First Search"></a>DFS Depth First Search</h3><p>Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. One starts at the root (selecting some arbitrary node as the root in the case of a graph) and explores as far as possible along each branch before backtracking.</p>
+<p><img src="/images/img_for_2016_08/pathForDFS.jpg" alt="images"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#####################  Pesudo Code ########################</div><div class="line">Input: A graph G and a vertex v of G</div><div class="line"></div><div class="line">Output: All vertices reachable from v labeled as discovered</div><div class="line"></div><div class="line">-----------------------------------------------------------</div><div class="line">A recursive implementation of DFS:</div><div class="line">-----------------------------------------------------------</div><div class="line">procedure DFS(G,v):</div><div class="line"></div><div class="line">    label v as discovered</div><div class="line">    for all edges from v to w in G.adjacentEdges(v) do</div><div class="line">        if vertex w is not labeled as discovered then</div><div class="line">            recursively call DFS(G,w)</div><div class="line"></div><div class="line">------------------------------------------------------------</div><div class="line">A non-recursive implementation of DFS:</div><div class="line">------------------------------------------------------------</div><div class="line"></div><div class="line">procedure DFS-iterative(G,v):</div><div class="line">    let S be a stack</div><div class="line">    S.push(v)</div><div class="line">    while S is not empty</div><div class="line">        v = S.pop()</div><div class="line">        if v is not labeled as discovered:</div><div class="line">            label v as discovered</div><div class="line">            for all edges from v to w in G.adjacentEdges(v) do</div><div class="line">                 S.push(w)</div></pre></td></tr></table></figure>
+<h3 id="Foly"><a href="#Foly" class="headerlink" title="Foly"></a>Foly</h3><h3 id="Shortest-Path-Search-Dijkastra"><a href="#Shortest-Path-Search-Dijkastra" class="headerlink" title="Shortest Path Search (Dijkastra)"></a>Shortest Path Search (Dijkastra)</h3><p><img src="/images/img_for_2016_08/pathForDijkastra.jpg" alt="images"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#####################  Pesudo Code ########################</div><div class="line"></div><div class="line">function Dijkstra(Graph, source):</div><div class="line"></div><div class="line">      create vertex set Q</div><div class="line"></div><div class="line">      for each vertex v in Graph:             // Initialization</div><div class="line">          dist[v] ← INFINITY                  // Unknown distance from source to v</div><div class="line">          prev[v] ← UNDEFINED                 // Previous node in optimal path from source</div><div class="line">          add v to Q                          // All nodes initially in Q (unvisited nodes)</div><div class="line"></div><div class="line">      dist[source] ← 0                        // Distance from source to source</div><div class="line">      </div><div class="line">      while Q is not empty:</div><div class="line">          u ← vertex in Q with min dist[u]    // Source node will be selected first</div><div class="line">          remove u from Q </div><div class="line">          </div><div class="line">          for each neighbor v of u:           // where v is still in Q.</div><div class="line">              alt ← dist[u] + length(u, v)</div><div class="line">              if alt &lt; dist[v]:               // A shorter path to v has been found</div><div class="line">                  dist[v] ← alt </div><div class="line">                  prev[v] ← u </div><div class="line"></div><div class="line">      return dist[], prev[]</div></pre></td></tr></table></figure>
+<p>Extention:</p>
+<p>I will recommend you to finish the lab2 in 6.034</p>
+<p><a href="https://github.com/jasonleaster/MIT_6.034_2015/tree/master/lab2" target="_blank" rel="external">https://github.com/jasonleaster/MIT_6.034_2015/tree/master/lab2</a></p>
+<p>This article does not finished and will be update these days :)</p>
+<p>You can get my implementation on <a href="https://github.com/jasonleaster/Algorithm/blob/master/Graph/Dijkstra/Python/Dijkastra.py" target="_blank" rel="external">github</a></p>
+<hr>
+<p>Photo by Annabella in ChongQin, China<br><img src="/images/img_for_2016_08/zhuanyunlou.png" alt="images"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/14/great-ideas-in-object-oriented-programming/" rel="next" title="Great ideas in Object Oriented Programming">
+                <i class="fa fa-chevron-left"></i> Great ideas in Object Oriented Programming
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/04/problems-with-linked-list/" rel="prev" title="Problems With Linked List">
+                Problems With Linked List <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Jason Leaster</p>
+              <p class="site-description motion-element" itemprop="description">Tell me and I forget, teach me and I may remember, involve me and I learn. -- Benjamin Franklin</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Presentation-of-Graph"><span class="nav-number">1.</span> <span class="nav-text">1. Presentation of Graph</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-BFS-Breadth-First-Search"><span class="nav-number">2.</span> <span class="nav-text">2. BFS Breadth First Search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DFS-Depth-First-Search"><span class="nav-number">3.</span> <span class="nav-text">DFS Depth First Search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Foly"><span class="nav-number">4.</span> <span class="nav-text">Foly</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Shortest-Path-Search-Dijkastra"><span class="nav-number">5.</span> <span class="nav-text">Shortest Path Search (Dijkastra)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jason Leaster</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

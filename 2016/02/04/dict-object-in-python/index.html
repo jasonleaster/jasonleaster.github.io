@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="EOF" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Try to answer these question.
+
+Whatare dictionaries and sets good for?
+
+How are dictionaries and set the same?
+
+What is the overhead when using a dictionary?
+
+How can I optimize the performance of a d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dict Object in Python">
+<meta property="og:url" content="http://jasonleaster.github.io/2016/02/04/dict-object-in-python/index.html">
+<meta property="og:site_name" content="EOF">
+<meta property="og:description" content="Try to answer these question.
+
+Whatare dictionaries and sets good for?
+
+How are dictionaries and set the same?
+
+What is the overhead when using a dictionary?
+
+How can I optimize the performance of a d">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_02_04/dictTable.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_02_04/testResizeDict.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2016_02_04/street.jpg">
+<meta property="og:updated_time" content="2016-04-09T05:53:49.889Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dict Object in Python">
+<meta name="twitter:description" content="Try to answer these question.
+
+Whatare dictionaries and sets good for?
+
+How are dictionaries and set the same?
+
+What is the overhead when using a dictionary?
+
+How can I optimize the performance of a d">
+<meta name="twitter:image" content="http://jasonleaster.github.io/images/img_for_2016_02_04/dictTable.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://jasonleaster.github.io/2016/02/04/dict-object-in-python/"/>
+
+
+
+
+
+  <title>Dict Object in Python | EOF</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">EOF</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">In this life, be myself!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2016/02/04/dict-object-in-python/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jason Leaster">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EOF">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Dict Object in Python</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-02-04T12:54:11+08:00">
+                2016-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Try to answer these question.</p>
+<ol>
+<li><p>Whatare dictionaries and sets good for?</p>
+</li>
+<li><p>How are dictionaries and set the same?</p>
+</li>
+<li><p>What is the overhead when using a dictionary?</p>
+</li>
+<li><p>How can I optimize the performance of a dictionary?</p>
+</li>
+<li><p>How does Python use dictionaries to keep track of namespace?</p>
+</li>
+</ol>
+<a id="more"></a>
+<p>Dictionary object type – mapping from hashable object to object </p>
+<p>In the implemenation, Python don’t choose <code>Red-Black Tree</code> as the basic data structure but Hash Table with a special technology – <code>Open Addressing</code>.</p>
+<p>About open addressing:</p>
+<blockquote>
+<p>In computer science, lazy deletion refers to a method of deleting elements from a hash table that uses open addressing. In this method, deletions are done by marking an element as deleted, rather than erasing it entirely. Deleted locations are treated as empty when inserting and as occupied during a search. – Wikipedia</p>
+</blockquote>
+<p>There three kinds of slots in the table:</p>
+<ol>
+<li><p>Unused.  <code>me_key</code> == <code>me_value</code> == <code>NULL</code><br>Does not hold an active (key, value) pair now and never did.  Unused can transition to Active upon key insertion.  This is the only case in which <code>me_key</code> is NULL, and is each slot’s initial state.</p>
+</li>
+<li><p>Active.  <code>me_key</code> != NULL and <code>me_key</code> != dummy and <code>me_value</code> != NULL Holds an active (key, value) pair.  Active can transition to Dummy upon key deletion.  This is the only case in which <code>me_value</code> != NULL.</p>
+</li>
+<li><p>Dummy.  <code>me_key</code> == dummy and <code>me_value</code> == NULL<br>Previously held an active (key, value) pair, but that was deleted and an active pair has not yet overwritten the slot.  Dummy can transition to Active upon key insertion. Dummy slots cannot be made Unused again (cannot have <code>me_key</code> set to NULL), else the probe sequence in case of collision would have no way to know they were once active.</p>
+</li>
+</ol>
+<p>Here, Python define the entry data type of dict in python <code>PyDictObejct</code>. A entry is like a paire (key, value). To avoid calculating the hash value of <code>me_key</code>, <code>me_hash</code> used as a cached value for it.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[Include/dictobject.h]</div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">    Py_ssize_t me_hash;</div><div class="line">    PyObject *me_key;</div><div class="line">    PyObject *me_value;</div><div class="line">&#125; PyDictEntry;</div></pre></td></tr></table></figure>
+<p>   To ensure the lookup algorithm terminates, there must be at least one Unused slot (NULL key) in the table.</p>
+<p>   The value <code>ma_fill</code> is the number of non-NULL keys (sum of Active and Dummy);<br>   <code>ma_used</code> is the number of non-NULL, non-dummy keys (== the number of non-NULL values == the number of Active items).<br>   To avoid slowing down lookups on a near-full table, we resize the table when it’s <font color="red">two-thirds</font> full.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[Include/dictobject.h]</div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _dictobject PyDictObject;</div><div class="line"><span class="keyword">struct</span> _dictobject &#123;</div><div class="line">    PyObject_HEAD</div><div class="line">    Py_ssize_t ma_fill;  <span class="comment">/* # Active + # Dummy */</span></div><div class="line">    Py_ssize_t ma_used;  <span class="comment">/* # Active */</span></div><div class="line">    <span class="comment">/* The table contains ma_mask + 1 slots, and that's a power of 2.</span></div><div class="line">     * We store the mask instead of the size because the mask is more</div><div class="line">     * frequently needed.</div><div class="line">     */</div><div class="line">    Py_ssize_t ma_mask;</div><div class="line"></div><div class="line">     */</div><div class="line">    PyDictEntry *ma_table;</div><div class="line">    PyDictEntry *(*ma_lookup)(PyDictObject *mp, PyObject *key, <span class="keyword">long</span> hash);</div><div class="line">    PyDictEntry ma_smalltable[PyDict_MINSIZE];</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><code>PyDict_MINSIZE</code> is the minimum size of a dictionary.  This many slots are allocated directly in the dict object.<br>(in the <code>ma_smalltable</code> member).<br>It must be a power of 2, and at least 4.  8 allows dicts with no more than 5 active entries to live in <code>ma_smalltable</code> (and so avoid an additional malloc); instrumentation suggested this suffices for the majority of dicts (consisting mostly of usually-small instance dicts and usually-small dicts created to pass keyword arguments).</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PyDict_MINSIZE 8</span></div></pre></td></tr></table></figure>
+<p>Here defined a array <code>ma_smalltable</code> which store 8 <code>PyDictEntry</code>.<br><code>ma_table</code> points to <code>ma_smalltable</code> for small tables, else to<br>additional malloc’ed memory.  <code>ma_table</code> is never NULL!<br>This rule saves repeated runtime null-tests in the workhorse getitem and setitem calls.</p>
+<p>I draw a figure to make the idea easy to be understand.</p>
+<p><img src="/images/img_for_2016_02_04/dictTable.png" alt="images"></p>
+<p>The question is coming. When Python will resize the diction table of that object?</p>
+<p>The answer is in function <code>dictresize</code> in file <code>Object/dictobject.c</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[Object/dictobject.c]</div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment">// Recall the rule of 2/3 --notes by Jason Leaster</span></div><div class="line"><span class="keyword">if</span> (!(mp-&gt;ma_used &gt; n_used &amp;&amp; mp-&gt;ma_fill*<span class="number">3</span> &gt;= (mp-&gt;ma_mask+<span class="number">1</span>)*<span class="number">2</span>)) </div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">            </div><div class="line">    <span class="comment">// Debug information add by Jason Leaster</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Try to resize the old diction\n"</span>);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"mp-&gt;ma_used  :%p \n"</span>, mp-&gt;ma_used);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"mp-&gt;ma_fill  :%p \n"</span>, mp-&gt;ma_fill);</div><div class="line">                        </div><div class="line">    <span class="keyword">return</span> dictresize(mp, (mp-&gt;ma_used &gt; <span class="number">50000</span> ? <span class="number">2</span> : <span class="number">4</span>) * mp-&gt;ma_used);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Attention, once <code>mp-ma_fill</code> bigger or equal to (2/3)<code>mp-&gt;ma_mask+1</code> and we have finished a insert operation(<code>mp-&gt;ma_used</code> &gt; <code>n_used</code>), <strong>we should resize the container(ma_table) of  the dictionary</strong>.</p>
+<p>Yes, we should resize the dictionary object if there have 6 or more object in the container but <strong>not</strong> 8.</p>
+<p>Here is the result of hacking.</p>
+<p><img src="/images/img_for_2016_02_04/testResizeDict.png" alt="images"></p>
+<p>Actually, <code>dummy</code> PyDictObject is just a <code>PyStringObject</code> in Python. Initially, dummy is a pointer in C but it finally comes to a <code>PyStringObject</code> after initialization of <code>PyDictObject</code> first time.</p>
+<p><strong>It’s important to note that resizing can happen to make a hash table larger or smaller. This is , if sufficiently many element of a hash table are deleted, the table can be scaled down in size. However, resizing only happens during an insert.</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/* Object used as dummy key to fill deleted entries */</span></div><div class="line"><span class="keyword">static</span> PyObject *dummy = <span class="literal">NULL</span>; <span class="comment">/* Initialized by first call to newPyDictObject() */</span></div></pre></td></tr></table></figure>
+<h3 id="Initialization-Part"><a href="#Initialization-Part" class="headerlink" title="Initialization Part"></a>Initialization Part</h3><p>There are two ways to create a dict:  <code>PyDict_New()</code> is the main C API function,<br>and the <code>tp_new</code> slot maps to <code>dict_new()</code>.  In the latter case we<br>    can save a little time over what PyDict_New does because it’s guaranteed<br>    that the PyDictObject struct is already zeroed out.<br>    Everyone except dict_new() should use EMPTY_TO_MINSIZE (unless they have an excellent reason not to).</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> INIT_NONZERO_DICT_SLOTS(mp) do &#123; \</span></div><div class="line">    (mp)-&gt;ma_table = (mp)-&gt;ma_smalltable;\</div><div class="line">    (mp)-&gt;ma_mask = PyDict_MINSIZE - 1; \</div><div class="line">&#125; while(0)</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> EMPTY_TO_MINSIZE(mp) do &#123;   \</span></div><div class="line">    memset((mp)-&gt;ma_smalltable, 0, sizeof((mp)-&gt;ma_smalltable))\</div><div class="line">    (mp)-&gt;ma_used = (mp)-&gt;ma_fill = 0;\</div><div class="line">    INIT_NONZERO_DICT_SLOTS(mp); \</div><div class="line">        &#125; while(0)</div></pre></td></tr></table></figure>
+<hr>
+<p>Photo By Jason Leaster</p>
+<p><img src="/images/img_for_2016_02_04/street.jpg" alt="images"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/03/memory-model-of-int-object-in-python/" rel="next" title="Int Object in Python">
+                <i class="fa fa-chevron-left"></i> Int Object in Python
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/05/functional-programming-in-python/" rel="prev" title="Functional Programming in Python">
+                Functional Programming in Python <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Jason Leaster</p>
+              <p class="site-description motion-element" itemprop="description">Tell me and I forget, teach me and I may remember, involve me and I learn. -- Benjamin Franklin</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Initialization-Part"><span class="nav-number">1.</span> <span class="nav-text">Initialization Part</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jason Leaster</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

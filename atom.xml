@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://jasonleaster.github.io/"/>
-  <updated>2017-08-06T09:49:34.154Z</updated>
+  <updated>2018-01-07T07:54:10.187Z</updated>
   <id>http://jasonleaster.github.io/</id>
   
   <author>
@@ -16,9 +16,61 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>2017年终回顾总结</title>
+    <link href="http://jasonleaster.github.io/2017/12/24/Summary-for-2017-Year/"/>
+    <id>http://jasonleaster.github.io/2017/12/24/Summary-for-2017-Year/</id>
+    <published>2017-12-24T11:34:47.000Z</published>
+    <updated>2018-01-07T07:54:10.187Z</updated>
+    
+    <content type="html"><![CDATA[<p>　　一个时间段过去之后，回顾总结总是好的，于是有了这篇年末总结，借此回顾过去的这一年。  </p>
+<h3 id="心态的变化"><a href="#心态的变化" class="headerlink" title="心态的变化"></a>心态的变化</h3><blockquote>
+<p>红军不怕远征难，万水千山只等闲</p>
+</blockquote>
+<p>　　我是一个时常忧虑的人，根源在于自己很没有安全感，缺少对自己已达成的目标的肯定，而盯着下一阶段的目标感到焦虑。</p>
+<p>　　工作之后与朋友交流，大都觉得工作环境效率低下觉得难以忍受。刚开始我也是这样，时常为了效率问题导致内心矛盾焦虑，下班去食堂吃饭的路上我脑子里都在想，我能改变什么，逃避？一走了之？其他地方就没有效率很低下的事情？不然。我时常说服自己，内燃机的最终效率只有30%左右，也很低，但是却是全球普遍使用了几十年的产品，大家照样用的好好的。工作何尝不是一样的呢？慢慢的剖析这种焦虑的心态，其实根源在于担心效率低而跟不上主流市场，被他人淘汰。平常心来说，这种焦虑是好事情，对自己的督促，但是也要小心这种焦虑转化成一种浮躁的心态，反噬自身让自己浮躁不定，浮躁比效率低下更可怕，更坏。</p>
+<p>　　关于忍耐。工作中时常会有“恶心的事情”，或者让自己身体和心理都难以接受的事情，整个人都会变得很负面，想逃离，想放弃，难以坚持。但是放弃了，然后呢？真的就解决问题了吗？原来的问题可能还是会以另外一种形式，另外一种压力转化到自身。我真的会想想红军两万五千里长征，他们为了达到目的是有多么坚强的意志力，疯狂的坚持。</p>
+<p>　　在万水千山的跋涉中，不能放弃，不能忘记最初的梦想。</p>
+<h3 id="关于技术的二三事"><a href="#关于技术的二三事" class="headerlink" title="关于技术的二三事"></a>关于技术的二三事</h3><blockquote>
+<p>世之奇伟瑰怪非常之观，常在于险远</p>
+</blockquote>
+<p>　　坦诚的说，技术方面比刚毕业的时候要好许多，面对具体的业务需求能够恰当的转化成业务模型，进一步程序实现。从一开始的迷糊，接到开发任务之后不知道从何下手，到现在有自己的想法和心得。听过一句话“Everything is simulation”，深以为然。业务系统，逻辑，都是通过适当的建模，程序模拟现实生活中的需求，进一步实现功能去模拟逻辑。</p>
+<p>　　从开发人员的角度来看，熟悉之后，整个开发迭代过程就是需求分析，业务数据模型的建立，找出需要持久化的信息建立适当的数据库表，编写数据库访问接口，自底向上进一步实现业务逻辑功能，并对外提供接口。再后面就是功能测试，以及功能性问题的回归下降，系统功能的上线发布。</p>
+<p>　　因为项目组使用的ORM框架是MyBatis，这也是目前主流的轻量级半自动化ORM框架，为了更深入的了解和熟悉这个框架(其实就是很有兴趣，好奇心强，想看源码学技术，看看别人怎么构建一个如此易用的开源组件)，所以我开始慢慢关注MyBatis的源码实现，并尝试发现其中的不足反馈给社区。虽然很早就加入了github，但是这是我第一次向大型的开源组织提交patch，看到别人积极的review我的代码并对我表示感谢，整个过程还是相当的开心，最后自己的代码跑过自动化测试并被accept合入主线的时候，还是相当激动的。  </p>
+<p>　　除此之外也看过其他一些框架的代码，感触比较深的就是Java框架代码实现的时候大多都是各种花式的反射和代理去实现对业务侧代码的<code>拦截</code>和<code>功能增强</code>，这是我的体会。  </p>
+<p>　　对于数据库的使用和性能优化也有了更深的理解。当同事不能解决的MySQL查询语句性能问题，与我交流讨论解决方案的时候，我提出的解决方案能将原来数秒才能完成的查询优化3个数量级以上，当受到同事的肯定和赞许的时候还是颇为开心。但是我知道这还不够，“而世之奇伟瑰怪非常之观，常在于险远，故非有志者不能至也，而人之所罕至焉”，受限于业务并发量并不是特别大的限制，更多更有价值的技术挑战未能触及。虽然对单机本地事物有了一定的了解，但是对于分布式事物和大规模并发系统还是一个心结，希望日后能够有机会能够接触并深入掌握。比较值得一提的是，得益于组内的定期分享活动，不仅和大家交流了技术内容，还锻炼了自己的口语交流能力哈哈。会思考怎么把自己要提出的主题核心内容一点点引出来，思路步骤等等都会考虑到，这个过程是比较受益的。</p>
+<p>　　虽然加班比较多，特别是年初三月，四月的时候，新项目刚开始迭代，那段时间经常凌晨回去休息，能够利用的业余时间比较有限，能够锻炼身体的时间比较少，再加上自己没有怎么注重锻炼，不管是心理还是身体，都有比较大的压力。  </p>
+<h3 id="生活方面"><a href="#生活方面" class="headerlink" title="生活方面"></a>生活方面</h3><blockquote>
+<p>珍惜当下，热爱生活</p>
+</blockquote>
+<p>　　总感觉身体不如从前，一直比较瘦总是吃不胖，这是我比较担心的。虽然有体育锻炼，但也感觉难有起色，不过唯一一点确认的就是要是隔三差五要是不运动一下，情况只会更糟糕。工作性质导致整天就是坐在电脑面前对着屏幕，我甚至戏谑的调侃自己是Brain Animal。</p>
+<p>　　工作在外，也难免会有离家念乡的感觉，但是我想到还有认识的朋友出国工作几年不回来的，我一万公里这算个屁啊。一年还是能趁着假期回去几次的。</p>
+<p>　　我会主动尝试改变，偶尔会主动约朋友出来吃饭，不要待在住的地方。去了解朋友最近的状况，他们最近的开心与烦恼。说实话，五和的纸上烤鱼真心好吃。</p>
+<p>　　我觉得人只有“走出去”了才会活的立体，只有走出去才知道该怎么活，此处的走出去有多重含义。  </p>
+<p>　　我不怎么爱玩，或者说不怎么懂得去享受生活。就像我在此部分的文字一样，并不能拿出很多记录回顾。我知道自己在旁人看来会有些乏味，但是我在不停的改变自己，走出去。  </p>
+<p>　　最后感恩生命中遇到的每一个你。</p>
+<h3 id="新一年的期待"><a href="#新一年的期待" class="headerlink" title="新一年的期待"></a>新一年的期待</h3><ol>
+<li>乐观积极，锻炼身体，有更强壮的身体。</li>
+<li>技术上要更进一步。</li>
+<li>阅读更多非技术性的书籍，丰富自己的内心。</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;　　一个时间段过去之后，回顾总结总是好的，于是有了这篇年末总结，借此回顾过去的这一年。  &lt;/p&gt;
+&lt;h3 id=&quot;心态的变化&quot;&gt;&lt;a href=&quot;#心态的变化&quot; class=&quot;headerlink&quot; title=&quot;心态的变化&quot;&gt;&lt;/a&gt;心态的变化&lt;/h3&gt;&lt;blockqu
+    
+    </summary>
+    
+    
+      <category term="essay" scheme="http://jasonleaster.github.io/tags/essay/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Design Pattern - I</title>
-    <link href="http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/"/>
-    <id>http://jasonleaster.github.io/2017/04/16/2017-04-16-Design-Pattern/</id>
+    <link href="http://jasonleaster.github.io/2017/04/16/Design-Pattern/"/>
+    <id>http://jasonleaster.github.io/2017/04/16/Design-Pattern/</id>
     <published>2017-04-16T03:05:59.000Z</published>
     <updated>2017-08-06T09:49:34.154Z</updated>
     
@@ -108,8 +160,8 @@
   
   <entry>
     <title>GoBang -- A practice with Artificial Intellijence</title>
-    <link href="http://jasonleaster.github.io/2017/03/12/2017-03-12-GoBang-A-practice-with-AI/"/>
-    <id>http://jasonleaster.github.io/2017/03/12/2017-03-12-GoBang-A-practice-with-AI/</id>
+    <link href="http://jasonleaster.github.io/2017/03/12/GoBang-A-practice-with-AI/"/>
+    <id>http://jasonleaster.github.io/2017/03/12/GoBang-A-practice-with-AI/</id>
     <published>2017-03-12T02:11:17.000Z</published>
     <updated>2017-05-21T13:27:23.769Z</updated>
     
@@ -130,8 +182,8 @@
   
   <entry>
     <title>Good Practices with MySQL</title>
-    <link href="http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/"/>
-    <id>http://jasonleaster.github.io/2017/01/12/2017-01-12-good-practices-with-mysql/</id>
+    <link href="http://jasonleaster.github.io/2017/01/12/good-practices-with-mysql/"/>
+    <id>http://jasonleaster.github.io/2017/01/12/good-practices-with-mysql/</id>
     <published>2017-01-12T13:48:18.000Z</published>
     <updated>2017-07-22T16:06:06.971Z</updated>
     
@@ -237,8 +289,8 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
   
   <entry>
     <title>Summary For 2016 Year</title>
-    <link href="http://jasonleaster.github.io/2017/01/11/2017-01-11-summary-for-2016-year/"/>
-    <id>http://jasonleaster.github.io/2017/01/11/2017-01-11-summary-for-2016-year/</id>
+    <link href="http://jasonleaster.github.io/2017/01/11/summary-for-2016-year/"/>
+    <id>http://jasonleaster.github.io/2017/01/11/summary-for-2016-year/</id>
     <published>2017-01-11T14:07:11.000Z</published>
     <updated>2017-07-22T16:28:09.410Z</updated>
     
@@ -277,8 +329,8 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
   
   <entry>
     <title>The brief introduction to the architecture of JUnit4</title>
-    <link href="http://jasonleaster.github.io/2016/09/11/2016-09-11-the-brief-introduction-to-the-archtecture-of-junit4/"/>
-    <id>http://jasonleaster.github.io/2016/09/11/2016-09-11-the-brief-introduction-to-the-archtecture-of-junit4/</id>
+    <link href="http://jasonleaster.github.io/2016/09/11/the-brief-introduction-to-the-archtecture-of-junit4/"/>
+    <id>http://jasonleaster.github.io/2016/09/11/the-brief-introduction-to-the-archtecture-of-junit4/</id>
     <published>2016-09-11T07:44:46.000Z</published>
     <updated>2017-02-27T16:10:05.568Z</updated>
     
@@ -341,8 +393,8 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
   
   <entry>
     <title>Problems With Linked List</title>
-    <link href="http://jasonleaster.github.io/2016/09/04/2016-09-04-problems-with-linked-list/"/>
-    <id>http://jasonleaster.github.io/2016/09/04/2016-09-04-problems-with-linked-list/</id>
+    <link href="http://jasonleaster.github.io/2016/09/04/problems-with-linked-list/"/>
+    <id>http://jasonleaster.github.io/2016/09/04/problems-with-linked-list/</id>
     <published>2016-09-04T13:47:19.000Z</published>
     <updated>2017-02-26T13:19:09.715Z</updated>
     
@@ -423,8 +475,8 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
   
   <entry>
     <title>Search Algorithm in Graph</title>
-    <link href="http://jasonleaster.github.io/2016/08/24/2016-08-24-search-algorithm-in-graph/"/>
-    <id>http://jasonleaster.github.io/2016/08/24/2016-08-24-search-algorithm-in-graph/</id>
+    <link href="http://jasonleaster.github.io/2016/08/24/search-algorithm-in-graph/"/>
+    <id>http://jasonleaster.github.io/2016/08/24/search-algorithm-in-graph/</id>
     <published>2016-08-24T12:46:43.000Z</published>
     <updated>2016-08-28T02:25:20.203Z</updated>
     
@@ -474,8 +526,8 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
   
   <entry>
     <title>Great ideas in Object Oriented Programming</title>
-    <link href="http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/"/>
-    <id>http://jasonleaster.github.io/2016/06/14/2016-06-14-great-ideas-in-object-oriented-programming/</id>
+    <link href="http://jasonleaster.github.io/2016/06/14/great-ideas-in-object-oriented-programming/"/>
+    <id>http://jasonleaster.github.io/2016/06/14/great-ideas-in-object-oriented-programming/</id>
     <published>2016-06-14T04:49:00.000Z</published>
     <updated>2017-05-21T13:29:51.962Z</updated>
     
@@ -542,8 +594,8 @@ max_connections = (Available RAM - Global Buffers) / Thread Buffers
   
   <entry>
     <title>Training Cascade with OpenCV</title>
-    <link href="http://jasonleaster.github.io/2016/05/19/2016-05-19-training-cascade-with-opencv/"/>
-    <id>http://jasonleaster.github.io/2016/05/19/2016-05-19-training-cascade-with-opencv/</id>
+    <link href="http://jasonleaster.github.io/2016/05/19/training-cascade-with-opencv/"/>
+    <id>http://jasonleaster.github.io/2016/05/19/training-cascade-with-opencv/</id>
     <published>2016-05-19T07:45:42.000Z</published>
     <updated>2017-02-26T13:06:38.568Z</updated>
     
@@ -595,8 +647,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Iterater and generator in Python</title>
-    <link href="http://jasonleaster.github.io/2016/04/09/2016-04-09-iterater-and-generator-in-python/"/>
-    <id>http://jasonleaster.github.io/2016/04/09/2016-04-09-iterater-and-generator-in-python/</id>
+    <link href="http://jasonleaster.github.io/2016/04/09/iterater-and-generator-in-python/"/>
+    <id>http://jasonleaster.github.io/2016/04/09/iterater-and-generator-in-python/</id>
     <published>2016-04-09T05:54:30.000Z</published>
     <updated>2016-04-09T13:07:14.756Z</updated>
     
@@ -644,8 +696,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Tuple and list in Python</title>
-    <link href="http://jasonleaster.github.io/2016/04/09/2016-04-09-tuple-and-list-in-python/"/>
-    <id>http://jasonleaster.github.io/2016/04/09/2016-04-09-tuple-and-list-in-python/</id>
+    <link href="http://jasonleaster.github.io/2016/04/09/tuple-and-list-in-python/"/>
+    <id>http://jasonleaster.github.io/2016/04/09/tuple-and-list-in-python/</id>
     <published>2016-04-09T00:52:51.000Z</published>
     <updated>2017-07-20T14:35:19.550Z</updated>
     
@@ -692,8 +744,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Exception Control in Python</title>
-    <link href="http://jasonleaster.github.io/2016/02/22/2016-02-22-exception-control-in-python/"/>
-    <id>http://jasonleaster.github.io/2016/02/22/2016-02-22-exception-control-in-python/</id>
+    <link href="http://jasonleaster.github.io/2016/02/22/exception-control-in-python/"/>
+    <id>http://jasonleaster.github.io/2016/02/22/exception-control-in-python/</id>
     <published>2016-02-22T03:31:34.000Z</published>
     <updated>2017-02-26T13:28:32.763Z</updated>
     
@@ -743,8 +795,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Architecture of Python Virtual Machine</title>
-    <link href="http://jasonleaster.github.io/2016/02/21/2016-02-21-architecture-of-python-virtual-machine/"/>
-    <id>http://jasonleaster.github.io/2016/02/21/2016-02-21-architecture-of-python-virtual-machine/</id>
+    <link href="http://jasonleaster.github.io/2016/02/21/architecture-of-python-virtual-machine/"/>
+    <id>http://jasonleaster.github.io/2016/02/21/architecture-of-python-virtual-machine/</id>
     <published>2016-02-21T03:42:50.000Z</published>
     <updated>2017-02-26T14:43:46.434Z</updated>
     
@@ -805,8 +857,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Web Crawler</title>
-    <link href="http://jasonleaster.github.io/2016/02/19/2016-02-19-web-crawler/"/>
-    <id>http://jasonleaster.github.io/2016/02/19/2016-02-19-web-crawler/</id>
+    <link href="http://jasonleaster.github.io/2016/02/19/web-crawler/"/>
+    <id>http://jasonleaster.github.io/2016/02/19/web-crawler/</id>
     <published>2016-02-19T13:27:47.000Z</published>
     <updated>2016-02-21T14:35:40.824Z</updated>
     
@@ -847,8 +899,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Brief introduction to opcodes in Python</title>
-    <link href="http://jasonleaster.github.io/2016/02/06/2016-02-06-brief-introduction-to-opcodes-in-python/"/>
-    <id>http://jasonleaster.github.io/2016/02/06/2016-02-06-brief-introduction-to-opcodes-in-python/</id>
+    <link href="http://jasonleaster.github.io/2016/02/06/brief-introduction-to-opcodes-in-python/"/>
+    <id>http://jasonleaster.github.io/2016/02/06/brief-introduction-to-opcodes-in-python/</id>
     <published>2016-02-06T10:39:50.000Z</published>
     <updated>2016-02-15T12:19:13.983Z</updated>
     
@@ -879,8 +931,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Functional Programming in Python</title>
-    <link href="http://jasonleaster.github.io/2016/02/05/2016-02-05-functional-programming-in-python/"/>
-    <id>http://jasonleaster.github.io/2016/02/05/2016-02-05-functional-programming-in-python/</id>
+    <link href="http://jasonleaster.github.io/2016/02/05/functional-programming-in-python/"/>
+    <id>http://jasonleaster.github.io/2016/02/05/functional-programming-in-python/</id>
     <published>2016-02-04T18:37:57.000Z</published>
     <updated>2016-02-06T08:30:53.211Z</updated>
     
@@ -944,8 +996,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Dict Object in Python</title>
-    <link href="http://jasonleaster.github.io/2016/02/04/2016-02-04-dict-object-in-python/"/>
-    <id>http://jasonleaster.github.io/2016/02/04/2016-02-04-dict-object-in-python/</id>
+    <link href="http://jasonleaster.github.io/2016/02/04/dict-object-in-python/"/>
+    <id>http://jasonleaster.github.io/2016/02/04/dict-object-in-python/</id>
     <published>2016-02-04T04:54:11.000Z</published>
     <updated>2016-04-09T05:53:49.889Z</updated>
     
@@ -1032,8 +1084,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Int Object in Python</title>
-    <link href="http://jasonleaster.github.io/2016/02/03/2016-02-03-memory-model-of-int-object-in-python/"/>
-    <id>http://jasonleaster.github.io/2016/02/03/2016-02-03-memory-model-of-int-object-in-python/</id>
+    <link href="http://jasonleaster.github.io/2016/02/03/memory-model-of-int-object-in-python/"/>
+    <id>http://jasonleaster.github.io/2016/02/03/memory-model-of-int-object-in-python/</id>
     <published>2016-02-02T16:56:31.000Z</published>
     <updated>2017-02-26T14:58:05.998Z</updated>
     
@@ -1137,8 +1189,8 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
   
   <entry>
     <title>Machine Learning With K-Means</title>
-    <link href="http://jasonleaster.github.io/2015/12/30/2015-12-30-machine-learning-with-k-means/"/>
-    <id>http://jasonleaster.github.io/2015/12/30/2015-12-30-machine-learning-with-k-means/</id>
+    <link href="http://jasonleaster.github.io/2015/12/30/machine-learning-with-k-means/"/>
+    <id>http://jasonleaster.github.io/2015/12/30/machine-learning-with-k-means/</id>
     <published>2015-12-30T08:03:13.000Z</published>
     <updated>2016-02-04T05:51:25.851Z</updated>
     
@@ -1181,42 +1233,6 @@ opencv_traincascade -data data -vec abc.vec -bg neg_list_new.info -numPos 550 -n
     
       <category term="MachineLearning" scheme="http://jasonleaster.github.io/categories/MachineLearning/"/>
     
-    
-  </entry>
-  
-  <entry>
-    <title>Labs of MIT 6.034</title>
-    <link href="http://jasonleaster.github.io/2015/12/25/2015-12-25-labs-of-mit-6-dot-034/"/>
-    <id>http://jasonleaster.github.io/2015/12/25/2015-12-25-labs-of-mit-6-dot-034/</id>
-    <published>2015-12-25T15:30:06.000Z</published>
-    <updated>2017-02-26T13:05:40.615Z</updated>
-    
-    <content type="html"><![CDATA[<p>Two month ago, I decide to do a project about machine learning. So, I get start to learn machine learning and implemment some algorithms of ML.<br>I find that there is a course in MIT – 6.034 Artificial Intelligence which contain a lot of funny labs. That will help me to learn ML.</p>
-<p>I don’t want to write a lot of analysis article about this course like what I have done in 6.008 . So, I just push my solution which also is incompletement onto github. If anyone interesting in this lab, you could touch me and I would like to communicate with you about these labs if I’m not busy.</p>
-<p>What you should know is that the version of this labs is updated in 2015.</p>
-<p>Here is the link you could get my solution:<br><a href="https://github.com/jasonleaster/MIT_6.034_2015" target="_blank" rel="external">My Solution of MIT 6.034</a></p>
-<a id="more"></a>
-<hr>
-<p>Photo by Jason Leaster</p>
-<p>Thanks god. There is a beautiful girl in my life and encourage me walk through the dark time of my life. Thank you. Annabella.</p>
-<p><img src="/images/img_for_2015_12_25/girlfriend.png" alt="images"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Two month ago, I decide to do a project about machine learning. So, I get start to learn machine learning and implemment some algorithms of ML.&lt;br&gt;I find that there is a course in MIT – 6.034 Artificial Intelligence which contain a lot of funny labs. That will help me to learn ML.&lt;/p&gt;
-&lt;p&gt;I don’t want to write a lot of analysis article about this course like what I have done in 6.008 . So, I just push my solution which also is incompletement onto github. If anyone interesting in this lab, you could touch me and I would like to communicate with you about these labs if I’m not busy.&lt;/p&gt;
-&lt;p&gt;What you should know is that the version of this labs is updated in 2015.&lt;/p&gt;
-&lt;p&gt;Here is the link you could get my solution:&lt;br&gt;&lt;a href=&quot;https://github.com/jasonleaster/MIT_6.034_2015&quot;&gt;My Solution of MIT 6.034&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="labs" scheme="http://jasonleaster.github.io/categories/labs/"/>
-    
-    
-      <category term="labs" scheme="http://jasonleaster.github.io/tags/labs/"/>
-    
-      <category term="MachineLearning" scheme="http://jasonleaster.github.io/tags/MachineLearning/"/>
     
   </entry>
   

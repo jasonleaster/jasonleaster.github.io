@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="EOF" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="In this blog, I assume that you have a basic background about C++ and know that there is a “monster” we call it as virtual table :)
+If there is virtual member function in your class’s definition, ther">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Memory Model of Objects in C++">
+<meta property="og:url" content="http://jasonleaster.github.io/2015/06/13/memory-model-of-objects-in-c-plus-plus/index.html">
+<meta property="og:site_name" content="EOF">
+<meta property="og:description" content="In this blog, I assume that you have a basic background about C++ and know that there is a “monster” we call it as virtual table :)
+If there is virtual member function in your class’s definition, ther">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/single_object_memory_model.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/output1.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/single_inheritance_model.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/single_inheritance_model.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/output2.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/multiple_inheritance_model.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/multiple_inheritance.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/output3.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/repeat_inheritance_model.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/repeat_inheritance.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/output4.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/diamond_inheritance_model.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/diamond_inheritance.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/output5.png">
+<meta property="og:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/end.png">
+<meta property="og:updated_time" content="2016-02-04T05:04:44.098Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Memory Model of Objects in C++">
+<meta name="twitter:description" content="In this blog, I assume that you have a basic background about C++ and know that there is a “monster” we call it as virtual table :)
+If there is virtual member function in your class’s definition, ther">
+<meta name="twitter:image" content="http://jasonleaster.github.io/images/img_for_2015_06_12/single_object_memory_model.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://jasonleaster.github.io/2015/06/13/memory-model-of-objects-in-c-plus-plus/"/>
+
+
+
+
+
+  <title>Memory Model of Objects in C++ | EOF</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">EOF</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">In this life, be myself!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jasonleaster.github.io/2015/06/13/memory-model-of-objects-in-c-plus-plus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jason Leaster">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EOF">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Memory Model of Objects in C++</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-06-13T19:48:42+08:00">
+                2015-06-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Cplusplus/" itemprop="url" rel="index">
+                    <span itemprop="name">Cplusplus</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>In this blog, I assume that you have a basic background about C++ and know that there is a “monster” we call it as <code>virtual table</code> :)</p>
+<p>If there is virtual member function in your class’s definition, there will be a virtual table.</p>
+<p>Compiler will generate a pointer which’s name is <code>_vprt</code> and use this pointer to find the virtual table.</p>
+<a id="more"></a>
+<p>The function below there is very important for us to understand the C++ object model.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">long</span>* <span class="title">get_element</span><span class="params">(T &amp;obj, <span class="keyword">int</span> offset)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> ((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)*((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)(&amp;obj))) + offset ;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Function <code>get_element</code> take the reference of object which’s type is T(I used template technology) and <code>offset</code>.</p>
+<p>We get the address of this object by <code>&amp;obj</code> and then we cast it into pointer which point to unsigned long and then we dereference that pointer. Acctually, the pointer which we dereferenced in function <code>get_element</code> is the <code>_vprt</code>.</p>
+<p>After we get <code>_vprt</code>, we cast it into <code>unsigned long*</code> again and add <code>offset</code> to get others pointers in virtual table which contains all pointers that point to class virtual member functions.</p>
+<p>If we dereference the return value of this function, we will get the pointer which point to the begin of function. Fantastic :)</p>
+<h3 id="Single-Object"><a href="#Single-Object" class="headerlink" title="Single Object"></a>Single Object</h3><p>First of all, let’s take a glance at this demo:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*******************************************************************</span></div><div class="line">Programmer  :   EOF</div><div class="line">Date        :   2015.06.13</div><div class="line">File        :   meomory_model_for_single_object.cpp</div><div class="line">E-mail      :   jasonleaster@gmail.com</div><div class="line"></div><div class="line"> ******************************************************************/</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span>  <span class="title">void</span> <span class="params">(*FUN)</span> <span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Base</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Base():prv_data(<span class="number">100</span>), num(<span class="number">100</span>)&#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::f()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::g()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">h</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::h()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Base::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Base::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Base::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Base::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">            Private Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">long</span>* <span class="title">get_element</span><span class="params">(T &amp;obj, <span class="keyword">int</span> offset)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> ((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)*((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)(&amp;obj))) + offset ;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    Base b;</div><div class="line"></div><div class="line">    b.show();</div><div class="line"></div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++)</div><div class="line">    &#123;</div><div class="line">        <span class="comment">/*</span></div><div class="line">            The address which point virtual</div><div class="line">            function's implementation in virtual table</div><div class="line">        */</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Pointer in Virutal Table: "</span> &lt;&lt; (<span class="keyword">unsigned</span> <span class="keyword">long</span>*)*get_element(b, i) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">        <span class="comment">/* Calling function by pointer in virtual table */</span></div><div class="line">        ((FUN)(*get_element(b, i))) ();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>There are data member <code>num</code> and <code>prv_data</code> with different access label in <code>class base</code>. There also have virtual functions and normal member functions in this class. So … what’s the memory model of this class look like?</p>
+<p><img src="/images/img_for_2015_06_12/single_object_memory_model.png" alt="images"></p>
+<p>The output of that demo:</p>
+<p><img src="/images/img_for_2015_06_12/output1.png" alt="images"></p>
+<h3 id="Single-Inheritance"><a href="#Single-Inheritance" class="headerlink" title="Single Inheritance"></a>Single Inheritance</h3><p>The inheritance relationship between the base class and derived class :</p>
+<p><img src="/images/img_for_2015_06_12/single_inheritance_model.png" alt="images"></p>
+<p>It’s single inheritance that base class must be only single type.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*******************************************************************</span></div><div class="line">Programmer  :   EOF</div><div class="line">Date        :   2015.06.12</div><div class="line">File        :   virtual_function_model.cpp</div><div class="line">E-mail      :   jasonleaster@gmail.com</div><div class="line"></div><div class="line"> ******************************************************************/</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span>  <span class="title">void</span> <span class="params">(*FUN)</span> <span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Base</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Base():prv_data(<span class="number">100</span>), num(<span class="number">100</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::f()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::g()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">h</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::h()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Base::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Base::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Base::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Base::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived : <span class="keyword">public</span> Base</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Derived():num(<span class="number">200</span>), prv_data(<span class="number">200</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">x</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::x()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">y</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::y()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::f()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::g()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">            Base::show();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">long</span>* <span class="title">get_element</span><span class="params">(T &amp;obj, <span class="keyword">int</span> offset)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> ((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)*((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)(&amp;obj))) + offset ;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    Base b;</div><div class="line">    Derived d;</div><div class="line"></div><div class="line">    b.show();</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">    d.show();</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++)</div><div class="line">    &#123;</div><div class="line">        <span class="comment">/*</span></div><div class="line">            The address which point virtual</div><div class="line">            function's implementation in virtual table</div><div class="line">        */</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Pointer in Virutal Table: "</span> &lt;&lt; (<span class="keyword">unsigned</span> <span class="keyword">long</span>*)*get_element(b, i) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">        <span class="comment">/* Calling function by pointer in virtual table */</span></div><div class="line">        ((FUN)(*get_element(b, i))) ();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Pointer in Virutal Table: "</span> &lt;&lt; (<span class="keyword">unsigned</span> <span class="keyword">long</span>*)*get_element(d, i) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">        ((FUN)(*get_element(d, i))) ();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Memory Model:</p>
+<p><img src="/images/img_for_2015_06_12/single_inheritance_model.png" alt="images"></p>
+<p>Output:</p>
+<p><img src="/images/img_for_2015_06_12/output2.png" alt="images"></p>
+<p>We find that:</p>
+<ul>
+<li><p>The virtual table pointer _vprt is at the beginning of the object.</p>
+</li>
+<li><p>Data member store into object and have nothing with the access label but according to the sequence of declaration.</p>
+</li>
+<li><p>In single inheritance model, the virtual function wichi is re-implement will be update in all virtual table.</p>
+</li>
+</ul>
+<h3 id="Multiply-Inheritance"><a href="#Multiply-Inheritance" class="headerlink" title="Multiply Inheritance"></a>Multiply Inheritance</h3><p>Now, you find that there is only one virtual table in our object under single inheritance situation. But … How about things going on with multiply inheritance(MI) ?</p>
+<p><img src="/images/img_for_2015_06_12/multiple_inheritance_model.png" alt="images"></p>
+<p>Let’s go and test it.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*******************************************************************</span></div><div class="line">Programmer  :   EOF</div><div class="line">Date        :   2015.06.13</div><div class="line">File        :   virtual_function_for_multiple_inheritance.cpp</div><div class="line">E-mail      :   jasonleaster@gmail.com</div><div class="line"></div><div class="line"> ******************************************************************/</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span>  <span class="title">void</span> <span class="params">(*FUN)</span> <span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Base_1</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Base_1():prv_data(<span class="number">100</span>), num(<span class="number">100</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base_1::f() \t"</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base_1::g() \t"</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">h</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base_1::h() \t"</span>; &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Base_2</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Base_2():prv_data(<span class="number">200</span>), num(<span class="number">200</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base_2::f() \t"</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">x</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base_2::x() \t"</span>; &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Base_3</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Base_3():prv_data(<span class="number">300</span>), num(<span class="number">300</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base_3::g() \t"</span>; &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived : <span class="keyword">public</span> Base_3, <span class="keyword">public</span> Base_2, <span class="keyword">public</span> Base_1</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Derived():num(<span class="number">42</span>), prv_data(<span class="number">42</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">y</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::y() \t"</span> ; &#125;</div><div class="line"></div><div class="line">        <span class="comment">/*</span></div><div class="line">           Here we re-implement the virtual function @f().</div><div class="line">           Compiler will rewrite the virtual table</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::f() \t"</span>; &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">long</span>* <span class="title">get_element</span><span class="params">(T &amp;obj, <span class="keyword">int</span> offset = <span class="number">0</span>, <span class="keyword">int</span> vprt_offset = <span class="number">0</span>)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> ((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)*((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)(&amp;obj) + vprt_offset)) + offset ;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">call_vir_func</span><span class="params">(T &amp;obj, <span class="keyword">int</span> offset = <span class="number">0</span>, <span class="keyword">int</span> vprt_offset = <span class="number">0</span>)</span></span></div><div class="line">&#123;</div><div class="line">    ((FUN)(*get_element(obj, offset, vprt_offset))) ();</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Address of function: "</span> ;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; (<span class="keyword">int</span>*)*get_element(obj, offset, vprt_offset) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    Derived d;</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Virtual Table of @Base_3 and @Derived:"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    call_vir_func(d, <span class="number">0</span>, <span class="number">0</span>);</div><div class="line">    call_vir_func(d, <span class="number">1</span>, <span class="number">0</span>);</div><div class="line">    call_vir_func(d, <span class="number">2</span>, <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Virtual Table of @Base_2:"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">    call_vir_func(d, <span class="number">0</span>, <span class="keyword">sizeof</span>(Base_3)/<span class="number">8</span>);</div><div class="line">    call_vir_func(d, <span class="number">1</span>, <span class="keyword">sizeof</span>(Base_3)/<span class="number">8</span>);</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Virtual Table of @Base_1:"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    call_vir_func(d, <span class="number">0</span>, <span class="keyword">sizeof</span>(Base_3)/<span class="number">8</span> + <span class="keyword">sizeof</span>(Base_2)/<span class="number">8</span>);</div><div class="line">    call_vir_func(d, <span class="number">1</span>, <span class="keyword">sizeof</span>(Base_3)/<span class="number">8</span> + <span class="keyword">sizeof</span>(Base_2)/<span class="number">8</span>);</div><div class="line">    call_vir_func(d, <span class="number">2</span>, <span class="keyword">sizeof</span>(Base_3)/<span class="number">8</span> + <span class="keyword">sizeof</span>(Base_2)/<span class="number">8</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Memory Model:</p>
+<p><img src="/images/img_for_2015_06_12/multiple_inheritance.png" alt="images"></p>
+<p>Output:</p>
+<p><img src="/images/img_for_2015_06_12/output3.png" alt="images"></p>
+<p>We can declare some conclusions that:</p>
+<ul>
+<li><p>Each base class have their own’s virtual table. Assume that The number of base class is N in multiple inheritance. The number of the virtual table is N-1.The virtual table of derived function will be combine into the first base class in the declaration queue of base class.</p>
+</li>
+<li><p>The base virtual table will be update if the derived class rewrite implementation of virtual function in base class.</p>
+</li>
+</ul>
+<h3 id="Repeat-Inheritance"><a href="#Repeat-Inheritance" class="headerlink" title="Repeat Inheritance"></a>Repeat Inheritance</h3><p><img src="/images/img_for_2015_06_12/repeat_inheritance_model.png" alt="images"></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*******************************************************************</span></div><div class="line">Programmer  :   EOF</div><div class="line">Date        :   2015.06.14</div><div class="line">File        :   virtual_function_for_repreat_inheritance.cpp</div><div class="line">E-mail      :   jasonleaster@gmail.com</div><div class="line"></div><div class="line"> ******************************************************************/</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span>  <span class="title">void</span> <span class="params">(*FUN)</span> <span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Base</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Base():prv_data(<span class="number">100</span>), num(<span class="number">100</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::f()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::g()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">h</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::h()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Base::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Base::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Base::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Base::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived_1: <span class="keyword">public</span> Base</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Derived_1():prv_data(<span class="number">200</span>), num(<span class="number">200</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived_1::f()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">x</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived_1::x()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived_1::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived_1::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived_1::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived_1::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">            Base::show();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived_2: <span class="keyword">public</span> Base</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Derived_2():prv_data(<span class="number">300</span>), num(<span class="number">300</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived_2::g()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived_2::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived_2::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived_2::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived_2::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">            Base::show();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived : <span class="keyword">public</span> Derived_2, <span class="keyword">public</span> Derived_1</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Derived():num(<span class="number">42</span>), prv_data(<span class="number">42</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">y</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::y()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="comment">/*</span></div><div class="line">           Here we re-implement the virtual function @f().</div><div class="line">           Compiler will rewrite the virtual table</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::f()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">            Derived_1::show();</div><div class="line">            Derived_2::show();</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">long</span>* <span class="title">get_element</span><span class="params">(T &amp;obj, <span class="keyword">int</span> offset = <span class="number">0</span>, <span class="keyword">int</span> vprt_offset = <span class="number">0</span>)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> ((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)*((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)(&amp;obj) + vprt_offset)) + offset ;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">call_vir_func</span><span class="params">(T &amp;obj, <span class="keyword">int</span> offset = <span class="number">0</span>, <span class="keyword">int</span> vprt_offset = <span class="number">0</span>)</span></span></div><div class="line">&#123;</div><div class="line">    ((FUN)(*get_element(obj, offset, vprt_offset))) ();</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Address of function: "</span> ;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; (<span class="keyword">int</span>*)*get_element(obj, offset, vprt_offset) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    Derived d;</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Virtual Table of @Derived, @Derived_2 and @Base:"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    call_vir_func(d, <span class="number">0</span>, <span class="number">0</span>);</div><div class="line">    call_vir_func(d, <span class="number">1</span>, <span class="number">0</span>);</div><div class="line">    call_vir_func(d, <span class="number">2</span>, <span class="number">0</span>);</div><div class="line">    call_vir_func(d, <span class="number">3</span>, <span class="number">0</span>);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Virtual Table of @Derived_1 and @Base:"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    call_vir_func(d, <span class="number">0</span>, <span class="keyword">sizeof</span>(Derived_2)/<span class="number">8</span>);</div><div class="line">    call_vir_func(d, <span class="number">1</span>, <span class="keyword">sizeof</span>(Derived_2)/<span class="number">8</span>);</div><div class="line">    call_vir_func(d, <span class="number">2</span>, <span class="keyword">sizeof</span>(Derived_2)/<span class="number">8</span>);</div><div class="line">    call_vir_func(d, <span class="number">3</span>, <span class="keyword">sizeof</span>(Derived_2)/<span class="number">8</span>);</div><div class="line"></div><div class="line">    d.show();</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Memory Model:</p>
+<p><img src="/images/img_for_2015_06_12/repeat_inheritance.png" alt="images"></p>
+<p>You find that The base object was inherited again and again Output:</p>
+<p><img src="/images/img_for_2015_06_12/output4.png" alt="images"></p>
+<p>It’s may not what we want that the base class is inherited repeatedly. So C++ use the <code>virtual base</code> technology to solve this problem :)</p>
+<h3 id="Diamond-Inheritance"><a href="#Diamond-Inheritance" class="headerlink" title="Diamond Inheritance"></a>Diamond Inheritance</h3><p><img src="/images/img_for_2015_06_12/diamond_inheritance_model.png" alt="images"></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*******************************************************************</span></div><div class="line">Programmer  :   EOF</div><div class="line">Date        :   2015.06.14</div><div class="line">File        :   virtual_function_for_diamond_inheritance.cpp</div><div class="line">E-mail      :   jasonleaster@gmail.com</div><div class="line"></div><div class="line"> ******************************************************************/</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span>  <span class="title">void</span> <span class="params">(*FUN)</span> <span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Base</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Base():prv_data(<span class="number">100</span>), num(<span class="number">100</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::f()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::g()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">h</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Base::h()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Base::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Base::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Base::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Base::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived_1: <span class="keyword">virtual</span> <span class="keyword">public</span> Base</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Derived_1():prv_data(<span class="number">200</span>), num(<span class="number">200</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived_1::f()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">x</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived_1::x()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived_1::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived_1::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived_1::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived_1::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">            Base::show();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived_2: <span class="keyword">virtual</span> <span class="keyword">public</span> Base</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Derived_2():prv_data(<span class="number">300</span>), num(<span class="number">300</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived_2::g()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived_2::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived_2::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived_2::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived_2::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">            Base::show();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="comment">/*</span></div><div class="line">           Private  Data</div><div class="line">         */</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived : <span class="keyword">public</span> Derived_2, <span class="keyword">public</span> Derived_1</div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line"></div><div class="line">        <span class="keyword">int</span> num;</div><div class="line"></div><div class="line">        Derived():num(<span class="number">42</span>), prv_data(<span class="number">42</span>) &#123; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">y</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::y()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="comment">/*</span></div><div class="line">           Here we re-implement the virtual function @f().</div><div class="line">           Compiler will rewrite the virtual table</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123; <span class="built_in">cout</span> &lt;&lt; <span class="string">" Derived::f()"</span> &lt;&lt; <span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived::num "</span>        &lt;&lt; num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived::prv_data "</span>   &lt;&lt; prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived::num "</span>       &lt;&lt; &amp;num &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;Derived::prv_data "</span>  &lt;&lt; &amp;prv_data &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">            Derived_1::show();</div><div class="line">            Derived_2::show();</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="keyword">int</span> prv_data;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">long</span>* <span class="title">get_element</span><span class="params">(T &amp;obj, <span class="keyword">int</span> offset = <span class="number">0</span>, <span class="keyword">int</span> vprt_offset = <span class="number">0</span>)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> ((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)*((<span class="keyword">unsigned</span> <span class="keyword">long</span>*)(&amp;obj) + vprt_offset)) + offset ;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">call_vir_func</span><span class="params">(T &amp;obj, <span class="keyword">int</span> offset = <span class="number">0</span>, <span class="keyword">int</span> vprt_offset = <span class="number">0</span>)</span></span></div><div class="line">&#123;</div><div class="line">    ((FUN)(*get_element(obj, offset, vprt_offset))) ();</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Address of function: "</span> ;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; (<span class="keyword">int</span>*)*get_element(obj, offset, vprt_offset) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    Derived d;</div><div class="line"><span class="comment">//    d.show();</span></div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Virtual Table of @Derived::Derived_2"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    call_vir_func(d, <span class="number">0</span>, <span class="number">0</span>);</div><div class="line">    call_vir_func(d, <span class="number">1</span>, <span class="number">0</span>);</div><div class="line">    call_vir_func(d, <span class="number">2</span>, <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Virtual Table of @Derived::Derived_1"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    call_vir_func(d, <span class="number">0</span>, (<span class="keyword">sizeof</span>(Derived_2) - <span class="keyword">sizeof</span>(Base))/<span class="number">8</span>);</div><div class="line">    call_vir_func(d, <span class="number">1</span>, (<span class="keyword">sizeof</span>(Derived_2) - <span class="keyword">sizeof</span>(Base))/<span class="number">8</span>);</div><div class="line"><span class="comment">/*</span></div><div class="line">    cout &lt;&lt; (int*)&amp;d &lt;&lt; endl;</div><div class="line">    cout &lt;&lt; (int*)&amp;d.Derived_2::num &lt;&lt; endl;</div><div class="line">    cout &lt;&lt; (int*)&amp;d.Derived_1::num &lt;&lt; endl;</div><div class="line">    cout &lt;&lt; (int*)&amp;d.num &lt;&lt; endl;</div><div class="line">    cout &lt;&lt; (int*)&amp;d.Base::num &lt;&lt; endl;</div><div class="line">*/</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Virtual Table of @Derived::Derived_2::Base"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">    call_vir_func(d, <span class="number">0</span>, (<span class="keyword">sizeof</span>(Derived) - <span class="keyword">sizeof</span>(Base))/<span class="number">8</span>);</div><div class="line">    call_vir_func(d, <span class="number">1</span>, (<span class="keyword">sizeof</span>(Derived) - <span class="keyword">sizeof</span>(Base))/<span class="number">8</span>);</div><div class="line">    call_vir_func(d, <span class="number">2</span>, (<span class="keyword">sizeof</span>(Derived) - <span class="keyword">sizeof</span>(Base))/<span class="number">8</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>It’s a hard time to draw this picture. But thank god… I make it.</p>
+<p>Memory Model:</p>
+<p><img src="/images/img_for_2015_06_12/diamond_inheritance.png" alt="images"></p>
+<p>Output:</p>
+<p><img src="/images/img_for_2015_06_12/output5.png" alt="images"></p>
+<p>ATTENTION: <strong>Every class in C++ only have ONE virtual table, different objects of the same class will share the same virtual table of that class!</strong></p>
+<hr>
+<p>Photo by Jason Leaster images</p>
+<p><img src="/images/img_for_2015_06_12/end.png" alt="images"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/05/25/learn-to-design-a-container/" rel="next" title="Learn to Design a Container">
+                <i class="fa fa-chevron-left"></i> Learn to Design a Container
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/06/17/what-should-we-focus-on/" rel="prev" title="What should we focus on ?">
+                What should we focus on ? <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Jason Leaster</p>
+              <p class="site-description motion-element" itemprop="description">Tell me and I forget, teach me and I may remember, involve me and I learn. -- Benjamin Franklin</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Single-Object"><span class="nav-number">1.</span> <span class="nav-text">Single Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Single-Inheritance"><span class="nav-number">2.</span> <span class="nav-text">Single Inheritance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multiply-Inheritance"><span class="nav-number">3.</span> <span class="nav-text">Multiply Inheritance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Repeat-Inheritance"><span class="nav-number">4.</span> <span class="nav-text">Repeat Inheritance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Diamond-Inheritance"><span class="nav-number">5.</span> <span class="nav-text">Diamond Inheritance</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jason Leaster</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
